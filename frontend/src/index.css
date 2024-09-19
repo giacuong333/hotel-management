@@ -1,0 +1,99 @@
+:root {
+      --primary-color: rgb(239 244 251 / 1);
+      --secondary-color: rgb(226 232 240 / 1);
+      --fourth-color: rgb(60 80 224 / 1);
+      --white-bg-color: #fff;
+}
+
+/* Reset CSS */
+* {
+      border: none;
+      box-sizing: border-box;
+}
+a {
+      text-decoration: none;
+      outline: none;
+}
+button {
+      outline: none;
+      border: none;
+}
+ul {
+      list-style-type: none;
+}
+.form-control {
+      outline: none !important;
+      box-shadow: none !important;
+
+      &::placeholder {
+            color: #bbb;
+      }
+}
+.icon-color {
+      color: #bbb;
+}
+
+.primary-bg-color {
+      background-color: var(--primary-color);
+}
+
+.secondary-bg-color {
+      background-color: var(--fourth-color);
+}
+
+.secondary-bg-color-hover {
+      transition: all 0.4s ease-in-out;
+      &:hover {
+            background-color: var(--fourth-color);
+            opacity: 0.9;
+      }
+}
+
+.primary-bg-color-hover {
+      transition: all 0.4s ease-in-out;
+
+      &:hover {
+            background-color: var(--primary-color);
+            opacity: 0.8;
+            color: #6c757d;
+      }
+}
+
+.secondary-bd-color {
+      border: 1px solid var(--secondary-bd-color);
+}
+
+.secondary-color {
+      color: var(--fourth-color);
+}
+
+.primary-bd-color-focus {
+      transition: all 0.4s ease-in-out;
+}
+.primary-bd-color-focus:focus-within {
+      border: 1px solid var(--fourth-color) !important;
+}
+.primary-bd-color-focus:focus-within > .form-control {
+      border: none !important;
+}
+
+.white-bg-color {
+      background-color: var(--white-bg-color);
+}
+
+/* Size */
+.w-full {
+      width: 100%;
+}
+
+.h-full {
+      height: 100%;
+}
+
+.w-screen {
+      width: 100vh;
+}
+
+.h-screen {
+      height: 100vh;
+}
