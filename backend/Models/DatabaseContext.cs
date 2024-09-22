@@ -12,6 +12,8 @@ namespace backend.Database
             // Refer to the `user` table in MySQL
             public DbSet<UserModel> User { get; set; }
 
+            public DbSet<RoleModel> Role { get; set; }
+
             // public DbSet<UserModel> Room { get; set; }
 
             // public DbSet<UserModel> Booking { get; set; }
@@ -28,8 +30,12 @@ namespace backend.Database
 
             // public DbSet<UserModel> Review { get; set; }
 
-            public DbSet<RoleModel> Role { get; set; }
-
             // public DbSet<UserModel> Service { get; set; }
+
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                  modelBuilder.Entity<UserModel>()
+                      .HasOne(u => u.Role);
+            }
       }
 }

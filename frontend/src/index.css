@@ -1,8 +1,9 @@
 :root {
-      --primary-color: rgb(239 244 251 / 1);
+      --primary-color: rgb(255, 253, 252);
       --secondary-color: rgb(226 232 240 / 1);
-      --fourth-color: rgb(60 80 224 / 1);
+      --fourth-color: rgb(232 191 150 / 1);
       --white-bg-color: #fff;
+      --customer-primary-color: rgb(232, 191, 150);
 }
 
 /* Reset CSS */
@@ -11,8 +12,9 @@
       box-sizing: border-box;
 }
 a {
-      text-decoration: none;
-      outline: none;
+      text-decoration: none !important;
+      outline: none !important;
+      color: #000 !important;
 }
 button {
       outline: none;
@@ -31,6 +33,17 @@ ul {
 }
 .icon-color {
       color: #bbb;
+}
+p {
+      margin: 0 !important;
+}
+ul,
+h1,
+h2,
+h3,
+h4 {
+      padding: 0 !important;
+      margin: 0 !important;
 }
 
 .primary-bg-color {
@@ -64,7 +77,7 @@ ul {
 }
 
 .secondary-color {
-      color: var(--fourth-color);
+      color: var(--fourth-color) !important;
 }
 
 .primary-bd-color-focus {
@@ -79,6 +92,31 @@ ul {
 
 .white-bg-color {
       background-color: var(--white-bg-color);
+}
+
+.customer-primary-button {
+      background-color: var(--customer-primary-color) !important;
+      border-color: var(--customer-primary-color) !important;
+      transition: all 0.5s ease-in-out;
+
+      &:hover {
+            opacity: 0.8;
+      }
+}
+
+.customer-primary-color {
+      color: var(--customer-primary-color) !important;
+}
+
+.customer-primary-color-hover {
+      transition: all 0.4s ease-in-out;
+      &:hover {
+            color: var(--customer-primary-color) !important;
+      }
+}
+
+.cursor-pointer {
+      cursor: pointer !important;
 }
 
 /* Size */
@@ -96,4 +134,253 @@ ul {
 
 .h-screen {
       height: 100vh;
+}
+
+.max-h-20 {
+      max-height: 20rem;
+}
+
+.max-h-0 {
+      max-height: 0;
+}
+
+.mb-10 {
+      margin-bottom: 10rem;
+}
+
+/* Animation */
+.animation-effect {
+      transition: all 0.5s ease-in-out !important;
+}
+
+.rotate-180 {
+      transform: rotate(-180deg);
+}
+
+.rotate-90 {
+      transform: rotate(-90deg);
+}
+
+.rotate90 {
+      transform: rotate(90deg);
+}
+
+.rotate-default {
+      transform: rotate(0);
+}
+
+.secondary-button-hover {
+      position: relative;
+      display: inline-block;
+      transition: all 0.4s ease-in-out;
+
+      &::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: currentColor;
+            transition: transform 0.4s ease-in-out;
+            transform: scaleX(1);
+            transform-origin: left;
+      }
+
+      &:hover::after {
+            transform: scaleX(0);
+      }
+
+      &:hover {
+            color: var(--customer-primary-color) !important;
+      }
+}
+
+/* Carousel */
+.carousel-content {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: white;
+}
+
+.carousel-content > h2 {
+      font-size: 4rem;
+}
+
+.carousel {
+      position: relative;
+      overflow: hidden; /* Prevent overflow of content */
+}
+
+/* Media queries */
+@media (max-width: 992px) {
+      /* Medium screens and below */
+      .navbar-bg {
+            background-color: #000; /* Dark background */
+      }
+
+      .logo-size {
+            --size: 70px;
+            object-fit: scale-down;
+            width: var(--size);
+            height: var(--size);
+      }
+
+      .carousel-content > h2 {
+            font-size: 2rem;
+      }
+
+      .newsletter-image-left {
+            img {
+                  width: 100%;
+                  object-fit: cover;
+                  object-position: center;
+            }
+      }
+
+      .newsletter-image-left + div {
+            padding: "2rem 3rem";
+      }
+
+      .newsletter-image-right {
+            img {
+                  width: 100%;
+                  object-fit: contain;
+                  object-position: center;
+            }
+      }
+
+      .newsletter-image-leaves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            animation: leaves-animation 4s ease-in-out alternate-reverse infinite;
+
+            img {
+                  max-width: 60%;
+                  object-fit: contain;
+                  object-position: center;
+            }
+      }
+
+      .pl-76 {
+            padding-left: 0;
+      }
+
+      @keyframes leaves-animation {
+            0% {
+                  bottom: 0;
+            }
+            100% {
+                  bottom: 5%;
+            }
+      }
+}
+
+@media (min-width: 993px) {
+      /* Large screens and above */
+      .navbar-bg {
+            background-color: transparent; /* Transparent background */
+      }
+
+      .carousel-content > h2 {
+            font-size: 4rem; /* Adjust based on design */
+      }
+
+      .newsletter-image-left {
+            position: absolute;
+            top: 6%;
+            left: -6%;
+
+            img {
+                  max-width: 70%;
+                  object-fit: contain;
+                  object-position: center;
+            }
+      }
+
+      .newsletter-image-left + div {
+            padding: "4rem 6rem";
+      }
+
+      .newsletter-image-right {
+            position: absolute;
+            top: 6%;
+            right: -18%;
+
+            img {
+                  max-width: 70%;
+                  object-fit: contain;
+                  object-position: center;
+            }
+      }
+
+      .newsletter-image-leaves {
+            position: absolute;
+            top: 110%;
+            right: 20%;
+            animation: leaves-animation 4s ease-in-out alternate-reverse infinite;
+
+            img {
+                  object-fit: contain;
+                  object-position: center;
+            }
+      }
+
+      .pl-76 {
+            padding-left: 7.6rem;
+      }
+
+      @keyframes leaves-animation {
+            0% {
+                  top: 110%;
+            }
+            100% {
+                  top: 115%;
+            }
+      }
+}
+
+/* Admin */
+.sidebar {
+      background-color: var(--customer-primary-color);
+      width: 100%;
+      height: 100%;
+      padding: 1rem 0;
+
+      ul {
+            li {
+                  transition: all 0.4s ease-in-out;
+                  font-size: 1.2rem;
+
+                  svg,
+                  a {
+                        transition: all 0.4s ease-in-out;
+                  }
+
+                  &:hover {
+                        background-color: var(--primary-color);
+                  }
+                  &:hover svg,
+                  &:hover a {
+                        color: #000 !important;
+                  }
+            }
+      }
+}
+
+.admin-outlet {
+      height: auto;
+}
+
+.admin-bg-color {
+      background-color: var(--primary-color);
+}
+
+.admin-header {
+      background-color: var(--white-bg-color);
+      height: 80px;
+      padding: 0 3rem;
+      width: 100%;
 }

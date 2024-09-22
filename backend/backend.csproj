@@ -7,5 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2"/>
     <PackageReference Include="System.Web.Helpers.Crypto" Version="3.2.3"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2"/>
   </ItemGroup>
 </Project>

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import Button from "react-bootstrap/Button";
 
-import { FiUser, FiMail, FiLock } from "react-icons/fi";
+import { FiUser, FiMail, FiLock, FiPhone } from "react-icons/fi";
 
 import FormGroup from "../../FormGroup";
 
@@ -16,6 +16,8 @@ import ToastContainer, { showToast } from "../../../utils/showToast";
 const SignUp = () => {
       const [fields, setFields] = useState({ name: "", email: "", password: "", retypePassword: "", phoneNumber: "" });
       const [errors, setErrors] = useState({});
+
+      const navigate = useNavigate();
 
       const { signUp, error, loading, isCreatingAccount } = useUser();
 
@@ -54,6 +56,7 @@ const SignUp = () => {
 
                         if (response.status === 201) {
                               showToast(response.data.message, "success");
+                              setTimeout(() => navigate("/signin"), 2000);
                         }
                   } catch (err) {
                         console.log(err.message);
@@ -110,7 +113,7 @@ const SignUp = () => {
                                                 value={fields.phoneNumber}
                                                 placeHolder="Enter your phone number"
                                                 error={errors.phoneNumber} // Specific error for Email field
-                                                Icon={FiMail}
+                                                Icon={FiPhone}
                                                 onChange={(e) =>
                                                       setFields((prev) => ({ ...prev, phoneNumber: e.target.value }))
                                                 }
@@ -148,7 +151,7 @@ const SignUp = () => {
                                                 <Button
                                                       type="submit"
                                                       variant="primary"
-                                                      className={`w-full p-3 secondary-bg-color secondary-bg-color-hover ${
+                                                      className={`w-full p-3 customer-primary-button ${
                                                             isCreatingAccount
                                                                   ? "cursor-default pe-none opacity-50"
                                                                   : "cursor-pointer"

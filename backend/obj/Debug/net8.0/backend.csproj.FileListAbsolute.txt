@@ -37,3 +37,11 @@ D:\.NET\hotel_management\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 D:\.NET\hotel_management\backend\obj\Debug\net8.0\ref\backend.dll
 D:\.NET\hotel_management\backend\bin\Debug\net8.0\System.Web.Helpers.Crypto.dll
 D:\.NET\hotel_management\backend\obj\Debug\net8.0\backend.sourcelink.json
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
