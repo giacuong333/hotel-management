@@ -1,53 +1,56 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "@tippyjs/react": "^4.2.6",
-    "axios": "^1.7.7",
-    "bootstrap": "^5.3.3",
-    "react": "^18.3.1",
-    "react-bootstrap": "^2.10.4",
-    "react-datetime-picker": "^6.0.1",
-    "react-dom": "^18.3.1",
-    "react-icons": "^5.3.0",
-    "react-router": "^6.26.2",
-    "react-scripts": "5.0.1",
-    "react-slick": "^0.30.2",
-    "react-toastify": "^10.0.5",
-    "react-type-animation": "^3.2.0",
-    "slick-carousel": "^1.8.1",
-    "tippy.js": "^6.3.7",
-    "web-vitals": "^2.1.4"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "react-router-dom": "^6.26.2"
-  }
+    "name": "frontend",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@testing-library/jest-dom": "^5.17.0",
+        "@testing-library/react": "^13.4.0",
+        "@testing-library/user-event": "^13.5.0",
+        "@tippyjs/react": "^4.2.6",
+        "axios": "^1.7.7",
+        "bootstrap": "^5.3.3",
+        "react": "^18.3.1",
+        "react-bootstrap": "^2.10.4",
+        "react-datetime-picker": "^6.0.1",
+        "react-dom": "^18.3.1",
+        "react-icons": "^5.3.0",
+        "react-router": "^6.26.2",
+        "react-scripts": "5.0.1",
+        "react-slick": "^0.30.2",
+        "react-toastify": "^10.0.5",
+        "react-type-animation": "^3.2.0",
+        "slick-carousel": "^1.8.1",
+        "tippy.js": "^6.3.7",
+        "web-vitals": "^2.1.4"
+    },
+    "scripts": {
+        "start": "react-app-rewired start",
+        "build": "react-app-rewired build",
+        "test": "react-app-rewired test",
+        "eject": "react-app-rewired eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "babel-plugin-module-resolver": "^5.0.2",
+        "customize-cra": "^1.0.0",
+        "react-app-rewired": "^2.2.1",
+        "react-router-dom": "^6.26.2"
+    }
 }
