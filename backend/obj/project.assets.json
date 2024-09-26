@@ -1409,11 +1409,16 @@
     ]
   },
   "packageFolders": {
+<<<<<<< HEAD
     "C:\\Users\\dinhv\\.nuget\\packages\\": {}
+=======
+    "C:\\Users\\84967\\.nuget\\packages\\": {}
+>>>>>>> 1dd1e99f843facf653ee1a22f2ddef92ea8fb3e0
   },
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj",
       "projectName": "backend",
       "projectPath": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj",
@@ -1422,6 +1427,16 @@
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\dinhv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
+      "projectUniqueName": "C:\\HocReact\\hotel-management\\backend\\backend.csproj",
+      "projectName": "backend",
+      "projectPath": "C:\\HocReact\\hotel-management\\backend\\backend.csproj",
+      "packagesPath": "C:\\Users\\84967\\.nuget\\packages\\",
+      "outputPath": "C:\\HocReact\\hotel-management\\backend\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\84967\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>> 1dd1e99f843facf653ee1a22f2ddef92ea8fb3e0
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1429,7 +1444,10 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
         "C:\\Program Files\\dotnet\\library-packs": {},
+=======
+>>>>>>> 1dd1e99f843facf653ee1a22f2ddef92ea8fb3e0
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1442,11 +1460,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -1501,7 +1514,11 @@
             "privateAssets": "all"
           }
         },
+<<<<<<< HEAD
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+=======
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+>>>>>>> 1dd1e99f843facf653ee1a22f2ddef92ea8fb3e0
       }
     }
   },
