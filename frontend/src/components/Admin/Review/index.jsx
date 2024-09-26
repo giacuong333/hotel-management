@@ -119,9 +119,20 @@ const Review = () => {
             <ToastContainer />
 
             {/* table */}
-            <input type="text" onChange={handleFilter} />
+            <nav class="navbar navbar-light bg-light justify-content-between">
+                <p class="navbar-brand">Review</p>
+                <form class="form-inline mr-2">
+                    <input
+                        class="form-control "
+                        type="search"
+                        placeholder="Search"
+                        aria-label="Search"
+                        onChange={handleFilter}
+                    />
+                </form>
+            </nav>
 
-            <DataTable title="Review" columns={columns} data={data} pagination highlightOnHover />
+            <DataTable columns={columns} data={data} pagination highlightOnHover />
 
             {/* Modal */}
 
