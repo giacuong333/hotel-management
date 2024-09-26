@@ -15,6 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import DataTable from 'react-data-table-component';
 
+import { FaUserEdit } from 'react-icons/fa';
+
 const Permission = () => {
     const [show, setShow] = useState(false);
 
@@ -54,7 +56,7 @@ const Permission = () => {
                         disabled={row.status === 0}
                         onClick={handleShow}
                     >
-                        Permission
+                        <FaUserEdit style={{ color: 'black' }} />
                     </button>
                 </div>
             ),
