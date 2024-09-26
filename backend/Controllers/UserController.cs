@@ -82,7 +82,7 @@ namespace backend.Controllers
                               return BadRequest(ModelState);
                         }
 
-                        var user = await _context.User.Include(u => u.Role).FirstOrDefaultAsync(u => u.Email == value.Email);
+                        var user = await _context.User.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Email == value.Email);
 
                         if (user == null)
                         {
@@ -138,7 +138,7 @@ namespace backend.Controllers
                                     phoneNumber = user.PhoneNumber,
                                     createdAt = user.CreatedAt,
                                     roleId = user.RoleId,
-                                    role = user.Role
+                                    role = user.Roles
                               }
                         });
                   }
@@ -168,7 +168,7 @@ namespace backend.Controllers
                   try
                   {
                         var userId = GetUserIdFromClaims();
-                        var user = _context.User.Include(u => u.Role).FirstOrDefault(u => u.Id == userId);
+                        var user = _context.User.Include(u => u.Roles).FirstOrDefault(u => u.Id == userId);
 
                         if (user == null)
                         {
@@ -185,7 +185,7 @@ namespace backend.Controllers
                                     user.PhoneNumber,
                                     user.CreatedAt,
                                     user.RoleId,
-                                    Role = user.Role // Include the full Role object if necessary
+                                    Role = user.Roles // Include the full Role object if necessary
                               }
                         });
                   }
@@ -203,6 +203,8 @@ namespace backend.Controllers
             {
                   try
                   {
+                        Console.WriteLine(value);
+
                         if (!ModelState.IsValid)
                         {
                               return BadRequest(ModelState);

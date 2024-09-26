@@ -14,9 +14,9 @@ namespace backend.Database
 
             public DbSet<RoleModel> Role { get; set; }
 
-            // public DbSet<UserModel> Room { get; set; }
+            // public DbSet<RoomModel> Room { get; set; }
 
-            // public DbSet<UserModel> Booking { get; set; }
+            // public DbSet<BookingModel> Booking { get; set; }
 
             // public DbSet<UserModel> Discount { get; set; }
 
@@ -35,7 +35,17 @@ namespace backend.Database
             protected override void OnModelCreating(ModelBuilder modelBuilder)
             {
                   modelBuilder.Entity<UserModel>()
-                      .HasOne(u => u.Role);
+                  .HasOne(u => u.Roles)
+                  .WithMany()
+                  .HasForeignKey(u => u.RoleId);
+
+
+                  // modelBuilder.Entity<BookingModel>()
+                  // .HasOne(r => r.Room);
+                  // modelBuilder.Entity<BookingModel>()
+                  // .HasOne(u => u.Staff);
+                  // modelBuilder.Entity<BookingModel>()
+                  // .HasOne(u => u.Customer);
             }
       }
 }
