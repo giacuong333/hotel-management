@@ -97,3 +97,8 @@ C:\HocReact\hotel-management\backend\obj\Debug\net8.0\refint\backend.dll
 C:\HocReact\hotel-management\backend\obj\Debug\net8.0\backend.pdb
 C:\HocReact\hotel-management\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 C:\HocReact\hotel-management\backend\obj\Debug\net8.0\ref\backend.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Humanizer.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\Mono.TextTemplating.dll
+D:\.NET\hotel_management\backend\bin\Debug\net8.0\System.CodeDom.dll

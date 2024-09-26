@@ -427,13 +427,3 @@ h4 {
 }
 
 /* Customer checkbox */
-.form-check {
-    padding-left: 0;
-
-    .form-check-input {
-        padding: '0.8rem';
-        border: var(--fourth-color) !important;
-        background-color: transparent !important;
-        color: var(--fourth-color) !important;
-    }
-}
