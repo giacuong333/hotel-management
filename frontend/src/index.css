@@ -427,3 +427,8 @@ h4 {
 }
 
 /* Customer checkbox */
+input.form-check-input:checked {
+    background-color: transparent !important;
+    color: var(--fourth-color) !important;
+    border: 1px solid var(--fourth-color) !important;
+}

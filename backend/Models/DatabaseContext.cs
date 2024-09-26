@@ -18,11 +18,11 @@ namespace backend.Database
 
             // public DbSet<BookingModel> Booking { get; set; }
 
-            // public DbSet<UserModel> Discount { get; set; }
+            public DbSet<DiscountModel> Discount { get; set; }
 
-            // public DbSet<UserModel> Feedback { get; set; }
+            public DbSet<FeedBackModel> Feedback { get; set; }
 
-            // public DbSet<UserModel> Gallery { get; set; }
+            public DbSet<GalleryModel> Gallery { get; set; }
 
             // public DbSet<UserModel> Receipt { get; set; }
 
