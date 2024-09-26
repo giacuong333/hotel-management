@@ -27,18 +27,27 @@ import SignUp from './components/Authentication/SignUp';
 import SignIn from './components/Authentication/SignIn';
 
 import { useUser } from './providers/UserProvider';
+<<<<<<< HEAD
 import RoomDetail from './components/Customer/Home/RoomDetail';
 
 function App() {
     const { user } = useUser();
     const isAuthenticated = user !== null;
     const isCustomer = user?.roleId === 2;
+=======
+
+function App() {
+    // const { user } = useUser();
+    // const isAuthenticated = user !== null;
+    // const isCustomer = user?.roleId === 2;
+>>>>>>> 81210d6d85f123482410ce650a7f450e617ddfaf
 
     return (
         <BrowserRouter>
             <Routes>
                 {/* Authentication */}
                 {/* If customer logged in, the customer can not access to the log in or register page */}
+<<<<<<< HEAD
                 {!isAuthenticated && (
                     <>
                         <Route path="/signup" element={<SignUp />} />
@@ -77,6 +86,45 @@ function App() {
                         </Route>
                     )
                 )}
+=======
+                {/* {!isAuthenticated && ( */}
+                <>
+                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/signin" element={<SignIn />} />
+                </>
+                {/* )} */}
+                {/* If customer logged in with roleId = 2 or default customer does not log in, move on to the customer page. */}
+                {/* {(isAuthenticated && isCustomer) || !isAuthenticated ? ( */}
+                {/* // Customer */}
+                <Route path="/" element={<CustomerLayout />}>
+                    <Route index element={<CustomerHome />} />
+                    {/* <Route path="bus" element={<Bus />} />
+                                          <Route path="cart" element={<Cart />} /> */}
+                </Route>
+                ) : (
+                {/* // If roleId != 2, move on to the admin page
+                              isAuthenticated &&
+                              !isCustomer && (
+                                    // Admin */}
+                <Route path="/admin/" element={<AdminLayout />}>
+                    <Route index element={<AdminHome />} />
+                    <Route path="booking" element={<Booking />} />
+                    <Route path="contact" element={<Contact />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="discount" element={<Discount />} />
+                    <Route path="feedback" element={<Feedback />} />
+                    <Route path="gallery" element={<Gallery />} />
+                    <Route path="permission" element={<Permission />} />
+                    <Route path="receipt" element={<Receipt />} />
+                    <Route path="review" element={<Review />} />
+                    <Route path="role" element={<Role />} />
+                    <Route path="room" element={<Room />} />
+                    <Route path="service" element={<Service />} />
+                    <Route path="statistic" element={<Statistic />} />
+                    <Route path="user" element={<User />} />
+                </Route>
+                ){/* )} */}
+>>>>>>> 81210d6d85f123482410ce650a7f450e617ddfaf
             </Routes>
         </BrowserRouter>
     );
