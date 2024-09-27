@@ -76,38 +76,6 @@ function App() {
                         </Route>
                     )
                 )}
-                {!isAuthenticated && (
-                    <>
-                        <Route path="/signup" element={<SignUp />} />
-                        <Route path="/signin" element={<SignIn />} />
-                    </>
-                )}
-                {/* If customer logged in with roleId = 2 or default customer does not log in, move on to the customer page. */}
-                {/* // Customer */}
-                (isAuthenticated && isCustomer) || !isAuthenticated ? (
-                <Route path="/" element={<CustomerLayout />}>
-                    <Route index element={<CustomerHome />} />
-                    <Route path="cart" element={<Cart />} />
-                </Route>
-                ) : ( isAuthenticated && !isCustomer &&
-                <Route path="/admin/" element={<AdminLayout />}>
-                    <Route index element={<AdminHome />} />
-                    <Route path="booking" element={<Booking />} />
-                    <Route path="contact" element={<Contact />} />
-                    <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="discount" element={<Discount />} />
-                    <Route path="feedback" element={<Feedback />} />
-                    <Route path="gallery" element={<Gallery />} />
-                    <Route path="permission" element={<Permission />} />
-                    <Route path="receipt" element={<Receipt />} />
-                    <Route path="review" element={<Review />} />
-                    <Route path="role" element={<Role />} />
-                    <Route path="room" element={<Room />} />
-                    <Route path="service" element={<Service />} />
-                    <Route path="statistic" element={<Statistic />} />
-                    <Route path="user" element={<User />} />
-                </Route>
-                )
             </Routes>
         </BrowserRouter>
     );
