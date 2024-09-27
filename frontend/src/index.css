@@ -428,7 +428,30 @@ h4 {
 
 /* Customer checkbox */
 input.form-check-input:checked {
-    background-color: transparent !important;
-    color: var(--fourth-color) !important;
+    background-color: var(--fourth-color) !important;
+    color: var(--white-color) !important;
     border: 1px solid var(--fourth-color) !important;
+    outline: none !important;
+}
+
+.image-hovered {
+    img {
+        transition: all 0.3s ease-in-out;
+        transform: scale(1);
+    }
+
+    &:hover img {
+        transform: scale(1.2);
+    }
+}
+
+.image-detail {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 700px;
+    height: auto;
+    padding: 1rem;
+    z-index: 20;
 }

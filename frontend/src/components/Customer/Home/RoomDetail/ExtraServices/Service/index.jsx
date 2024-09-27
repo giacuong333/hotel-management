@@ -5,7 +5,7 @@ const Service = ({ id, label, price }) => {
         <li className="d-flex align-items-center justify-content-between">
             <div className="form-check d-flex align-items-center gap-2">
                 <input className="form-check-input" type="checkbox" value="" id={id} style={{ padding: '.8rem' }} />
-                <label className="form-check-label" for={id}>
+                <label className="form-check-label text-truncate" for={id} style={{ width: '140px' }}>
                     {label}
                 </label>
             </div>
