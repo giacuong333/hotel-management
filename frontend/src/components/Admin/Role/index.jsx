@@ -232,11 +232,10 @@ const Role = () => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
-            {/* table */}
-            <nav class="navbar navbar-light bg-light justify-content-between">
+            {/* Search */}
+            <nav class="navbar navbar-light bg-light justify-content-between p-3">
                 <p class="navbar-brand">Role</p>
-                <form class="form-inline mr-2">
+                <form class="form-inline mr-5">
                     <input
                         class="form-control "
                         type="search"
@@ -247,6 +246,7 @@ const Role = () => {
                 </form>
             </nav>
 
+            {/* table */}
             <DataTable columns={columns} data={data} pagination highlightOnHover />
 
             {/* Modal */}

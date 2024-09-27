@@ -119,7 +119,7 @@ const Review = () => {
             <ToastContainer />
 
             {/* table */}
-            <nav class="navbar navbar-light bg-light justify-content-between">
+            <nav class="navbar navbar-light bg-light justify-content-between  p-3 ">
                 <p class="navbar-brand">Review</p>
                 <form class="form-inline mr-2">
                     <input

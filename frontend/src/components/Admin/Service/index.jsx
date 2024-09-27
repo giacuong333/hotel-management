@@ -176,7 +176,7 @@ const Service = () => {
             </Modal>
 
             {/* table */}
-            <nav class="navbar navbar-light bg-light justify-content-between">
+            <nav class="navbar navbar-light bg-light justify-content-between  p-3">
                 <p class="navbar-brand">Service</p>
                 <form class="form-inline mr-2">
                     <input
