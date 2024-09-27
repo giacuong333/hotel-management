@@ -106,62 +106,31 @@ const Permission = () => {
                     <Modal.Title> Permission</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Table bordered hover>
-                        <thead>
-                            <tr>
-                                <th>#</th>
+                    <form>
+                        <div class="form-group">
+                            <label for="userid">UserId:</label>
+                            <input type="text" class="form-control" value={'1'} id="userid" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label for="username">UserName:</label>
+                            <input type="text" value={'Nguyen son dong'} class="form-control" id="username" disabled />
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <select class="form-control" id="role">
+                                <option>Admin</option>
+                                <option>Employee</option>
+                            </select>
+                        </div>
 
-                                <th>Manage </th>
-                                <th>Fuction </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Manage User</td>
-                                <td>
-                                    <input type="checkbox" id="look"></input>
-                                    &nbsp;
-                                    <label htmlFor="look">Look</label>
-                                    <br></br>
-                                    <input type="checkbox" id="add" />
-                                    &nbsp;
-                                    <label htmlFor="add">Add</label>
-                                    <br></br>
-                                    <input type="checkbox" id="edit" />
-                                    &nbsp;
-                                    <label htmlFor="edit">Edit</label>
-                                    <br></br>
-                                    <input type="checkbox" id="delete" />
-                                    &nbsp;
-                                    <label htmlFor="delete">Delete</label>
-                                    <br></br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Manage Booking</td>
-                                <td>
-                                    <input type="checkbox" id="look"></input>
-                                    &nbsp;
-                                    <label htmlFor="look">Look</label>
-                                    <br></br>
-                                    <input type="checkbox" id="add" />
-                                    &nbsp;
-                                    <label htmlFor="add">Add</label>
-                                    <br></br>
-                                    <input type="checkbox" id="edit" />
-                                    &nbsp;
-                                    <label htmlFor="edit">Edit</label>
-                                    <br></br>
-                                    <input type="checkbox" id="delete" />
-                                    &nbsp;
-                                    <label htmlFor="delete">Delete</label>
-                                    <br></br>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </Table>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control" id="status">
+                                <option>Handle</option>
+                                <option>Panding</option>
+                            </select>
+                        </div>
+                    </form>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
