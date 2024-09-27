@@ -9,7 +9,8 @@ import UserProvider from './providers/UserProvider';
 import 'bootstrap/dist/css/bootstrap.min.css';
 // Bootstrap Bundle JS
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-//
+// Tippy CSS
+import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 
 import './index.css';

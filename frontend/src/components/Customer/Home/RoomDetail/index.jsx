@@ -17,19 +17,15 @@ import { CgSmartHomeRefrigerator } from 'react-icons/cg';
 import { IoWifiOutline } from 'react-icons/io5';
 import NoSmoking from './images/noSmoking.svg';
 import Belonging from './images/belonging.svg';
+import Reviews from './Reviews';
 
-const RoomDetail = () => {
+const RoomDetail = ({ room }) => {
     return (
         <section>
-            <div
-                className="container mx-auto"
-                style={{
-                    padding: '4rem 0',
-                }}
-            >
+            <div className="container mx-auto">
                 <div className="row">
                     <div className="col-lg-8 px-lg-0">
-                        <div className="px-4">
+                        <div className="px-2 pt-4">
                             <div className="position-relative w-full h-full">
                                 <img
                                     src="https://luxestay.wpthemeverse.com/wp-content/uploads/2024/08/classic-room.png"
@@ -140,7 +136,7 @@ const RoomDetail = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-4 pt-4">
                         <div className="customer-third-bg-color p-4">
                             <p className="text-center fs-3 p-2 pt-0">Your Reservation</p>
                             <div className="py-3 d-flex flex-column gap-4">
@@ -198,6 +194,12 @@ const RoomDetail = () => {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div className="row my-5">
+                    <div className="col-lg-8 px-lg-0 px-4">
+                        <Reviews />
                     </div>
                 </div>
             </div>

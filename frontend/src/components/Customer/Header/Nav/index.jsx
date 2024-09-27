@@ -11,7 +11,6 @@ import { MdOutlineManageAccounts } from 'react-icons/md';
 
 import Logo from '../images/luxestay_logo.png';
 
-import 'tippy.js/dist/tippy.css'; // Import basic Tippy styles
 import { useUser } from '../../../../providers/UserProvider';
 import { CgLogOut } from 'react-icons/cg';
 
@@ -226,7 +225,7 @@ const Nav = () => {
                     }
                 >
                     <div className="text-white d-lg-flex d-none align-items-center gap-2 cursor-pointer">
-                        <p>Hello Cường</p>
+                        <p>Hello {user.name}</p>
                         <FaRegUserCircle size={24} />
                     </div>
                 </Tippy>
