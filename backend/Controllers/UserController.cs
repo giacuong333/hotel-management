@@ -37,7 +37,16 @@ namespace backend.Controllers
             {
                   try
                   {
-                        var users = await _context.User.ToListAsync();
+                        var users = await _context.User
+                              .Where(u => u.DeletedAt == null)
+                              .Include(u => u.Roles)
+                              .ToListAsync();
+
+                        if (users == null)
+                        {
+                              return NotFound(new { message = "Users not found." });
+                        }
+
                         return Ok(users);
                   }
                   catch (Exception e)
@@ -50,11 +59,11 @@ namespace backend.Controllers
             // [GET] /user/{id}
             [HttpGet("{id}")]
             [Produces("application/json")]
-            public async Task<ActionResult<UserModel>> GetUser(int id)
+            public async Task<ActionResult<UserModel>> GetUserById(int id)
             {
                   try
                   {
-                        var user = await _context.User.FindAsync(id);
+                        var user = await _context.User.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == id);
 
                         if (user == null)
                         {
@@ -118,8 +127,9 @@ namespace backend.Controllers
                               Subject = new ClaimsIdentity(new[]
                               {
                                     new Claim(ClaimTypes.NameIdentifier, $"{user.Id}"), // Use NameIdentifier for user ID
-                                    new Claim(ClaimTypes.Name, user.Name) // You can also include the user's name if needed
-                              }),
+                                    new Claim(ClaimTypes.Name, user.Name), // You can also include the user's name if needed
+                                    new Claim(ClaimTypes.Role, user.Roles.Name),
+                        }),
                               Expires = DateTime.UtcNow.AddHours(1),
                               SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                         };
@@ -221,7 +231,7 @@ namespace backend.Controllers
                         var roleExists = await _context.Role.AnyAsync(role => role.Id == value.RoleId);
                         if (!roleExists)
                         {
-                              value.RoleId = 2; // Default role ID, can be moved to a config setting
+                              value.RoleId = 4; // Default role ID, can be moved to a config setting
                         }
 
                         // Check if the phone number already exists
@@ -289,5 +299,106 @@ namespace backend.Controllers
                         return StatusCode(500, "Internal server error");
                   }
             }
+
+            // [DELETE] /user/{id}
+            [HttpDelete("{id}")]
+            public async Task<ActionResult<IEnumerable<UserModel>>> SoftDeleteUserById(int id)
+            {
+                  try
+                  {
+                        var user = await _context.User.FindAsync(id);
+
+                        if (user == null)
+                        {
+                              return NotFound(new { message = "User not found." });
+                        }
+
+                        user.DeletedAt = DateTime.UtcNow;
+
+                        await _context.SaveChangesAsync();
+
+                        return Ok(new { message = "User deleted successfully" });
+                  }
+                  catch (Exception e)
+                  {
+                        Console.WriteLine(e);
+                        return StatusCode(500, "Internal server error");
+                  }
+            }
+
+            // [GET] /user
+            [HttpDelete]
+            public async Task<ActionResult> DeleteUsers([FromBody] List<UserModel> users)
+            {
+                  if (users == null || users.Count == 0)
+                  {
+                        return BadRequest("No users provided for deletion.");
+                  }
+
+                  Console.WriteLine("Authorization header: " + Request.Headers["Authorization"]);
+
+                  var claimsIdentity = User.Identity as ClaimsIdentity;
+                  if (claimsIdentity == null)
+                  {
+                        return Unauthorized("User identity is null.");
+                  }
+
+                  var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                  if (userIdClaim == null)
+                  {
+                        return Unauthorized("User ID claim is missing.");
+                  }
+
+                  int loggingInId;
+                  try
+                  {
+                        loggingInId = int.Parse(userIdClaim.Value);
+                  }
+                  catch (Exception ex)
+                  {
+                        return BadRequest("Invalid User ID in the claim.");
+                  }
+
+                  var userRoleClaim = claimsIdentity.FindFirst(ClaimTypes.Role);
+                  if (userRoleClaim != null && userRoleClaim.Value == "Manager")
+                  {
+                        Console.WriteLine("User is a Manager, skipping deletion.");
+                  }
+
+                  // Filter out users who are managers or the currently logged-in user
+                  foreach (var user in users)
+                  {
+                        // Fetch user details from the database
+                        var userFromDb = await _context.User.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == user.Id);
+                        if (userFromDb == null)
+                        {
+                              Console.WriteLine($"User with ID: {user.Id} not found in the database, skipping.");
+                              continue;
+                        }
+
+                        // Skip deletion if the user is a manager or the logged-in user
+                        if (userFromDb.Roles == null)
+                        {
+                              Console.WriteLine($"User with ID: {user.Id} has no roles assigned, skipping.");
+                              continue;
+                        }
+
+                        if (userFromDb.Roles.Id == 1 || userFromDb.Id == loggingInId)
+                        {
+                              Console.WriteLine($"Skipping deletion for User ID: {user.Id} (Role: {userFromDb.Roles.Name}, Logged-in User ID: {loggingInId})");
+                              continue;
+                        }
+
+                        userFromDb.DeletedAt = DateTime.UtcNow;
+                  }
+
+                  await _context.SaveChangesAsync();
+
+
+                  var newUsers = await _context.User.Where(u => u.DeletedAt == null).Include(u => u.Roles).ToListAsync();
+
+                  return Ok(new { message = "Users deleted successfully.", newUsers });
+            }
+
       }
 }

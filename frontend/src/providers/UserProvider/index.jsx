@@ -20,6 +20,8 @@ const UserProvider = ({ children }) => {
             const token = localStorage.getItem('jwtToken');
             if (!token) return;
 
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
             try {
                 setLoading(true);
                 const response = await axios.get('http://localhost:5058/user/profile', {
@@ -50,6 +52,7 @@ const UserProvider = ({ children }) => {
             if (response.status === 200) {
                 const { token, user } = response.data;
                 localStorage.setItem('jwtToken', token);
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 setUser(user); // Set user after successful login
                 return response;
             }
@@ -93,6 +96,7 @@ const UserProvider = ({ children }) => {
             );
             if (response.status === 200) {
                 localStorage.removeItem('jwtToken');
+                delete axios.defaults.headers.common['Authorization'];
                 setUser(null); // Clear the user after logout
             }
         } catch (error) {

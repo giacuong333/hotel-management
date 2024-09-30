@@ -90,9 +90,13 @@ h4 {
 }
 .primary-bd-color-focus:focus-within {
     border: 1px solid var(--fourth-color) !important;
-}
-.primary-bd-color-focus:focus-within > .form-control {
-    border: none !important;
+
+    &.form-control,
+    &.form-select {
+        border: none !important;
+        background-color: transparent;
+        outline: none;
+    }
 }
 
 .white-bg-color {
@@ -454,4 +458,8 @@ input.form-check-input:checked {
     height: auto;
     padding: 1rem;
     z-index: 20;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
 }

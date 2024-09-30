@@ -9,24 +9,25 @@ class Builder
 {
       public static void Build(WebApplicationBuilder builder)
       {
-            var jwtKey = builder.Configuration["JwtKey:Key"];
-            var key = Encoding.ASCII.GetBytes(jwtKey);
+            // JWT Authentication setup
+            var key = Encoding.ASCII.GetBytes(builder.Configuration["JwtKey:Key"]);
 
-            builder.Services.AddAuthentication(x =>
+            builder.Services.AddAuthentication(options =>
             {
-                  x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                  x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
+                  options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                  options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
             {
-                  x.RequireHttpsMetadata = false;
-                  x.SaveToken = true;
-                  x.TokenValidationParameters = new TokenValidationParameters
+                  options.RequireHttpsMetadata = false;
+                  options.SaveToken = true;
+                  options.TokenValidationParameters = new TokenValidationParameters
                   {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = false,
                         ValidateAudience = false,
-                        ClockSkew = TimeSpan.Zero
+                        ClockSkew = TimeSpan.Zero // Optional: to avoid clock skew issues
                   };
             });
 

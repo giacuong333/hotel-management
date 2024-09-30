@@ -29,11 +29,12 @@ import SignIn from './components/Authentication/SignIn';
 import { useUser } from './providers/UserProvider';
 
 import RoomDetail from './components/Customer/Home/RoomDetail';
+import Rooms from './components/Customer/Rooms';
 
 function App() {
     const { user } = useUser();
     const isAuthenticated = user !== null;
-    const isCustomer = user?.roleId === 2;
+    const isCustomer = user?.roleId === 4;
 
     return (
         <BrowserRouter>
@@ -50,6 +51,7 @@ function App() {
                     // Customer
                     <Route path="/" element={<CustomerLayout />}>
                         <Route index element={<CustomerHome />} />
+                        <Route path="/rooms" element={<Rooms />} />
                         <Route path="/room/:id" element={<RoomDetail />} />
                     </Route>
                 ) : (
