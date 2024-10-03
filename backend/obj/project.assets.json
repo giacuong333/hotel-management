@@ -1409,11 +1409,16 @@
     ]
   },
   "packageFolders": {
+<<<<<<< HEAD
     "C:\\Users\\84967\\.nuget\\packages\\": {}
+=======
+    "C:\\Users\\dinhv\\.nuget\\packages\\": {}
+>>>>>>> 13f0bb54ec9e38d035dbed665fa143538bc9503a
   },
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "C:\\HocReact\\hotel-management\\backend\\backend.csproj",
       "projectName": "backend",
       "projectPath": "C:\\HocReact\\hotel-management\\backend\\backend.csproj",
@@ -1422,6 +1427,16 @@
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\84967\\AppData\\Roaming\\NuGet\\NuGet.Config",
+=======
+      "projectUniqueName": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj",
+      "projectName": "backend",
+      "projectPath": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj",
+      "packagesPath": "C:\\Users\\dinhv\\.nuget\\packages\\",
+      "outputPath": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\dinhv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+>>>>>>> 13f0bb54ec9e38d035dbed665fa143538bc9503a
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1429,6 +1444,10 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+<<<<<<< HEAD
+=======
+        "C:\\Program Files\\dotnet\\library-packs": {},
+>>>>>>> 13f0bb54ec9e38d035dbed665fa143538bc9503a
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1495,7 +1514,11 @@
             "privateAssets": "all"
           }
         },
+<<<<<<< HEAD
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+=======
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+>>>>>>> 13f0bb54ec9e38d035dbed665fa143538bc9503a
       }
     }
   },
