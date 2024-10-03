@@ -8,15 +8,15 @@ namespace backend.Models
       {
             public RoomModel() { }
 
-            public RoomModel(int? id, byte[]? thumbnail, string? name, string? description, int? bedNum, int? maxNum, bool? isFull, float? price, int? area, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt)
+            public RoomModel(int? id, byte[]? thumbnail, string? name, string? description, int? bedNum, int? status, float? price, int? area, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt)
             {
                   Id = id;
                   Thumbnail = thumbnail;
                   Name = name;
                   Description = description;
                   BedNum = bedNum;
-                  MaxNum = maxNum;
-                  IsFull = isFull;
+                  Status = status;
+                
                   Price = price;
                   Area = area;
                   CreatedAt = createdAt;
@@ -30,8 +30,8 @@ namespace backend.Models
             public string? Name { get; set; }
             public string? Description { get; set; }
             public int? BedNum { get; set; }
-            public int? MaxNum { get; set; }
-            public bool? IsFull { get; set; }
+            public int? Status { get; set; }
+     
             public float? Price { get; set; }
             public int? Area { get; set; }
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
