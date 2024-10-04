@@ -1,197 +1,256 @@
-import Table from 'react-bootstrap/Table';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 import DataTable from 'react-data-table-component';
 
-import { FaEye } from 'react-icons/fa';
-import { MdDelete } from 'react-icons/md';
+import { FiEdit } from 'react-icons/fi';
+import { BsTrash } from 'react-icons/bs';
+import { FaSortAlphaDownAlt } from 'react-icons/fa';
+import { IoSearchOutline } from 'react-icons/io5';
+import { FiPlus } from 'react-icons/fi';
 
-const Review = () => {
-    const [show, setShow] = useState(false);
+import PopupPanel from './ReviewForm';
+import ToastContainer, { showToast } from '~/utils/showToast';
+import FormGroup from '~/components/FormGroup';
+import ConfirmPopup from '~/components/ConfirmPopup';
+import { useUser } from '~/providers/UserProvider';
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+const columns = [
+    {
+        name: 'No',
+        selector: (row) => row.no,
+    },
+    {
+        name: 'UserId',
+        selector: (row) => row.userId,
+        sortable: true,
+    },
+    {
+        name: 'RoomId',
+        selector: (row) => row.roomId,
+    },
+    {
+        name: 'Comment',
+        selector: (row) => row.comment,
+    },
+    {
+        name: 'Create time',
+        selector: (row) => row.createdAt,
+    },
+    {
+        name: 'Actions',
+        selector: (row) => row.actions,
+    },
+];
 
-    const handeleDelete = (id) => {
-        if (window.confirm('Are you sure to delete ')) {
-            alert('delete');
+const User = () => {
+    const [showPanel, setShowPanel] = useState('');
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
+    const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
+
+    const [searchInput, setSearchInput] = useState('');
+    const [searchedUsers, setSearchedUsers] = useState([]);
+
+    const { user } = useUser();
+
+    // For deleting
+    useEffect(() => {
+        const deleteAllUsers = async () => {
+            try {
+                // Create payload for deletion
+                const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
+
+                const response = await axios.delete('http://localhost:5058/user', { data: payload });
+                console.log(response);
+                if (response?.status === 200) {
+                    showToast(response?.data?.message, 'success');
+                    reset();
+                    setUsers(response?.data?.newUsers?.$values);
+                    setSearchedUsers(response?.data?.newUsers?.$values);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        if (deleteAll.yes) deleteAllUsers();
+    }, [deleteAll.yes, deleteAll.payload, user.id]); // Include user.id in dependencies
+
+    // For searching
+    useEffect(() => {
+        if (searchInput.trim() === '') {
+            // If search input is empty, show all users
+            setSearchedUsers(users);
+        } else {
+            // Otherwise, filter users based on search input
+            const filteredUsers = users.filter(
+                (user) =>
+                    user.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+                    user.email.toLowerCase().includes(searchInput.toLowerCase()) ||
+                    user.phoneNumber.toLowerCase().includes(searchInput.toLowerCase()),
+            );
+            setSearchedUsers(filteredUsers);
+        }
+    }, [searchInput, users]);
+
+    // For fetching
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get('http://localhost:5058/review', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.status === 200) {
+                    setUsers(response.data.$values || []);
+                    setSearchedUsers(response.data.$values || []);
+                }
+            } catch (error) {
+                console.log('Error fetching users:', error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    const handleTrashClicked = useCallback(async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:5058/review/${id}`);
+            if (response.status === 200) {
+                showToast(response?.data?.message, 'success');
+                setUsers((prev) => prev.filter((user) => user.id !== id));
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            showToast(error?.response?.data?.message || 'Error deleting user', 'error');
+        }
+    }, []);
+
+    const handleEditClicked = (user) => {
+        setSelectedUser(user);
+        setShowPanel('edit');
+    };
+
+    const handleAddClicked = async () => {
+        setShowPanel('add');
+    };
+
+    const handleRowClicked = useCallback(async (e) => {
+        const { id } = e;
+        try {
+            const response = await axios.get(`http://localhost:5058/review/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.status === 200) {
+                setSelectedUser(response.data);
+                setShowPanel('see');
+            }
+        } catch (error) {
+            console.error('Error fetching user details:', error);
+        }
+    }, []);
+
+    const handleSelectedRowsChanged = ({ allSelected, selectedCount, selectedRows }) => {
+        setDeleteAll({ count: selectedCount, payload: selectedRows });
+    };
+
+    const handleDeleteRowsSelected = () => {
+        if (deleteAll.count !== 0) {
+            setShowDeleteAllConfirm(true);
         }
     };
 
-    const columns = [
-        {
-            name: '#',
-            selector: (row, index) => index + 1,
-        },
-        {
-            name: 'UserId',
-            selector: (row) => row.userId,
-            sortable: true,
-        },
-        {
-            name: 'RoomId',
-            selector: (row) => row.roomId,
-            sortable: true,
-        },
-        {
-            name: 'Description',
-            selector: (row) => row.description,
-            sortable: true,
-        },
-        {
-            name: 'Status',
-            selector: (row) => (
-                <div className="flex-center">
-                    <button className={`btn ${row.status === 1 ? 'btn-primary' : 'btn-danger'}`} disabled>
-                        {row.status === 1 ? 'Handle' : 'Pending'}
-                    </button>
-                </div>
-            ),
-            sortable: true,
-        },
+    const reset = () => {
+        setDeleteAll({ count: 0, payload: [], yes: false });
+        setShowDeleteAllConfirm(false);
+    };
 
-        {
-            name: 'Action',
-            cell: (row) => (
-                <div>
-                    <button className="btn btn-primary" disabled={row.status === 0} onClick={handleShow}>
-                        <FaEye />
-                    </button>
-                    &nbsp;
-                    <button className="btn btn-danger" onClick={() => handeleDelete()}>
-                        <MdDelete />
-                    </button>
-                </div>
-            ),
-        },
-    ];
+    const data = searchedUsers?.map((user, index) => ({
+        id: user.id,
+        no: index + 1,
+        userId: user.userId,
+        roomId: user.roomId,
+        comment: user.comment,
 
-    const empdata = [
-        {
-            id: 1,
-            userId: 1,
-            roomId: 23,
-            description: 1,
-            status: 1,
-        },
-        {
-            id: 2,
-            userId: 1,
-            roomId: 1,
-            description: 'sadasdasd',
-            status: 1,
-        },
-        {
-            id: 3,
-            userId: 2,
-            roomId: 2,
-            description: 'sadasd',
-            status: 1,
-        },
-    ];
+        createdAt: new Date(user.createdAt).toLocaleString(),
+        actions: (
+            <>
+                {/* <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} /> */}
+                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+            </>
+        ),
+    }));
 
-    const [data, setData] = useState([]);
-    useEffect(() => {
-        // getData();
-        setData(empdata);
-    }, []);
-
-    function handleFilter(event) {
-        const newdata = empdata.filter((row) => {
-            return row.userId.toString().includes(event.target.value);
-        });
-        setData(newdata);
-    }
     return (
-        <Fragment>
-            <ToastContainer />
-
-            {/* table */}
-            <nav class="navbar navbar-light bg-light justify-content-between  p-3 ">
-                <p class="navbar-brand">Review</p>
-                <form class="form-inline mr-2">
-                    <input
-                        class="form-control "
-                        type="search"
-                        placeholder="Search"
-                        aria-label="Search"
-                        onChange={handleFilter}
+        <div>
+            <div className="d-flex align-items-center justify-content-between w-full py-4">
+                {deleteAll.count === 0 ? (
+                    <FiPlus
+                        size={30}
+                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                        onClick={handleAddClicked}
                     />
-                </form>
-            </nav>
+                ) : (
+                    <BsTrash
+                        size={30}
+                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                        onClick={handleDeleteRowsSelected}
+                    />
+                )}
 
-            <DataTable columns={columns} data={data} pagination highlightOnHover />
-
-            {/* Modal */}
-
-            <Modal show={show} onHide={handleClose} animation={false}>
-                <Modal.Header closeButton>
-                    <Modal.Title> Detail Review</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <form>
-                        <div class="form-group">
-                            <label for="userid">UserId:</label>
-                            <input type="text" class="form-control" value={'1'} id="userid" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label for="username">UserName:</label>
-                            <input type="text" value={'Nguyen son dong'} class="form-control" id="username" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone:</label>
-                            <input type="text" class="form-control" value={'0912345678'} id="phone" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label for="gamil">Gmail:</label>
-                            <input type="text" value={'HapHoang@mgail.com'} class="form-control" id="gmail" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label for="roomid">RoomId:</label>
-                            <input type="text" value={'232 A'} class="form-control" id="roomid" disabled />
-                        </div>
-                        <div class="form-group">
-                            <label for="desciption">Desciption:</label>
-                            <textarea type="text" class="form-control" id="desciption" value={'Good'} disabled>
-                                {' '}
-                            </textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="created">Created-At:</label>
-                            <input type="text" class="form-control" id="create" value={'23/1/2003'} disabled />
-                        </div>
-
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select class="form-control" id="status">
-                                <option>Handle</option>
-                                <option>Panding</option>
-                            </select>
-                        </div>
-                    </form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary">Save </Button>
-                </Modal.Footer>
-            </Modal>
-        </Fragment>
+                <FormGroup
+                    id="search"
+                    name="search"
+                    type="text"
+                    placeHolder="Search..."
+                    Icon={IoSearchOutline}
+                    customParentInputStyle="pe-2 rounded-1"
+                    onChange={(e) => setSearchInput(e.target.value)}
+                />
+            </div>
+            <>
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    selectableRows
+                    striped
+                    highlightOnHover
+                    pagination
+                    sortIcon={<FaSortAlphaDownAlt />}
+                    onRowClicked={handleRowClicked}
+                    onSelectedRowsChange={handleSelectedRowsChanged}
+                />
+                <>
+                    {ToastContainer}
+                    {showPanel && (
+                        <PopupPanel
+                            data={selectedUser}
+                            type={showPanel}
+                            onClose={() => setShowPanel(false)}
+                            isShowed={showPanel}
+                        />
+                    )}
+                    {showDeleteAllConfirm && (
+                        <ConfirmPopup
+                            header="Are you sure you want to delete all the selected users?"
+                            message="This action cannot be undone."
+                            negativeChoice="Cancel"
+                            positiveChoice="Delete"
+                            isShow={showDeleteAllConfirm}
+                            onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                            onClose={() => setShowDeleteAllConfirm(false)}
+                        />
+                    )}
+                </>
+            </>
+        </div>
     );
 };
 
-export default Review;
+export default User;
