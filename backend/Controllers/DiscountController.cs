@@ -26,7 +26,13 @@ namespace backend.Controllers
         {
             try
             {
-                var discounts = await context.Discount.ToListAsync();
+                var discounts = await context.Discount.Where(d => d.Status == true).ToListAsync();
+
+                if (discounts == null)
+                {
+                    return NotFound(new { message = "Discounts not found." });
+                }
+
                 return Ok(discounts);
             }
             catch (Exception e)
