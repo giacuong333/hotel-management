@@ -6,6 +6,8 @@ namespace backend.Models
 {
       public class RoomModel
       {
+
+
             public RoomModel() { }
 
             public RoomModel(int? id, byte[]? thumbnail, string? name, string? description, int? bedNum, int? status, float? price, int? area, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt)

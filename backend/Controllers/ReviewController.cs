@@ -37,7 +37,7 @@ namespace backend.Controllers
             {
                   try
                   {
-                        var reviews = await _context.Review                
+                        var reviews = await _context.Review.Where(r => r.DeletedAt == null)
                               .Include(r => r.Users).Include(r => r.Rooms)
                               .ToListAsync();
 
@@ -118,8 +118,8 @@ namespace backend.Controllers
                 {
                     return NotFound(new { message = "Review not found." });
                 }
+                review.DeletedAt = DateTime.UtcNow;
 
-              
 
                 await _context.SaveChangesAsync();
 
