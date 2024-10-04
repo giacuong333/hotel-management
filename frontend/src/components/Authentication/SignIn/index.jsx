@@ -49,7 +49,7 @@ const SignIn = () => {
                 if (response && response.status === 200) {
                     showToast(response.data.message, 'success');
                     setTimeout(() => {
-                        if (response?.data?.user?.roleId === 2) navigate('/');
+                        if (response?.data?.user?.roleId === 4) navigate('/');
                         else navigate('/admin');
                     }, 2000);
                 }

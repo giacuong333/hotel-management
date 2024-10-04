@@ -9,11 +9,12 @@ import { FaSortAlphaDownAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { FiPlus } from 'react-icons/fi';
 
-import PopupPanel from './UserForm';
+import UserForm from './UserForm';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import { useUser } from '~/providers/UserProvider';
+import Button from 'react-bootstrap/Button';
 
 const columns = [
     {
@@ -42,6 +43,10 @@ const columns = [
         selector: (row) => row.createdAt,
     },
     {
+        name: 'Authorize',
+        selector: (row) => row.authorize,
+    },
+    {
         name: 'Actions',
         selector: (row) => row.actions,
     },
@@ -51,15 +56,18 @@ const User = () => {
     const [showPanel, setShowPanel] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
+
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
+    const [deleteOne, setDeleteOne] = useState({ payload: null });
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const [searchInput, setSearchInput] = useState('');
     const [searchedUsers, setSearchedUsers] = useState([]);
 
     const { user } = useUser();
 
-    // For deleting
+    // For deleting selected users
     useEffect(() => {
         const deleteAllUsers = async () => {
             try {
@@ -70,17 +78,18 @@ const User = () => {
                 console.log(response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
-                    reset();
                     setUsers(response?.data?.newUsers?.$values);
                     setSearchedUsers(response?.data?.newUsers?.$values);
                 }
             } catch (error) {
                 console.log(error);
+            } finally {
+                reset();
             }
         };
 
         if (deleteAll.yes) deleteAllUsers();
-    }, [deleteAll.yes, deleteAll.payload, user.id]); // Include user.id in dependencies
+    }, [deleteAll.yes, deleteAll.payload]); // Include user.id in dependencies
 
     // For searching
     useEffect(() => {
@@ -121,26 +130,42 @@ const User = () => {
         fetchUsers();
     }, []);
 
-    const handleTrashClicked = useCallback(async (id) => {
+    const handleTrashClicked = (id) => {
+        setDeleteOne({ payload: id });
+        setShowDeleteConfirm(true);
+    };
+
+    // Delete a user
+    const deleteUser = async (payload) => {
         try {
-            const response = await axios.delete(`http://localhost:5058/user/${id}`);
+            const response = await axios.delete(`http://localhost:5058/user/${payload}`);
             if (response.status === 200) {
                 showToast(response?.data?.message, 'success');
-                setUsers((prev) => prev.filter((user) => user.id !== id));
+                setUsers((prev) => prev.filter((user) => user.id !== payload));
+                setSearchInput('');
             }
         } catch (error) {
             console.error('Error deleting user:', error);
-            showToast(error?.response?.data?.message || 'Error deleting user', 'error');
+            if (error?.response?.status === 403) {
+                showToast(error?.response?.data?.message, 'error');
+            } else if (error?.response?.status === 401) {
+                showToast('You need to log in', 'error');
+            } else {
+                showToast(error?.response?.data?.message || 'Error deleting user', 'error');
+            }
+        } finally {
+            reset();
         }
-    }, []);
+    };
 
     const handleEditClicked = (user) => {
         setSelectedUser(user);
         setShowPanel('edit');
     };
 
-    const handleAddClicked = async () => {
+    const handleAddClicked = () => {
         setShowPanel('add');
+        setSelectedUser(null);
     };
 
     const handleRowClicked = useCallback(async (e) => {
@@ -165,14 +190,28 @@ const User = () => {
     };
 
     const handleDeleteRowsSelected = () => {
-        if (deleteAll.count !== 0) {
-            setShowDeleteAllConfirm(true);
-        }
+        deleteAll.count !== 0 && setShowDeleteAllConfirm(true);
+    };
+
+    const handleUserAdded = (newUser) => {
+        setUsers((prevUsers) => [...prevUsers, newUser]);
+        setSearchedUsers((prevUsers) => [...prevUsers, newUser]);
+    };
+
+    const handleUserUpdated = (currentUser) => {
+        setUsers((prevUsers) =>
+            prevUsers.map((prevUser) => (prevUser.id === currentUser.id ? { ...currentUser } : prevUser)),
+        );
+        setSearchedUsers((prevUsers) =>
+            prevUsers.map((prevUser) => (prevUser.id === currentUser.id ? { ...currentUser } : prevUser)),
+        );
     };
 
     const reset = () => {
         setDeleteAll({ count: 0, payload: [], yes: false });
         setShowDeleteAllConfirm(false);
+        setDeleteOne({ payload: null });
+        setShowDeleteConfirm(false);
     };
 
     const data = searchedUsers?.map((user, index) => ({
@@ -183,6 +222,16 @@ const User = () => {
         phoneNumber: user.phoneNumber,
         roleName: user?.roles?.name,
         createdAt: new Date(user.createdAt).toLocaleString(),
+        authorize: (
+            <Button
+                type="button"
+                variant="primary"
+                className={`w-full p-1 customer-primary-button bg-hover-white text-hover-black`}
+                // onClick={handleAuthorize}
+            >
+                Authorize
+            </Button>
+        ),
         actions: (
             <>
                 <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
@@ -211,6 +260,7 @@ const User = () => {
                 <FormGroup
                     id="search"
                     name="search"
+                    value={searchInput}
                     type="text"
                     placeHolder="Search..."
                     Icon={IoSearchOutline}
@@ -230,28 +280,46 @@ const User = () => {
                     onRowClicked={handleRowClicked}
                     onSelectedRowsChange={handleSelectedRowsChanged}
                 />
-                <>
-                    {ToastContainer}
-                    {showPanel && (
-                        <PopupPanel
-                            data={selectedUser}
-                            type={showPanel}
-                            onClose={() => setShowPanel(false)}
-                            isShowed={showPanel}
-                        />
-                    )}
-                    {showDeleteAllConfirm && (
-                        <ConfirmPopup
-                            header="Are you sure you want to delete all the selected users?"
-                            message="This action cannot be undone."
-                            negativeChoice="Cancel"
-                            positiveChoice="Delete"
-                            isShow={showDeleteAllConfirm}
-                            onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                            onClose={() => setShowDeleteAllConfirm(false)}
-                        />
-                    )}
-                </>
+                {/* Show a toast */}
+                {ToastContainer}
+
+                {/* Show Form */}
+                {showPanel && (
+                    <UserForm
+                        data={selectedUser}
+                        type={showPanel}
+                        isShowed={showPanel}
+                        onClose={() => setShowPanel(false)}
+                        onUserAdded={handleUserAdded}
+                        onUserUpdated={handleUserUpdated}
+                    />
+                )}
+
+                {/* Show confirmation when clicking on delete all users */}
+                {showDeleteAllConfirm && (
+                    <ConfirmPopup
+                        header="Are you sure you want to delete all the selected users?"
+                        message="This action cannot be undone."
+                        negativeChoice="Cancel"
+                        positiveChoice="Delete"
+                        isShow={showDeleteAllConfirm}
+                        onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                        onClose={() => setShowDeleteAllConfirm(false)}
+                    />
+                )}
+
+                {/* Show confirmation when clicking on delete a user*/}
+                {showDeleteConfirm && (
+                    <ConfirmPopup
+                        header="Are you sure you want to delete the selected user?"
+                        message="This action cannot be undone."
+                        negativeChoice="Cancel"
+                        positiveChoice="Delete"
+                        isShow={showDeleteConfirm}
+                        onYes={() => deleteUser(deleteOne.payload)}
+                        onClose={reset}
+                    />
+                )}
             </>
         </div>
     );

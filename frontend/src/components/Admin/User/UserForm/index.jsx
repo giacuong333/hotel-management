@@ -1,38 +1,144 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-import { IoClose } from 'react-icons/io5';
 import FormGroup from '~/components/FormGroup';
 import Overlay from '~/components/Overlay';
+import Button from 'react-bootstrap/Button';
+import ToastContainer, { showToast } from '~/utils/showToast';
 
 import { FaRegUser } from 'react-icons/fa6';
 import { MdOutlineEmail } from 'react-icons/md';
 import { MdLockOutline } from 'react-icons/md';
 import { FiPhone } from 'react-icons/fi';
+import { IoClose } from 'react-icons/io5';
 
-import Button from 'react-bootstrap/Button';
+import { useRole } from '~/providers/RoleProvider';
+import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
 
-const PopupPanel = ({ data, type, onClose, isShowed }) => {
+const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed }) => {
+    const { roles } = useRole();
     const [fields, setFields] = useState({
-        name: '',
-        email: '',
-        password: '',
-        phoneNumber: '',
-        gender: '',
-        dob: '',
-        roleId: '',
-        firstBook: '',
-        avatar: '',
+        name: data?.name || '',
+        email: data?.email || '',
+        password: data?.password || '',
+        retypePassword: '',
+        phoneNumber: data?.phoneNumber || '',
+        gender: data?.gender || '',
+        dob: data?.dob ? new Date(data?.dob) : null,
+        roleId: data?.roleId || '',
     });
+    const [isPasswordChanged, setIsPasswordChanged] = useState(false);
+    const [errors, setErrors] = useState({});
 
-    const handleInputChanged = () => {};
+    // Reset form fields whenever `type` or `data` changes
+    useEffect(() => {
+        setFields({
+            name: data?.name || '',
+            email: data?.email || '',
+            password: '',
+            retypePassword: '',
+            phoneNumber: data?.phoneNumber || '',
+            gender: data?.gender || '',
+            dob: data?.dob ? new Date(data?.dob) : null,
+            roleId: data?.roleId || '',
+        });
+        setErrors({});
+    }, [type, data]);
 
-    const handleInputBlured = () => {};
+    const handleValidation = () => {
+        const validationErrors = {};
 
-    const handleInputTyped = () => {};
+        if (isEmpty(fields.name)) validationErrors.name = 'Name is required';
+        if (isEmpty(fields.email)) validationErrors.email = 'Email is required';
+        else if (!isEmail(fields.email)) validationErrors.email = 'Email is invalid';
+        if (isEmpty(fields.password) && type === 'add') validationErrors.password = 'Password is required';
+        if (!isVerifyPassword(fields.password, fields.retypePassword))
+            validationErrors.retypePassword = 'Password does not match';
+        if (isEmpty(fields.phoneNumber)) validationErrors.phoneNumber = 'Phone number is required';
+        else if (!isPhoneNumber(fields.phoneNumber)) validationErrors.phoneNumber = 'Email is invalid';
+        if (isEmpty(fields.gender)) validationErrors.gender = 'Gender is required';
+        if (!isValidDate(fields.dob)) validationErrors.dob = 'Date of birth is required';
+        if (isEmpty(fields.roleId)) validationErrors.roleId = 'Role is required';
+
+        setErrors(validationErrors);
+
+        return Object.keys(validationErrors).length === 0;
+    };
+
+    const handleSubmitClicked = async (e) => {
+        e.preventDefault();
+
+        const apiUrl = 'http://localhost:5058/user';
+
+        if (handleValidation()) {
+            const payload = { ...fields };
+
+            try {
+                if (type === 'add') {
+                    const response = await axios.post(`${apiUrl}/register`, payload);
+                    console.log(response);
+                    if (response?.status === 201) {
+                        showToast('User created successfully', 'success');
+                        setTimeout(handleClose, 4000);
+                        onUserAdded(response?.data?.newUser);
+                    }
+                } else if (type === 'edit') {
+                    const response = await axios.put(`${apiUrl}/${data?.id}`, payload);
+                    console.log(response);
+                    if (response?.status === 200) {
+                        showToast(response?.data?.obj?.message, 'success');
+                        setTimeout(handleClose, 4000);
+                        onUserUpdated(response?.data?.obj?.currentUser);
+                    }
+                }
+            } catch (error) {
+                if (error?.status === 409) {
+                    showToast(error?.response?.data?.obj?.message, 'error');
+                } else {
+                    showToast(error?.message, 'error');
+                }
+                console.log(error);
+            }
+        }
+    };
+
+    const handleClose = () => {
+        setErrors({});
+        setFields({
+            name: '',
+            email: '',
+            password: '',
+            retypePassword: '',
+            phoneNumber: '',
+            gender: '',
+            dob: null,
+            roleId: '',
+        });
+        onClose();
+    };
+
+    const handleFieldChange = (field, value) => {
+        if (field === 'password' && !isEmpty(value)) setIsPasswordChanged(true);
+        else if (field === 'retypePassword') setIsPasswordChanged(true);
+        else if (field === 'password' && isEmpty(value)) setIsPasswordChanged(false);
+
+        setFields((prevFields) => ({
+            ...prevFields,
+            [field]: value,
+        }));
+    };
+
+    const handleFieldInput = (field) => {
+        setErrors((prevErrors) => ({
+            ...prevErrors,
+            [field]: '',
+        }));
+    };
 
     return (
         <>
-            <Overlay isShow={isShowed} onClose={onClose} />
+            {ToastContainer}
+            <Overlay isShow={isShowed} onClose={handleClose} />
             <div
                 style={{
                     width: '500px',
@@ -55,7 +161,7 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                 >
                     <div className="d-flex align-items-center justify-content-between">
                         <p className="fw-semibold fs-5 text-start text-capitalize">Details</p>
-                        <IoClose size={28} className="cursor-pointer" onClick={onClose} />
+                        <IoClose size={28} className="cursor-pointer" onClick={handleClose} />
                     </div>
                     <div
                         className="hide-scrollbar w-full h-full pb-4"
@@ -68,140 +174,166 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             id="name"
                             name="name"
                             type="text"
-                            // error={error}
+                            error={errors.name}
                             Icon={FaRegUser}
-                            value={type !== 'add' ? data?.name : ''}
+                            value={fields?.name}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
+                            onChange={(e) => handleFieldChange('name', e.target.value)}
+                            onInput={() => handleFieldInput('name')}
+                            // onBlur={() => handleValidation()}
                         />
                         <FormGroup
                             label="Email"
                             id="email"
                             name="email"
                             type="email"
-                            // error={error}
+                            error={errors.email}
                             Icon={MdOutlineEmail}
-                            value={type !== 'add' ? data?.email : ''}
+                            value={fields?.email}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
+                            onChange={(e) => handleFieldChange('email', e.target.value)}
+                            onInput={() => handleFieldInput('email')}
+                            // onBlur={handleInputBlured}
                         />
                         <FormGroup
                             label="Password"
                             id="password"
                             name="password"
                             type="password"
-                            // error={error}
+                            error={errors.password}
                             Icon={MdLockOutline}
-                            value={type !== 'add' ? data?.password : ''}
+                            value={fields?.password}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
+                            onChange={(e) => handleFieldChange('password', e.target.value)}
+                            onInput={() => handleFieldInput('password')}
+                            // onBlur={handleInputBlured}
                         />
+                        {(type === 'add' || isPasswordChanged) && (
+                            <FormGroup
+                                label="Retype-password"
+                                id="retypePassword"
+                                name="retypePassword"
+                                type="password"
+                                error={errors.retypePassword}
+                                Icon={MdLockOutline}
+                                value={fields?.retypePassword}
+                                disabled={type === 'see'}
+                                customParentInputStyle="p-1 pe-3 rounded-2"
+                                customParentParentInputStyle="mt-2"
+                                onChange={(e) => handleFieldChange('retypePassword', e.target.value)}
+                                onInput={() => handleFieldInput('retypePassword')}
+                                // onBlur={handleInputBlured}
+                            />
+                        )}
                         <FormGroup
                             label="Phone number"
                             id="phonenumber"
                             name="phoneNumber"
                             type="text"
-                            // error={error}
+                            error={errors.phoneNumber}
                             Icon={FiPhone}
-                            value={type !== 'add' ? data?.phoneNumber : ''}
+                            value={fields?.phoneNumber}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
+                            onChange={(e) => handleFieldChange('phoneNumber', e.target.value)}
+                            onInput={() => handleFieldInput('phoneNumber')}
+                            // onBlur={handleInputBlured}
                         />
                         <FormGroup
                             label="Gender"
                             id="gender"
                             name="gender"
                             type="select"
-                            // error={error}
+                            error={errors.gender}
                             // Icon={icon}
-                            value={type !== 'add' ? data?.gender : '' || 'NULL'}
+                            value={fields?.gender}
                             disabled={type === 'see'}
                             options={[
+                                { label: '----', value: '' },
                                 { label: 'Male', value: 'male' },
                                 { label: 'Female', value: 'female' },
-                                { label: 'Other', value: 'other' },
-                                { label: 'Prefer not to say', value: 'NULL' },
                             ]}
+                            customInputStyle="cursor-pointer"
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
+                            onChange={(e) => {
+                                handleFieldChange('gender', e.target.value);
+                                handleFieldInput('gender');
+                            }}
+                            // onSelect={() => handleFieldInput('gender')}
+                            // onBlur={handleInputBlured}
                         />
                         <FormGroup
                             label="Date of birth"
                             id="dob"
                             name="dob"
-                            type="text"
-                            // error={error}
+                            type="datetime"
+                            error={errors.dob}
                             // Icon={icon}
-                            value={type !== 'add' ? data?.dob : data?.dob === null ? 'NULL' : data?.roles?.name}
+                            value={fields?.dob}
                             disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
+                            customInputStyle="py-2 cursor-pointer"
+                            customParentInputStyle="p-1 px-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
+                            onChange={(date) => {
+                                handleFieldChange('dob', date);
+                                handleFieldInput('dob');
+                            }}
+                            // onSelect={() => handleFieldInput('dob')}
+                            // onBlur={handleInputBlured}
                         />
                         <FormGroup
                             label="Role"
                             id="roleId"
                             name="roleId"
-                            type="text"
-                            // error={error}
+                            type="select"
+                            error={errors.roleId}
                             // Icon={icon}
-                            value={
-                                type !== 'add'
-                                    ? data?.roles?.name
-                                    : data?.roles?.name === null
-                                    ? 'NULL'
-                                    : data?.roles?.name
-                            }
+                            value={fields?.roleId}
                             disabled={type === 'see'}
+                            options={roles?.map((role, index) => {
+                                if (index === 0) {
+                                    return { label: '----', value: '' };
+                                }
+                                return { label: role?.name, value: role?.id };
+                            })}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
+                            onChange={(e) => {
+                                handleFieldChange('roleId', Number(e.target.value));
+                                handleFieldInput('roleId');
+                            }}
+                            // onInput={() => handleFieldInput('roleId')}
+                            // onBlur={handleInputBlured}
                         />
-                        <FormGroup
-                            label="Create time"
-                            id="createdAt"
-                            name="createdAt"
-                            type="text"
-                            // error={error}
-                            // Icon={icon}
-                            value={type !== 'add' ? data?.createdAt : ''}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
-                        />
+                        {type === 'see' && (
+                            <FormGroup
+                                label="Create time"
+                                id="createdAt"
+                                name="createdAt"
+                                type="text"
+                                // error={error}
+                                // Icon={icon}
+                                value={type !== 'add' ? data?.createdAt : ''}
+                                disabled={type === 'see'}
+                                customParentInputStyle="p-1 pe-3 rounded-2"
+                                customParentParentInputStyle="mt-2"
+                            />
+                        )}
                         {type !== 'see' && (
                             <div className="d-flex align-items-center gap-2 mt-4">
                                 <Button
                                     type="submit"
                                     variant="outline-secondary"
                                     className={`w-full p-2 primary-bg-color primary-bg-color-hover border`}
-                                    onClick={onClose}
+                                    onClick={handleClose}
                                 >
                                     Cancel
                                 </Button>
@@ -209,6 +341,7 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                                     type="submit"
                                     variant="primary"
                                     className={`w-full p-2 customer-primary-button`}
+                                    onClick={handleSubmitClicked}
                                 >
                                     Submit
                                 </Button>
@@ -221,4 +354,4 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
     );
 };
 
-export default PopupPanel;
+export default UserForm;

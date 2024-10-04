@@ -30,11 +30,14 @@ import { useUser } from './providers/UserProvider';
 
 import RoomDetail from './components/Customer/Home/RoomDetail';
 import Rooms from './components/Customer/Rooms';
+import RoleProvider from './providers/RoleProvider';
 
 function App() {
     const { user } = useUser();
     const isAuthenticated = user !== null;
     const isCustomer = user?.roleId === 4;
+
+    console.log('RoleId: ', user?.roleId);
 
     return (
         <BrowserRouter>
@@ -55,7 +58,7 @@ function App() {
                         <Route path="/room/:id" element={<RoomDetail />} />
                     </Route>
                 ) : (
-                    // If roleId != 2, move on to the admin page
+                    // If roleId != 4, move on to the admin page
                     isAuthenticated &&
                     !isCustomer && (
                         // Admin
@@ -70,11 +73,25 @@ function App() {
                             <Route path="permission" element={<Permission />} />
                             <Route path="receipt" element={<Receipt />} />
                             <Route path="review" element={<Review />} />
-                            <Route path="role" element={<Role />} />
+                            <Route
+                                path="role"
+                                element={
+                                    <RoleProvider>
+                                        <Role />
+                                    </RoleProvider>
+                                }
+                            />
                             <Route path="room" element={<Room />} />
                             <Route path="service" element={<Service />} />
                             <Route path="statistic" element={<Statistic />} />
-                            <Route path="user" element={<User />} />
+                            <Route
+                                path="user"
+                                element={
+                                    <RoleProvider>
+                                        <User />
+                                    </RoleProvider>
+                                }
+                            />
                         </Route>
                     )
                 )}

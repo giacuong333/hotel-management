@@ -87,15 +87,18 @@ h4 {
 
 .primary-bd-color-focus {
     transition: all 0.4s ease-in-out;
-}
-.primary-bd-color-focus:focus-within {
-    border: 1px solid var(--fourth-color) !important;
 
-    &.form-control,
-    &.form-select {
+    &:focus-within {
+        border: 1px solid var(--fourth-color) !important;
+    }
+
+    .form-control,
+    .form-select,
+    .react-datetime-picker,
+    .react-datetime-picker__wrapper {
         border: none !important;
-        background-color: transparent;
-        outline: none;
+        background-color: transparent !important;
+        outline: none !important;
     }
 }
 
@@ -111,6 +114,14 @@ h4 {
     &:hover {
         opacity: 0.8;
     }
+}
+
+.bg-hover-white:hover {
+    background-color: var(--white-color) !important;
+}
+
+.text-hover-black:hover {
+    color: #000 !important;
 }
 
 .customer-primary-color {
