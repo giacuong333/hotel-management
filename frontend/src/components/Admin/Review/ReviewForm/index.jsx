@@ -16,6 +16,7 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
         userid: '',
         username: '',
         roomid: '',
+        name: '',
         comment: '',
         status: '',
     });
@@ -60,7 +61,7 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                         }}
                     >
                         <FormGroup
-                            label="UserId"
+                            label="UserId:"
                             id="userid"
                             name="userid"
                             type="text"
@@ -75,7 +76,7 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             onBlur={handleInputBlured}
                         />
                         <FormGroup
-                            label="UserName"
+                            label="UserName:"
                             id="username"
                             name="username"
                             type="text"
@@ -89,23 +90,9 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             onInput={handleInputTyped}
                             onBlur={handleInputBlured}
                         />
+
                         <FormGroup
-                            label="UserId"
-                            id="userid"
-                            name="userid"
-                            type="text"
-                            // error={error}
-                            Icon={FaRegUser}
-                            value={type !== 'add' ? data?.userId : ''}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
-                        />
-                        <FormGroup
-                            label="RoomId"
+                            label="RoomId:"
                             id="roomid"
                             name="roomid"
                             type="text"
@@ -120,7 +107,22 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             onBlur={handleInputBlured}
                         />
                         <FormGroup
-                            label="Comment"
+                            label="Room Name:"
+                            id="nameroom"
+                            name="nameroom"
+                            type="text"
+                            // error={error}
+                            Icon={FaRegUser}
+                            value={type !== 'add' ? data?.rooms?.name : ''}
+                            disabled={type === 'see'}
+                            customParentInputStyle="p-1 pe-3 rounded-2"
+                            customParentParentInputStyle="mt-2"
+                            onChange={handleInputChanged}
+                            onInput={handleInputTyped}
+                            onBlur={handleInputBlured}
+                        />
+                        <FormGroup
+                            label="Comment:"
                             id="comment"
                             name="comment"
                             type="text"
@@ -134,9 +136,8 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             onInput={handleInputTyped}
                             onBlur={handleInputBlured}
                         />
-
                         <FormGroup
-                            label="Create time"
+                            label="Create time:"
                             id="createdAt"
                             name="createdAt"
                             type="text"
