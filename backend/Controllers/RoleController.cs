@@ -29,6 +29,12 @@ namespace backend.Controllers
                   try
                   {
                         var roles = await _context.Role.ToListAsync();
+
+                        if (roles == null)
+                        {
+                              return NotFound(new { message = "Roles not found" });
+                        }
+
                         return Ok(roles);
                   }
                   catch (Exception e)

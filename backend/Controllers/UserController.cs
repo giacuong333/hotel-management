@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace backend.Controllers
 {
@@ -91,7 +92,7 @@ namespace backend.Controllers
                               return BadRequest(ModelState);
                         }
 
-                        var user = await _context.User.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Email == value.Email);
+                        var user = await _context.User.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Email == value.Email && u.DeletedAt == null);
 
                         if (user == null)
                         {
@@ -126,8 +127,9 @@ namespace backend.Controllers
                         {
                               Subject = new ClaimsIdentity(new[]
                               {
-                                    new Claim(ClaimTypes.NameIdentifier, $"{user.Id}"), // Use NameIdentifier for user ID
+                                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Use NameIdentifier for user ID
                                     new Claim(ClaimTypes.Name, user.Name), // You can also include the user's name if needed
+                                    new Claim(ClaimTypes.Email, user.Email), // You can also include the user's name if needed
                                     new Claim(ClaimTypes.Role, user.Roles.Name),
                         }),
                               Expires = DateTime.UtcNow.AddHours(1),
@@ -221,7 +223,7 @@ namespace backend.Controllers
                         }
 
                         // Check if the email already exists
-                        var emailExists = await _context.User.AnyAsync(user => user.Email == value.Email);
+                        var emailExists = await _context.User.AnyAsync(user => (user.Email == value.Email) && user.DeletedAt == null);
                         if (emailExists)
                         {
                               return Conflict(new { message = "Email already exists" }); // 409 Conflict
@@ -235,7 +237,7 @@ namespace backend.Controllers
                         }
 
                         // Check if the phone number already exists
-                        var phoneExists = await _context.User.AnyAsync(user => user.PhoneNumber == value.PhoneNumber);
+                        var phoneExists = await _context.User.AnyAsync(user => user.PhoneNumber == value.PhoneNumber && user.DeletedAt == null);
                         if (phoneExists)
                         {
                               return Conflict(new { message = "Phone number already exists" }); // 409 Conflict
@@ -253,6 +255,8 @@ namespace backend.Controllers
                               Email = value.Email,
                               PhoneNumber = value.PhoneNumber,
                               Password = value.Password,
+                              Gender = value.Gender,
+                              Dob = value.Dob,
                               RoleId = value.RoleId,
                               FirstBook = value.FirstBook,
                               CreatedAt = DateTime.UtcNow
@@ -261,7 +265,7 @@ namespace backend.Controllers
                         await _context.User.AddAsync(newUser);
                         await _context.SaveChangesAsync();
 
-                        return StatusCode(201, new { message = "Sign up successfully" });
+                        return StatusCode(201, new { message = "Sign up successfully", newUser });
                   }
                   catch (DbUpdateException dbEx)
                   {
@@ -306,11 +310,49 @@ namespace backend.Controllers
             {
                   try
                   {
+                        var claimsIdentity = User.Identity as ClaimsIdentity;
+                        if (claimsIdentity == null)
+                        {
+                              return Unauthorized("User identity is null.");
+                        }
+
+                        var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                        if (userIdClaim == null)
+                        {
+                              return Unauthorized("User ID claim is missing.");
+                        }
+
+                        int loggingInId;
+                        try
+                        {
+                              loggingInId = int.Parse(userIdClaim.Value);
+                        }
+                        catch (Exception e)
+                        {
+                              return BadRequest("Invalid User ID in the claim.");
+                        }
+
+                        var userRoleClaim = claimsIdentity.FindFirst(ClaimTypes.Role);
+                        if (userRoleClaim != null && userRoleClaim.Value == "Manager")
+                        {
+                              Console.WriteLine("User is a Manager, skipping deletion.");
+                        }
+
                         var user = await _context.User.FindAsync(id);
 
                         if (user == null)
                         {
                               return NotFound(new { message = "User not found." });
+                        }
+
+                        if (user.RoleId == 1)
+                        {
+                              return StatusCode(403, new { message = "This user must not be deleted." });
+                        }
+
+                        if (user.Id == loggingInId)
+                        {
+                              return StatusCode(403, new { message = "You can not delete yourself." });
                         }
 
                         user.DeletedAt = DateTime.UtcNow;
@@ -326,7 +368,7 @@ namespace backend.Controllers
                   }
             }
 
-            // [GET] /user
+            // [DELETE] /user
             [HttpDelete]
             public async Task<ActionResult> DeleteUsers([FromBody] List<UserModel> users)
             {
@@ -400,5 +442,71 @@ namespace backend.Controllers
                   return Ok(new { message = "Users deleted successfully.", newUsers });
             }
 
+            // [PUT] /user
+            [HttpPut("{id}")]
+            [Produces("application/json")]
+            public async Task<ActionResult<ICollection<UserModel>>> EditUser([FromBody] UserModel payload, int id)
+            {
+                  try
+                  {
+                        if (!ModelState.IsValid)
+                        {
+                              return Util.BadRequestResponse("Missing data");
+                        }
+
+                        var currentUser = await _context.User.Include(u => u.Roles).FirstAsync(u => u.Id == id);
+                        if (currentUser == null)
+                        {
+                              return Util.NotFoundResponse("User not found");
+                        }
+
+                        // Check if the email already exists
+                        var emailExists = await _context.User.AnyAsync(user => (user.Email == payload.Email) && user.DeletedAt == null && user.Id != currentUser.Id);
+                        if (emailExists)
+                        {
+                              return Util.ConflictResponse("Email already exists");
+                        }
+
+                        // Check if the role exists
+                        var roleExists = await _context.Role.AnyAsync(role => role.Id == payload.RoleId);
+                        if (!roleExists)
+                        {
+                              payload.RoleId = 4; // Default role ID, can be moved to a config setting
+                        }
+
+                        // Check if the phone number already exists
+                        var phoneExists = await _context.User.AnyAsync(user => user.PhoneNumber == payload.PhoneNumber && user.DeletedAt == null && user.Id != currentUser.Id);
+                        if (phoneExists)
+                        {
+                              return Util.ConflictResponse("Phone number already exists");
+                        }
+
+                        // Hash the password
+                        payload.Password = Crypto.HashPassword(payload.Password);
+
+                        // Set FirstBook flag
+                        payload.FirstBook = true;
+
+                        currentUser.Name = payload.Name;
+                        currentUser.Email = payload.Email;
+                        currentUser.PhoneNumber = payload.PhoneNumber;
+                        currentUser.Password = payload.Password;
+                        currentUser.Gender = payload.Gender;
+                        currentUser.Dob = payload.Dob;
+                        currentUser.RoleId = payload.RoleId;
+                        currentUser.FirstBook = payload.FirstBook;
+                        currentUser.UpdatedAt = DateTime.UtcNow;
+
+                        _context.User.Update(currentUser);
+                        await _context.SaveChangesAsync();
+
+                        return Util.OkResponse(new { message = "User updated successfully", currentUser });
+                  }
+                  catch (Exception e)
+                  {
+                        Console.WriteLine(e);
+                        return Util.InternalServerErrorResponse("An unexpected error occured");
+                  }
+            }
       }
 }

@@ -1,5 +1,11 @@
 import React from 'react';
+
 import Form from 'react-bootstrap/Form';
+import DateTimePicker from 'react-datetime-picker';
+
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
 
 const FormGroup = ({
     label,
@@ -31,9 +37,11 @@ const FormGroup = ({
                         name={name}
                         value={value}
                         disabled={disabled}
+                        className={`outline-none primary-bd-color-focus border-0 bg-white ${
+                            customInputStyle ? customInputStyle : ''
+                        }`}
                         onChange={onChange}
-                        onBlur={onBlur}
-                        className={`outline-none primary-bd-color-focus border-0 bg-white ${customInputStyle}`}
+                        onInput={onInput}
                     >
                         {options?.map((option, index) => (
                             <option key={index} value={option.value}>
@@ -41,6 +49,18 @@ const FormGroup = ({
                             </option>
                         ))}
                     </Form.Select>
+                ) : type === 'datetime' ? (
+                    <DateTimePicker
+                        id={id}
+                        name={name}
+                        value={value}
+                        disabled={disabled}
+                        className={`w-full outline-none primary-bd-color-focus border-0 bg-white ${
+                            customInputStyle ? customInputStyle : ''
+                        }`}
+                        onChange={onChange}
+                        onInput={onInput}
+                    />
                 ) : (
                     <Form.Control
                         type={type}
@@ -48,7 +68,9 @@ const FormGroup = ({
                         name={name}
                         value={value}
                         placeholder={placeHolder}
-                        className={`outline-none primary-bd-color-focus border-0 bg-white ${customInputStyle}`}
+                        className={`outline-none primary-bd-color-focus border-0 bg-white ${
+                            customInputStyle ? customInputStyle : ''
+                        }`}
                         disabled={disabled}
                         onChange={onChange}
                         onInput={onInput}
