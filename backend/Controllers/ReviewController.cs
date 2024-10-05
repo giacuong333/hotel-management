@@ -133,6 +133,44 @@ namespace backend.Controllers
         }
 
 
+        // [GET] /review
+        [HttpDelete]
+        public async Task<ActionResult> DeleteUsers([FromBody] List<ReviewModel> reviews)
+        {
+            if (reviews == null || reviews.Count == 0)
+            {
+                return BadRequest("No reviews provided for deletion.");
+            }
+
+            Console.WriteLine("Authorization header: " + Request.Headers["Authorization"]);
+
+    
+            foreach (var review in reviews)
+            {
+                // Fetch user details from the database
+                var reviewFromDb = await _context.Review.FirstOrDefaultAsync(r => r.Id == review.Id);
+                if (reviewFromDb == null)
+                {
+                    Console.WriteLine($"User with ID: {review.Id} not found in the database, skipping.");
+                    continue;
+                }
+
+                // Skip deletion if the user is a manager or the logged-in user
+           
+
+                reviewFromDb.DeletedAt = DateTime.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+
+
+            var newReviews = await _context.Review.Where(r => r.DeletedAt == null)
+                              .Include(r => r.Users).Include(r => r.Rooms).ToListAsync();
+
+            return Ok(new { message = "Review deleted successfully.", newReviews });
+        }
+
+
 
     }
 }
