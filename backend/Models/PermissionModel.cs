@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace backend.Models
 {
-    public class PermissonRole
+    public class PermissionModel
     {
 
-        public PermissonRole() { }
+        public PermissionModel() { }
 
-        public PermissonRole(int? id, string? name, byte? status)
+        public PermissionModel(int? id, string? name, byte? status)
         {
             Id = id;
             Name = name;
