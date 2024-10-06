@@ -32,7 +32,7 @@ namespace backend.Database
 
         public DbSet<RolepermissionModel> Rolepermission { get; set; }
 
-        // public DbSet<UserModel> Service { get; set; }
+         public DbSet<ServiceModel> Service { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
