@@ -36,8 +36,12 @@ namespace backend.Models
             public int RoleId { get; set; }
             public bool FirstBook { get; set; }
             public DateTime? Dob { get; set; }
+
+            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
             public DateTime? CreatedAt { get; set; }
+            [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
             public DateTime? UpdatedAt { get; set; }
+            [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
             public DateTime? DeletedAt { get; set; }
 
             public virtual RoleModel? Roles { get; set; }

@@ -44,9 +44,19 @@ class Util : ControllerBase
             };
       }
 
+      // 409 Conflict
       public static ActionResult ConflictResponse(string message)
       {
             return new ConflictObjectResult(new { message });
+      }
+
+      // 201 Created 
+      public static ActionResult CreatedResponse(Object? obj)
+      {
+            return new ObjectResult(new { obj })
+            {
+                  StatusCode = 201
+            };
       }
 
 }
