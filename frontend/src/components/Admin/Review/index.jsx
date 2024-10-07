@@ -62,13 +62,13 @@ const User = () => {
                 // Create payload for deletion
                 const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
 
-                const response = await axios.delete('http://localhost:5058/user', { data: payload });
+                const response = await axios.delete('http://localhost:5058/review', { data: payload });
                 console.log(response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     reset();
-                    setUsers(response?.data?.newUsers?.$values);
-                    setSearchedUsers(response?.data?.newUsers?.$values);
+                    setUsers(response?.data?.newReviews?.$values);
+                    setSearchedUsers(response?.data?.newReviews?.$values);
                 }
             } catch (error) {
                 console.log(error);
@@ -191,11 +191,7 @@ const User = () => {
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
-                    <FiPlus
-                        size={30}
-                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                        onClick={handleAddClicked}
-                    />
+                    <div></div>
                 ) : (
                     <BsTrash
                         size={30}
@@ -238,7 +234,7 @@ const User = () => {
                     )}
                     {showDeleteAllConfirm && (
                         <ConfirmPopup
-                            header="Are you sure you want to delete all the selected users?"
+                            header="Are you sure you want to delete all the selected reviews?"
                             message="This action cannot be undone."
                             negativeChoice="Cancel"
                             positiveChoice="Delete"

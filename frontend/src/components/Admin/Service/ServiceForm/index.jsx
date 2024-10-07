@@ -13,11 +13,8 @@ import Button from 'react-bootstrap/Button';
 
 const PopupPanel = ({ data, type, onClose, isShowed }) => {
     const [fields, setFields] = useState({
-        userid: '',
-        username: '',
-        roomid: '',
         name: '',
-        comment: '',
+        price: '',
         status: '',
     });
 
@@ -61,13 +58,13 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                         }}
                     >
                         <FormGroup
-                            label="UserId:"
-                            id="userid"
-                            name="userid"
+                            label="Name:"
+                            id="name"
+                            name="name"
                             type="text"
                             // error={error}
                             Icon={FaRegUser}
-                            value={type !== 'add' ? data?.userId : ''}
+                            value={type !== 'add' ? data?.name : ''}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
@@ -76,13 +73,13 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             onBlur={handleInputBlured}
                         />
                         <FormGroup
-                            label="UserName:"
-                            id="username"
-                            name="username"
+                            label="Price:"
+                            id="price"
+                            name="price"
                             type="text"
                             // error={error}
                             Icon={FaRegUser}
-                            value={type !== 'add' ? data?.users?.name : ''}
+                            value={type !== 'add' ? data?.price : ''}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
@@ -92,49 +89,22 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                         />
 
                         <FormGroup
-                            label="RoomId:"
-                            id="roomid"
-                            name="roomid"
-                            type="text"
-                            // error={error}
-                            Icon={MdOutlineEmail}
-                            value={type !== 'add' ? data?.userId : ''}
+                            label="Status:"
+                            id="status"
+                            name="status"
+                            type="select"
+                            value={type !== 'add' ? data?.status : ''} // Sử dụng giá trị số 1 hoặc 0
                             disabled={type === 'see'}
+                            options={[
+                                { label: 'Active', value: 1 },
+                                { label: 'InActive', value: 0 },
+                            ]}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
-                        />
-                        <FormGroup
-                            label="Room Name:"
-                            id="nameroom"
-                            name="nameroom"
-                            type="text"
-                            // error={error}
-                            Icon={FaRegUser}
-                            value={type !== 'add' ? data?.rooms?.name : ''}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
-                        />
-                        <FormGroup
-                            label="Comment:"
-                            id="comment"
-                            name="comment"
-                            type="text"
-                            // error={error}
-                            Icon={MdLockOutline}
-                            value={type !== 'add' ? data?.comment : ''}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
+                            // onChange={(e) => {
+                            //     // handleFieldChange('status', Number(e.target.value));
+                            //     // handleFieldInput('status');
+                            // }}
                         />
                         <FormGroup
                             label="Create time:"
@@ -144,7 +114,22 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             // error={error}
                             // Icon={icon}
                             value={type !== 'add' ? data?.createdAt : ''}
-                            disabled={type === 'see'}
+                            disabled
+                            customParentInputStyle="p-1 pe-3 rounded-2"
+                            customParentParentInputStyle="mt-2"
+                            onChange={handleInputChanged}
+                            onInput={handleInputTyped}
+                            onBlur={handleInputBlured}
+                        />
+                        <FormGroup
+                            label="Update time:"
+                            id="updatedAt"
+                            name="updatedAt"
+                            type="text"
+                            // error={error}
+                            // Icon={icon}
+                            value={type !== 'add' ? data?.updatedAt : ''}
+                            disabled
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
                             onChange={handleInputChanged}

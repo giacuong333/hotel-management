@@ -15,45 +15,45 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
-      [Route("[controller]")]
-      [ApiController]
-      public class ReviewController : ControllerBase
-      {
-            private readonly DatabaseContext _context;
-            private readonly ILogger<ReviewController> _logger;
-            private readonly IConfiguration _configuration;
+    [Route("[controller]")]
+    [ApiController]
+    public class ReviewController : ControllerBase
+    {
+        private readonly DatabaseContext _context;
+        private readonly ILogger<ReviewController> _logger;
+        private readonly IConfiguration _configuration;
 
-            public ReviewController(DatabaseContext context, ILogger<ReviewController> logger, IConfiguration configuration)
+        public ReviewController(DatabaseContext context, ILogger<ReviewController> logger, IConfiguration configuration)
+        {
+            _context = context;
+            _logger = logger;
+            _configuration = configuration;
+        }
+
+        // [GET] /review
+        [HttpGet]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<ReviewModel>>> GetReviews()
+        {
+            try
             {
-                  _context = context;
-                  _logger = logger;
-                  _configuration = configuration;
-            }
+                var reviews = await _context.Review.Where(r => r.DeletedAt == null)
+                      .Include(r => r.Users).Include(r => r.Rooms)
+                      .ToListAsync();
 
-            // [GET] /review
-            [HttpGet]
-            [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<ReviewModel>>> GetReviews()
+                if (reviews == null)
+                {
+                    return NotFound(new { message = "Reviews not found." });
+                }
+
+                return Ok(reviews);
+            }
+            catch (Exception e)
             {
-                  try
-                  {
-                        var reviews = await _context.Review.Where(r => r.DeletedAt == null)
-                              .Include(r => r.Users).Include(r => r.Rooms)
-                              .ToListAsync();
-
-                        if (reviews == null)
-                        {
-                              return NotFound(new { message = "Reviews not found." });
-                        }
-
-                        return Ok(reviews);
-                  }
-                  catch (Exception e)
-                  {
-                        _logger.LogError(e, "Error retrieving reviews");
-                        return StatusCode(500, "Internal server error");
-                  }
+                _logger.LogError(e, "Error retrieving reviews");
+                return StatusCode(500, "Internal server error");
             }
+        }
 
 
         // [GET] /review/{id}
@@ -79,32 +79,32 @@ namespace backend.Controllers
             }
         }
 
-                     // [POST] /review
-                    [HttpPost]
-                     [Produces("application/json")]
-                     public async Task<ActionResult<IEnumerable<ReviewModel>>> CreateReview([FromBody] ReviewModel review)
-                     {
-                          try
-                          {
-                                 if (!ModelState.IsValid)
-                                 {
-                                       return BadRequest(ModelState);
-                                 }
+        // [POST] /review
+        [HttpPost]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<ReviewModel>>> CreateReview([FromBody] ReviewModel review)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
 
-                              
 
-                                 await _context.Review.AddAsync(review);
-                                 await _context.SaveChangesAsync();
 
-                                return StatusCode(201, new { message = "Review added successfully" });
-                          }
-                          catch (Exception e)
-                         {
-                                 Console.WriteLine(e);
-                                 return StatusCode(500, new { message = "Internal server error" });
-                          }
-                    }
-          
+                await _context.Review.AddAsync(review);
+                await _context.SaveChangesAsync();
+
+                return StatusCode(201, new { message = "Review added successfully" });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, new { message = "Internal server error" });
+            }
+        }
+
 
         // [DELETE] /review/{id}
         [HttpDelete("{id}")]
@@ -130,6 +130,44 @@ namespace backend.Controllers
                 Console.WriteLine(e);
                 return StatusCode(500, "Internal server error");
             }
+        }
+
+
+        // [GET] /review
+        [HttpDelete]
+        public async Task<ActionResult> DeleteUsers([FromBody] List<ReviewModel> reviews)
+        {
+            if (reviews == null || reviews.Count == 0)
+            {
+                return BadRequest("No reviews provided for deletion.");
+            }
+
+            Console.WriteLine("Authorization header: " + Request.Headers["Authorization"]);
+
+
+            foreach (var review in reviews)
+            {
+               
+                var reviewFromDb = await _context.Review.FirstOrDefaultAsync(r => r.Id == review.Id);
+                if (reviewFromDb == null)
+                {
+                    Console.WriteLine($"User with ID: {review.Id} not found in the database, skipping.");
+                    continue;
+                }
+
+              
+
+
+                reviewFromDb.DeletedAt = DateTime.UtcNow;
+            }
+
+            await _context.SaveChangesAsync();
+
+
+            var newReviews = await _context.Review.Where(r => r.DeletedAt == null)
+                              .Include(r => r.Users).Include(r => r.Rooms).ToListAsync();
+
+            return Ok(new { message = "Review deleted successfully.", newReviews });
         }
 
 
