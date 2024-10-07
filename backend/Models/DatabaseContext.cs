@@ -28,7 +28,7 @@ namespace backend.Database
 
             // public DbSet<UserModel> Permission { get; set; }
 
-             public DbSet<ReviewModel> Review { get; set; }
+            public DbSet<ReviewModel> Review { get; set; }
 
             // public DbSet<UserModel> Service { get; set; }
 
@@ -38,22 +38,23 @@ namespace backend.Database
                   .HasOne(u => u.Roles)
                   .WithMany()
                   .HasForeignKey(u => u.RoleId);
+
                   modelBuilder.Entity<ReviewModel>()
-                .HasOne(u => u.Users)
-                .WithMany()
-                 .HasForeignKey(u => u.UserId);
-                       modelBuilder.Entity<ReviewModel>()
-                .HasOne(u => u.Rooms)
-                .WithMany()
-                .HasForeignKey(u => u.RoomId);
+                  .HasOne(u => u.Users)
+                  .WithMany()
+                  .HasForeignKey(u => u.UserId);
 
+                  modelBuilder.Entity<ReviewModel>()
+                  .HasOne(u => u.Rooms)
+                  .WithMany()
+                  .HasForeignKey(u => u.RoomId);
 
-            // modelBuilder.Entity<BookingModel>()
-            // .HasOne(r => r.Room);
-            // modelBuilder.Entity<BookingModel>()
-            // .HasOne(u => u.Staff);
-            // modelBuilder.Entity<BookingModel>()
-            // .HasOne(u => u.Customer);
-        }
+                  // modelBuilder.Entity<BookingModel>()
+                  // .HasOne(r => r.Room);
+                  // modelBuilder.Entity<BookingModel>()
+                  // .HasOne(u => u.Staff);
+                  // modelBuilder.Entity<BookingModel>()
+                  // .HasOne(u => u.Customer);
+            }
       }
 }

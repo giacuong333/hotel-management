@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Form from 'react-bootstrap/Form';
 import DateTimePicker from 'react-datetime-picker';
 
@@ -29,7 +28,9 @@ const FormGroup = ({
         <div className={`${customParentParentInputStyle}`}>
             {label && <Form.Label htmlFor={id}>{label}</Form.Label>}
             <div
-                className={`d-flex align-items-center justify-content-between border primary-bd-color-focus ${customParentInputStyle}`}
+                className={`d-flex align-items-center justify-content-between border ${
+                    error ? 'border-danger' : ''
+                } primary-bd-color-focus ${customParentInputStyle}`}
             >
                 {type === 'select' ? (
                     <Form.Select
@@ -61,6 +62,21 @@ const FormGroup = ({
                         onChange={onChange}
                         onInput={onInput}
                     />
+                ) : type === 'textarea' ? (
+                    <Form.Control
+                        as="textarea"
+                        id={id}
+                        name={name}
+                        value={value}
+                        placeholder={placeHolder}
+                        className={`outline-none primary-bd-color-focus border-0 bg-white ${
+                            customInputStyle ? customInputStyle : ''
+                        }`}
+                        disabled={disabled}
+                        onChange={onChange}
+                        onInput={onInput}
+                        onBlur={onBlur}
+                    />
                 ) : (
                     <Form.Control
                         type={type}
@@ -77,9 +93,14 @@ const FormGroup = ({
                         onBlur={onBlur}
                     />
                 )}
-                {Icon && <Icon size={24} className="align-bottom icon-color" />}
+                {Icon && (
+                    <Icon
+                        size={24}
+                        className={`animation-effect align-bottom icon-color  ${error ? 'text-danger' : ''}`}
+                    />
+                )}
             </div>
-            {error && <span className="text-danger text-sm">{error}</span>}
+            {error && <small className="text-danger fw-semibold">{error}</small>}
         </div>
     );
 };

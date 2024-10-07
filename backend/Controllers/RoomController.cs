@@ -1,173 +1,239 @@
-// using Microsoft.AspNetCore.Mvc;
-// using Microsoft.EntityFrameworkCore;
-// using System.Threading.Tasks;
-// using backend.Models;
-// using backend.Database;
-// using Microsoft.Extensions.Logging;
-// using System.Web.Helpers;
-// using System.IdentityModel.Tokens.Jwt;
-// using System.Text;
-// using Microsoft.IdentityModel.Tokens;
-// using System.Security.Claims;
-// using Microsoft.AspNetCore.Authentication;
-// using Microsoft.AspNetCore.Authentication.Cookies;
-// using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using backend.Models;
+using backend.Database;
+using Microsoft.Extensions.Logging;
+using System.Web.Helpers;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 
-// namespace backend.Controllers
-// {
-//       [Route("[controller]")]
-//       [ApiController]
-//       public class RoomController : ControllerBase
-//       {
-//             private readonly DatabaseContext _context;
-//             private readonly ILogger<RoomController> _logger;
-//             private readonly IConfiguration _configuration;
+namespace backend.Controllers
+{
+      [Route("[controller]")]
+      [ApiController]
+      public class RoomController(DatabaseContext context, ILogger<RoomController> logger, IConfiguration configuration) : ControllerBase
+      {
+            private readonly DatabaseContext _context = context;
+            private readonly ILogger<RoomController> _logger = logger;
+            private readonly IConfiguration _configuration = configuration;
 
-//             public RoomController(DatabaseContext context, ILogger<RoomController> logger, IConfiguration configuration)
-//             {
-//                   _context = context;
-//                   _logger = logger;
-//                   _configuration = configuration;
-//             }
+            // [GET] /room
+            [HttpGet]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<RoomModel>>> GetRooms()
+            {
+                  try
+                  {
+                        var rooms = await _context.Room.Where(r => r.DeletedAt == null).ToArrayAsync();
 
-//             // [GET] /room
-//             [HttpGet]
-//             [Produces("application/json")]
-//             public async Task<ActionResult<IEnumerable<RoomModel>>> GetRooms()
-//             {
-//                   try
-//                   {
-//                         var rooms = await _context.Room.ToArrayAsync();
+                        if (rooms == null)
+                        {
+                              return NotFound(new { message = "Rooms not found" });
+                        }
 
-//                         if (rooms == null)
-//                         {
-//                               return NotFound(new { message = "Rooms not found" });
-//                         }
+                        return Util.OkResponse(rooms);
+                  }
+                  catch (Exception e)
+                  {
+                        Console.WriteLine(e);
+                        return StatusCode(500, "Internal server error");
+                  }
+            }
 
-//                         return Ok(new { data = rooms });
-//                   }
-//                   catch (Exception e)
-//                   {
-//                         Console.WriteLine(e);
-//                         return StatusCode(500, "Internal server error");
-//                   }
-//             }
+            // [GET] /room/{id}
+            [HttpGet("{id}")]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<RoomModel>>> GetRoomById(int id)
+            {
+                  try
+                  {
+                        var room = await _context.Room.FindAsync(id);
 
-//             // [GET] /room/{id}
-//             [HttpGet("{id}")]
-//             [Produces("application/json")]
-//             public async Task<ActionResult<IEnumerable<RoomModel>>> GetRoomById(int id)
-//             {
-//                   try
-//                   {
-//                         var room = await _context.Room.FindAsync(id);
+                        if (room == null)
+                        {
+                              return Util.NotFoundResponse("Room not found");
+                        }
 
-//                         if (room == null)
-//                         {
-//                               return NotFound(new { message = "Room not found" });
-//                         }
+                        return Util.OkResponse(room);
+                  }
+                  catch (Exception e)
+                  {
+                        Console.Write(e);
+                        return Util.InternalServerErrorResponse("Internal server error");
+                  }
+            }
 
-//                         return Ok(room);
-//                   }
-//                   catch (Exception e)
-//                   {
-//                         Console.Write(e);
-//                         return StatusCode(500, "Internal server error");
-//                   }
-//             }
+            // [POST] /room
+            [HttpPost]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<RoomModel>>> CreateRoom([FromBody] RoomModel payload)
+            {
+                  try
+                  {
+                        if (!ModelState.IsValid)
+                        {
+                              return BadRequest(ModelState);
+                        }
 
-//             // [POST] /room
-//             [HttpPost]
-//             [Produces("application/json")]
-//             public async Task<ActionResult<IEnumerable<RoomModel>>> CreateRoom([FromBody] RoomModel payload)
-//             {
-//                   try
-//                   {
-//                         if (!ModelState.IsValid)
-//                         {
-//                               return BadRequest(ModelState);
-//                         }
+                        var room = new RoomModel
+                        {
+                              Name = payload.Name,
+                              Thumbnail = payload.Thumbnail,
+                              Type = payload.Type,
+                              Description = payload.Description,
+                              BedNum = payload.BedNum,
+                              Status = payload.Status,
+                              Price = payload.Price,
+                              Area = payload.Area,
+                        };
 
-//                         payload.IsFull = false;
+                        await _context.Room.AddAsync(room);
+                        await _context.SaveChangesAsync();
 
-//                         await _context.Room.AddAsync(payload);
-//                         await _context.SaveChangesAsync();
+                        var addedRoom = await _context.Room.FindAsync(room.Id);
 
-//                         return StatusCode(201, new { message = "Room added successfully" });
-//                   }
-//                   catch (Exception e)
-//                   {
-//                         Console.WriteLine(e);
-//                         return StatusCode(500, new { message = "Internal server error" });
-//                   }
-//             }
+                        if (addedRoom == null)
+                        {
+                              Util.NotFoundResponse("Room not found.");
+                        }
 
-//             // [PUT] /room
-//             [HttpPut]
-//             [Produces("application/json")]
-//             public async Task<ActionResult<IEnumerable<RoomModel>>> EditRoom([FromBody] RoomModel payload)
-//             {
-//                   try
-//                   {
-//                         if (!ModelState.IsValid)
-//                         {
-//                               return BadRequest(ModelState);
-//                         }
+                        return Util.CreatedResponse(new { message = "Room created successfully", room });
+                  }
+                  catch (Exception e)
+                  {
+                        _logger.LogError(e.Message);
+                        return Util.InternalServerErrorResponse("Internal server error");
+                  }
+            }
 
-//                         var room = await _context.Room.FindAsync(payload.Id);
+            // [PUT] /room/{id}
+            [HttpPut("{id}")]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<RoomModel>>> EditRoom([FromBody] RoomModel payload, int id)
+            {
+                  try
+                  {
+                        if (!ModelState.IsValid)
+                        {
+                              return BadRequest(ModelState);
+                        }
 
-//                         if (room == null)
-//                         {
-//                               return NotFound(new { message = "Room not found" });
-//                         }
+                        var room = await _context.Room.FindAsync(id);
 
-//                         room.Thumbnail = payload.Thumbnail;
-//                         room.Name = payload.Name;
-//                         room.Description = payload.Description;
-//                         room.BedNum = payload.BedNum;
-//                         room.MaxNum = payload.MaxNum;
-//                         room.IsFull = payload.IsFull;
-//                         room.Price = payload.Price;
-//                         room.Area = payload.Area;
-//                         room.UpdatedAt = DateTime.UtcNow;
+                        if (room == null)
+                        {
+                              return Util.NotFoundResponse("Room not found");
+                        }
 
-//                         await _context.SaveChangesAsync();
+                        room.Thumbnail = payload.Thumbnail;
+                        room.Name = payload.Name;
+                        room.Type = payload.Type;
+                        room.Description = payload.Description;
+                        room.BedNum = payload.BedNum;
+                        room.Status = payload.Status;
+                        room.Price = payload.Price;
+                        room.Area = payload.Area;
 
-//                         return StatusCode(200, new { message = "Room edited successfully" });
-//                   }
-//                   catch (Exception e)
-//                   {
-//                         Console.WriteLine(e);
-//                         return StatusCode(500, new { message = "Internal server error" });
-//                   }
-//             }
+                        _context.Room.Update(room);
+                        await _context.SaveChangesAsync();
 
-//             // [DELETE] /room/{id}
-//             [HttpDelete("{id}")]
-//             [Produces("application/json")]
-//             public async Task<ActionResult<IEnumerable<RoomModel>>> DeleteRoomById(int id)
-//             {
-//                   try
-//                   {
-//                         var room = await _context.Room.FindAsync(id);
+                        return Util.OkResponse(new { message = "Room edited successfully", room });
+                  }
+                  catch (Exception e)
+                  {
+                        Console.WriteLine(e);
+                        return StatusCode(500, new { message = "Internal server error" });
+                  }
+            }
 
-//                         if (room == null)
-//                         {
-//                               return NotFound(new { message = "Room not found" });
-//                         }
+            // [DELETE] /room/{id}
+            [HttpDelete("{id}")]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<RoomModel>>> DeleteRoomById(int id)
+            {
+                  try
+                  {
+                        var room = await _context.Room.FirstAsync(r => r.Id == id);
 
-//                         _context.Room.Remove(room);
+                        if (room == null)
+                        {
+                              return Util.NotFoundResponse("Room not found.");
+                        }
 
-//                         await _context.SaveChangesAsync();
+                        if (room.Status == 2)
+                        {
+                              return Util.ConflictResponse("The room is being booked.");
+                        }
 
-//                         return Ok(new { message = "Room deleted successfully" });
-//                   }
-//                   catch (Exception e)
-//                   {
-//                         Console.Write(e);
-//                         return StatusCode(500, new { message = "Internal server error" });
-//                   }
-//             }
-//       }
-// }
+                        if (room.Status == 3)
+                        {
+                              return Util.ConflictResponse("The room is being stayed.");
+                        }
+
+                        _context.Room.Remove(room);
+                        await _context.SaveChangesAsync();
+
+                        return Util.OkResponse(new { message = "Room deleted successfully", room });
+                  }
+                  catch (Exception e)
+                  {
+                        Console.Write(e);
+                        return Util.InternalServerErrorResponse("Internal server error");
+                  }
+            }
+
+            // [DELETE] /room
+            [HttpDelete]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<RoomModel>>> DeleteRoomsById([FromBody] List<RoomModel> payload)
+            {
+                  try
+                  {
+                        if (payload == null || payload.Count == 0)
+                        {
+                              return BadRequest("No rooms provided for deletion.");
+                        }
+
+                        foreach (var data in payload)
+                        {
+                              var room = await _context.Room.FindAsync(data.Id);
+
+                              if (room == null)
+                              {
+                                    return Util.NotFoundResponse("Room not found.");
+                              }
+
+                              if (room.Status == 2)
+                              {
+                                    return Util.ConflictResponse("There's a room is being booked.");
+                              }
+
+                              if (room.Status == 3)
+                              {
+                                    return Util.ConflictResponse("There's a room is being stayed.");
+                              }
+
+                              _context.Room.Remove(room);
+                        }
+
+                        await _context.SaveChangesAsync();
+
+                        var updatedRooms = await _context.Room.ToListAsync();
+
+                        return Util.OkResponse(new { message = "Room deleted successfully", updatedRooms });
+                  }
+                  catch (Exception e)
+                  {
+                        Console.Write(e);
+                        return Util.InternalServerErrorResponse("Internal server error");
+                  }
+            }
+      }
+}

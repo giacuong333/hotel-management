@@ -5,15 +5,15 @@ namespace backend.Models
     public class GalleryModel
     {
         public GalleryModel() { }
-        public GalleryModel(int? id, int? room, byte[]? image)
+        public GalleryModel(int? id, int? roomId, byte[]? image)
         {
-            this.Id = id;
-            this.Room = room;
-            this.Image = image;
+            Id = id;
+            RoomId = roomId;
+            Image = image;
         }
 
         public int? Id { get; set; }
-        public int? Room { get; set; }
+        public int? RoomId { get; set; }
         public byte[]? Image { get; set; }
     }
 }

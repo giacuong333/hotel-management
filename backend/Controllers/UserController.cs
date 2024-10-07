@@ -1,35 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using backend.Models;
 using backend.Database;
 using Microsoft.Extensions.Logging;
-using System.Web.Helpers;
-using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore;
+using System.Web.Helpers;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 
 namespace backend.Controllers
 {
       [Route("[controller]")]
       [ApiController]
-      public class UserController : ControllerBase
+      public class UserController(DatabaseContext context, ILogger<UserController> logger, IConfiguration configuration) : ControllerBase
       {
-            private readonly DatabaseContext _context;
-            private readonly ILogger<UserController> _logger;
-            private readonly IConfiguration _configuration;
-
-            public UserController(DatabaseContext context, ILogger<UserController> logger, IConfiguration configuration)
-            {
-                  _context = context;
-                  _logger = logger;
-                  _configuration = configuration;
-            }
+            private readonly DatabaseContext _context = context;
+            private readonly ILogger<UserController> _logger = logger;
+            private readonly IConfiguration _configuration = configuration;
 
             // [GET] /user
             [HttpGet]
@@ -171,7 +163,6 @@ namespace backend.Controllers
                   throw new UnauthorizedAccessException("User ID not found in claims.");
             }
 
-
             // GET /user/profile
             [Authorize]
             [HttpGet("profile")]
@@ -207,7 +198,6 @@ namespace backend.Controllers
                   }
             }
 
-
             // [POST] /user/register
             [HttpPost("register")]
             [Produces("application/json")]
@@ -215,8 +205,6 @@ namespace backend.Controllers
             {
                   try
                   {
-                        Console.WriteLine(value);
-
                         if (!ModelState.IsValid)
                         {
                               return BadRequest(ModelState);
@@ -377,8 +365,6 @@ namespace backend.Controllers
                         return BadRequest("No users provided for deletion.");
                   }
 
-                  Console.WriteLine("Authorization header: " + Request.Headers["Authorization"]);
-
                   var claimsIdentity = User.Identity as ClaimsIdentity;
                   if (claimsIdentity == null)
                   {
@@ -482,7 +468,12 @@ namespace backend.Controllers
                         }
 
                         // Hash the password
-                        payload.Password = Crypto.HashPassword(payload.Password);
+                        if (payload.Password.Length != 0)
+                        {
+                              payload.Password = Crypto.HashPassword(payload.Password);
+                              currentUser.Password = payload.Password;
+
+                        }
 
                         // Set FirstBook flag
                         payload.FirstBook = true;
@@ -490,7 +481,6 @@ namespace backend.Controllers
                         currentUser.Name = payload.Name;
                         currentUser.Email = payload.Email;
                         currentUser.PhoneNumber = payload.PhoneNumber;
-                        currentUser.Password = payload.Password;
                         currentUser.Gender = payload.Gender;
                         currentUser.Dob = payload.Dob;
                         currentUser.RoleId = payload.RoleId;
