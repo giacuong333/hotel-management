@@ -43,10 +43,6 @@ const columns = [
         selector: (row) => row.createdAt,
     },
     {
-        name: 'Authorize',
-        selector: (row) => row.authorize,
-    },
-    {
         name: 'Actions',
         selector: (row) => row.actions,
     },
@@ -64,8 +60,6 @@ const User = () => {
 
     const [searchInput, setSearchInput] = useState('');
     const [searchedUsers, setSearchedUsers] = useState([]);
-
-    const { user } = useUser();
 
     // For deleting selected users
     useEffect(() => {
@@ -88,7 +82,7 @@ const User = () => {
             }
         };
 
-        if (deleteAll.yes) deleteAllUsers();
+        deleteAll.yes && deleteAllUsers();
     }, [deleteAll.yes, deleteAll.payload]); // Include user.id in dependencies
 
     // For searching
@@ -222,16 +216,6 @@ const User = () => {
         phoneNumber: user.phoneNumber,
         roleName: user?.roles?.name,
         createdAt: new Date(user.createdAt).toLocaleString(),
-        authorize: (
-            <Button
-                type="button"
-                variant="primary"
-                className={`w-full p-1 customer-primary-button bg-hover-white text-hover-black`}
-                // onClick={handleAuthorize}
-            >
-                Authorize
-            </Button>
-        ),
         actions: (
             <>
                 <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />

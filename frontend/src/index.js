@@ -12,7 +12,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 // Tippy CSS
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
-
+// Style
 import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
