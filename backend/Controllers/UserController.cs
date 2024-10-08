@@ -484,7 +484,7 @@ namespace backend.Controllers
                         // Hash the password
                         payload.Password = Crypto.HashPassword(payload.Password);
 
-                        // Set FirstBook flag
+                        // Set FirstBook flagservice
                         payload.FirstBook = true;
 
                         currentUser.Name = payload.Name;
