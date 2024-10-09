@@ -183,8 +183,8 @@ const User = () => {
     };
 
     const handleUserAdded = (newService) => {
-        // setUsers((prevUsers) => [...prevUsers, newService]);
-        // setSearchedUsers((prevUsers) => [...prevUsers, newService]);
+        setUsers((prevUsers) => [...prevUsers, newService]);
+        setSearchedUsers((prevUsers) => [...prevUsers, newService]);
     };
 
     const handleUserUpdated = (currentService) => {
