@@ -104,7 +104,7 @@ namespace backend.Controllers
                 await _context.Service.AddAsync(newService);
                 await _context.SaveChangesAsync();
 
-                return StatusCode(201, new { message = "Service added successfully" });
+                return StatusCode(201, new { message = "Service added successfully", newService });
             }
             catch (Exception e)
             {

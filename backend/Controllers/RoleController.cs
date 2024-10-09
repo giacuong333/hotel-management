@@ -72,13 +72,16 @@ namespace backend.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                var newRole = new RoleModel
+                {
+                    Name = role.Name,
+                };
 
 
-
-                await _context.Role.AddAsync(role);
+                await _context.Role.AddAsync(newRole);
                 await _context.SaveChangesAsync();
 
-                return StatusCode(201, new { message = "Role added successfully" });
+                return StatusCode(201, new { message = "Role added successfully" , newRole });
             }
             catch (Exception e)
             {
@@ -171,7 +174,7 @@ namespace backend.Controllers
 
                 if (roleFromDb == null)
                 {
-                    Console.WriteLine($"Role with ID: {role.Id} not found in the database, skipping.");
+                
                     continue;
                 }
 
