@@ -34,10 +34,10 @@ class Builder
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            // Connect MySQL
+            // Connect MySQL + Migration
             builder.Services.AddDbContext<DatabaseContext>(options =>
-                options.UseMySql(builder.Configuration.GetConnectionString("MySQLConnection"),
-                    ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))));
+                  options.UseMySql(builder.Configuration.GetConnectionString("MySQLConnection"),
+                  ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))));
 
             // CORS
             builder.Services.AddCors(options =>

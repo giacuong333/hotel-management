@@ -1,16 +1,11 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
 import Tippy from '@tippyjs/react';
-
 import { IoIosArrowDown } from 'react-icons/io';
 import { FaBars } from 'react-icons/fa6';
 import { FaRegUserCircle } from 'react-icons/fa';
 import { MdOutlineManageAccounts } from 'react-icons/md';
-
 import Logo from '../images/luxestay_logo.png';
-
 import { useUser } from '../../../../providers/UserProvider';
 import { CgLogOut } from 'react-icons/cg';
 
@@ -18,7 +13,6 @@ const Nav = () => {
     const [openSubNav, setOpenSubNav] = useState(false);
     const [showNav, setShowNav] = useState(false);
     const navigate = useNavigate();
-
     const { user, signOut } = useUser();
 
     const handleSignOut = async () => {
@@ -207,7 +201,7 @@ const Nav = () => {
                         <ul className="bg-dark">
                             <li className="text-capitalize">
                                 <Link
-                                    to="/offer"
+                                    to="/account"
                                     className="text-white customer-primary-color-hover animation-effect py-2 px-3 d-block"
                                 >
                                     <MdOutlineManageAccounts size={20} /> Account

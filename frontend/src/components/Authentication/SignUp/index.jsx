@@ -12,6 +12,7 @@ import { useUser } from '../../../providers/UserProvider';
 import { isEmail, isEmpty, isPhoneNumber, isVerifyPassword } from '../../../utils/formValidation';
 
 import ToastContainer, { showToast } from '../../../utils/showToast';
+import { RotatingLines } from 'react-loader-spinner';
 
 const SignUp = () => {
     const [fields, setFields] = useState({ name: '', email: '', password: '', retypePassword: '', phoneNumber: '' });
@@ -149,7 +150,21 @@ const SignUp = () => {
                                         isCreatingAccount ? 'cursor-default pe-none opacity-50' : 'cursor-pointer'
                                     }`}
                                 >
-                                    {isCreatingAccount ? 'Creating account...' : 'Create account'}
+                                    {isCreatingAccount ? (
+                                        <RotatingLines
+                                            visible={true}
+                                            height="20"
+                                            width="20"
+                                            strokeColor="#ffffff"
+                                            strokeWidth="5"
+                                            animationDuration="0.75"
+                                            ariaLabel="rotating-lines-loading"
+                                            wrapperStyle={{}}
+                                            wrapperClass=""
+                                        />
+                                    ) : (
+                                        'Create account'
+                                    )}
                                 </Button>
                                 <Button
                                     variant="outline-secondary"

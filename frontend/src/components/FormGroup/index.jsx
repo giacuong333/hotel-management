@@ -19,6 +19,7 @@ const FormGroup = ({
     onInput,
     onBlur,
     disabled,
+    customLabelStyle,
     customInputStyle,
     customParentInputStyle,
     customParentParentInputStyle,
@@ -26,7 +27,11 @@ const FormGroup = ({
 }) => {
     return (
         <div className={`${customParentParentInputStyle}`}>
-            {label && <Form.Label htmlFor={id}>{label}</Form.Label>}
+            {label && (
+                <Form.Label htmlFor={id} className={`${customLabelStyle ? customLabelStyle : ''}`}>
+                    {label}
+                </Form.Label>
+            )}
             <div
                 className={`d-flex align-items-center justify-content-between border ${
                     error ? 'border-danger' : ''

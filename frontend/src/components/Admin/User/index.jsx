@@ -15,6 +15,7 @@ import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import { useUser } from '~/providers/UserProvider';
 import Button from 'react-bootstrap/Button';
+import { RotatingLines } from 'react-loader-spinner';
 
 const columns = [
     {
@@ -49,6 +50,7 @@ const columns = [
 ];
 
 const User = () => {
+    const [pending, setPending] = useState(true);
     const [showPanel, setShowPanel] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
@@ -106,22 +108,23 @@ const User = () => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get('http://localhost:5058/user', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
+                const url = 'http://localhost:5058/user';
+                const headers = { headers: { 'Content-Type': 'application/json' } };
+                const response = await axios.get(url, headers);
                 if (response.status === 200) {
                     setUsers(response.data.$values || []);
                     setSearchedUsers(response.data.$values || []);
                 }
             } catch (error) {
                 console.log('Error fetching users:', error);
+            } finally {
+                setPending(false);
             }
         };
 
-        fetchUsers();
+        const timeout = setTimeout(fetchUsers, 2000);
+
+        return () => clearTimeout(timeout);
     }, []);
 
     const handleTrashClicked = (id) => {
@@ -263,6 +266,20 @@ const User = () => {
                     sortIcon={<FaSortAlphaDownAlt />}
                     onRowClicked={handleRowClicked}
                     onSelectedRowsChange={handleSelectedRowsChanged}
+                    progressPending={pending}
+                    progressComponent={
+                        <RotatingLines
+                            visible={true}
+                            height="50"
+                            width="50"
+                            strokeColor="#e8bf96"
+                            strokeWidth="5"
+                            animationDuration="0.75"
+                            ariaLabel="rotating-lines-loading"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                        />
+                    }
                 />
                 {/* Show a toast */}
                 {ToastContainer}

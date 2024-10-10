@@ -10,17 +10,14 @@ namespace backend.Models
             // Parameterless constructor required by EF Core
             public BookingModel() { }
 
-            public BookingModel(int? id, int? staffId, int? customerId, int? roomId, RoomModel? room, UserModel? staff, UserModel? customer, DateTime? checkIn, DateTime? checkOut, int? status, DateTime createdAt, DateTime? updatedAt, DateTime? deletedAt)
+            public BookingModel(int? id, int? staffCheckInId, int? staffCheckOutId, DateTime? checkIn, DateTime? checkOut, int? customerId, int? status, DateTime createdAt, DateTime? updatedAt, DateTime? deletedAt)
             {
                   Id = id;
-                  StaffId = staffId;
-                  CustomerId = customerId;
-                  RoomId = roomId;
-                  Room = room;
-                  Staff = staff;
-                  Customer = customer;
+                  StaffCheckInId = staffCheckInId;
+                  StaffCheckOutId = staffCheckOutId;
                   CheckIn = checkIn;
                   CheckOut = checkOut;
+                  CustomerId = customerId;
                   Status = status;
                   CreatedAt = createdAt;
                   UpdatedAt = updatedAt;
@@ -29,31 +26,26 @@ namespace backend.Models
 
             [Key]
             public int? Id { get; set; }
-
-            [ForeignKey("Staff")]
-            public int? StaffId { get; set; }
-            public UserModel? Staff { get; set; } // Navigation property for Staff
-
-
-            [ForeignKey("Customer")]
-            public int? CustomerId { get; set; }
-            public UserModel? Customer { get; set; } // Navigation property for Customer
-
-
-            [ForeignKey("Room")]
-            public int? RoomId { get; set; }
-            public RoomModel? Room { get; set; } // Navigation property for Room
-
+            public int? StaffCheckInId { get; set; }
+            public int? StaffCheckOutId { get; set; }
             public DateTime? CheckIn { get; set; }
             public DateTime? CheckOut { get; set; }
             public int? Status { get; set; }
+            public int? CustomerId { get; set; }
 
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
             public DateTime? CreatedAt { get; set; }
-
             [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
             public DateTime? UpdatedAt { get; set; }
-
+            [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
             public DateTime? DeletedAt { get; set; }
+
+            public virtual ICollection<BookingDetailModel>? BookingDetails { get; set; }
+            [ForeignKey("CustomerId")]
+            public virtual UserModel? Customer { get; set; }
+            [ForeignKey("StaffCheckInId")]
+            public virtual UserModel? StaffCheckIn { get; set; }
+            [ForeignKey("StaffCheckOutId")]
+            public virtual UserModel? StaffCheckOut { get; set; }
       }
 }

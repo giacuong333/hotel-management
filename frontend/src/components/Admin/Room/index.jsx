@@ -16,6 +16,7 @@ import ConfirmPopup from '~/components/ConfirmPopup';
 import formatCurrency from '~/utils/currencyPipe';
 import { Button } from 'react-bootstrap';
 import ImageForm from './ImageForm';
+import { RotatingLines } from 'react-loader-spinner';
 
 const columns = [
     {
@@ -62,6 +63,7 @@ const columns = [
 ];
 
 const Room = () => {
+    const [pending, setPending] = useState(true);
     const [showPanel, setShowPanel] = useState('');
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [rooms, setRooms] = useState([]);
@@ -129,12 +131,9 @@ const Room = () => {
     useEffect(() => {
         const fetchRooms = async () => {
             try {
-                const response = await axios.get('http://localhost:5058/room', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
+                const url = 'http://localhost:5058/room';
+                const headers = { headers: { 'Content-Type': 'application/json' } };
+                const response = await axios.get(url, headers);
                 if (response?.status === 200) {
                     const data = response?.data?.obj?.map((room) => {
                         room.statusName = room.status === 1 ? 'Empty' : room.status === 2 ? 'Booked' : 'Staying';
@@ -146,10 +145,14 @@ const Room = () => {
                 }
             } catch (error) {
                 console.log('Error fetching rooms:', error);
+            } finally {
+                setPending(false);
             }
         };
 
-        fetchRooms();
+        const timeout = setTimeout(fetchRooms, 2000);
+
+        return () => clearTimeout(timeout);
     }, []);
 
     const handleTrashClicked = (id) => {
@@ -321,6 +324,20 @@ const Room = () => {
                     sortIcon={<FaSortAlphaDownAlt />}
                     onRowClicked={handleRowClicked}
                     onSelectedRowsChange={handleSelectedRowsChanged}
+                    progressPending={pending}
+                    progressComponent={
+                        <RotatingLines
+                            visible={true}
+                            height="50"
+                            width="50"
+                            strokeColor="#e8bf96"
+                            strokeWidth="5"
+                            animationDuration="0.75"
+                            ariaLabel="rotating-lines-loading"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                        />
+                    }
                 />
 
                 {/* Show Form */}

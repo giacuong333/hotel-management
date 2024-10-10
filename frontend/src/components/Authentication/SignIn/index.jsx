@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
 import Button from 'react-bootstrap/Button';
-
 import { FiMail, FiLock } from 'react-icons/fi';
-
 import FormGroup from '../../FormGroup';
-
 import { useUser } from '../../../providers/UserProvider';
-
 import { isEmail, isEmpty } from '../../../utils/formValidation';
-
 import ToastContainer, { showToast } from '../../../utils/showToast';
+import { RotatingLines } from 'react-loader-spinner';
 
 const SignIn = () => {
     const [fields, setFields] = useState({ email: '', password: '' });
@@ -26,7 +21,6 @@ const SignIn = () => {
 
         if (isEmpty(fields.email)) validationErrors.email = 'Email is required';
         else if (!isEmail(fields.email)) validationErrors.email = 'Email is invalid';
-
         if (isEmpty(fields.password)) validationErrors.password = 'Password is required';
 
         setErrors(validationErrors);
@@ -51,7 +45,7 @@ const SignIn = () => {
                     setTimeout(() => {
                         if (response?.data?.user?.roleId === 4) navigate('/');
                         else navigate('/admin');
-                    }, 2000);
+                    }, 1000);
                 }
             } catch (err) {
                 console.log(err);
@@ -103,7 +97,21 @@ const SignIn = () => {
                                         isLogginginAccount ? 'cursor-default pe-none opacity-50' : 'cursor-pointer'
                                     }`}
                                 >
-                                    {isLogginginAccount ? 'Signing in to account...' : 'Sign in'}
+                                    {isLogginginAccount ? (
+                                        <RotatingLines
+                                            visible={true}
+                                            height="20"
+                                            width="20"
+                                            strokeColor="#ffffff"
+                                            strokeWidth="5"
+                                            animationDuration="0.75"
+                                            ariaLabel="rotating-lines-loading"
+                                            wrapperStyle={{}}
+                                            wrapperClass=""
+                                        />
+                                    ) : (
+                                        'Sign in'
+                                    )}
                                 </Button>
                                 <Button
                                     variant="outline-secondary"

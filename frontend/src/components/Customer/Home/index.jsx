@@ -3,6 +3,7 @@ import NewsLetter from './NewsLetter';
 import Services from './Services';
 import Rooms from './Rooms';
 import CheckAvailability from './CheckAvailability';
+import Testimonial from './Testimonial';
 
 const Home = () => {
     return (
@@ -11,6 +12,7 @@ const Home = () => {
             <Services />
             <Rooms />
             <CheckAvailability />
+            <Testimonial />
         </section>
     );
 };

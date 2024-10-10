@@ -31,6 +31,8 @@ import { useUser } from './providers/UserProvider';
 import RoomDetail from './components/Customer/Home/RoomDetail';
 import Rooms from './components/Customer/Rooms';
 import RoleProvider from './providers/RoleProvider';
+import AccountDetailLayout from './Layouts/AccountDetailLayout';
+import AccountDetail from './components/Customer/AccountDetail';
 
 function App() {
     const { user } = useUser();
@@ -52,11 +54,16 @@ function App() {
                 {/* If customer logged in with roleId = 2 or default customer does not log in, move on to the customer page. */}
                 {(isAuthenticated && isCustomer) || !isAuthenticated ? (
                     // Customer
-                    <Route path="/" element={<CustomerLayout />}>
-                        <Route index element={<CustomerHome />} />
-                        <Route path="/rooms" element={<Rooms />} />
-                        <Route path="/room/:id" element={<RoomDetail />} />
-                    </Route>
+                    <>
+                        <Route path="/" element={<CustomerLayout />}>
+                            <Route index element={<CustomerHome />} />
+                            <Route path="/rooms" element={<Rooms />} />
+                            <Route path="/room/:id" element={<RoomDetail />} />
+                        </Route>
+                        <Route path="/account" element={<AccountDetailLayout />}>
+                            <Route index element={<AccountDetail />}></Route>
+                        </Route>
+                    </>
                 ) : (
                     // If roleId != 4, move on to the admin page
                     isAuthenticated &&
