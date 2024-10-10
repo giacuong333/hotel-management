@@ -15,16 +15,12 @@ import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '
 const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed }) => {
     const [fields, setFields] = useState({
         name: data?.name || '',
-        price: data?.price || '',
-        status: data?.status || '',
     });
     const [errors, setErrors] = useState({});
     // Reset form fields whenever `type` or `data` changes
     useEffect(() => {
         setFields({
             name: data?.name || '',
-            price: data?.price || '',
-            status: data?.status || '',
         });
         setErrors({});
     }, [type, data]);
@@ -33,8 +29,6 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
         const validationErrors = {};
 
         if (isEmpty(fields.name)) validationErrors.name = 'Name is required';
-        if (isEmpty(fields.price)) validationErrors.email = 'price is required';
-        if (isEmpty(fields.status)) validationErrors.status = 'Role is required';
 
         setErrors(validationErrors);
 
@@ -44,7 +38,7 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
     const handleSubmitClicked = async (e) => {
         e.preventDefault();
 
-        const apiUrl = 'http://localhost:5058/service';
+        const apiUrl = 'http://localhost:5058/role';
 
         if (handleValidation()) {
             const payload = { ...fields };
@@ -54,9 +48,9 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
                     const response = await axios.post(`${apiUrl}/`, payload);
                     console.log(response);
                     if (response?.status === 201) {
-                        showToast('Service created successfully', 'success');
+                        showToast('Role created successfully', 'success');
                         setTimeout(handleClose, 4000);
-                        onUserAdded(response?.data?.newService);
+                        onUserAdded(response?.data?.newRole);
                     }
                 } else if (type === 'edit') {
                     const response = await axios.put(`${apiUrl}/${data?.id}`, payload);
@@ -64,7 +58,7 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
                     if (response?.status === 200) {
                         showToast(response?.data?.obj?.message, 'success');
                         setTimeout(handleClose, 4000);
-                        onUserUpdated(response?.data?.obj?.currentService);
+                        onUserUpdated(response?.data?.obj?.currentRole);
                     }
                 }
             } catch (error) {
@@ -82,8 +76,6 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
         setErrors({});
         setFields({
             name: '',
-            price: '',
-            status: '',
         });
         onClose();
     };
@@ -155,73 +147,7 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
                             onChange={(e) => handleFieldChange('name', e.target.value)}
                             onInput={() => handleFieldInput('name')}
                         />
-                        <FormGroup
-                            label="Price:"
-                            id="price"
-                            name="price"
-                            type="text"
-                            error={errors.price}
-                            Icon={FaRegUser}
-                            // value={type !== 'add' ? data?.price : ''}
-                            value={fields?.price}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={(e) => handleFieldChange('price', e.target.value)}
-                            onInput={() => handleFieldInput('price')}
-                        />
 
-                        <FormGroup
-                            label="Status:"
-                            id="status"
-                            name="status"
-                            type="select"
-                            error={errors.status}
-                            // value={type !== 'add' ? data?.status : ''}
-                            value={fields?.status}
-                            disabled={type === 'see'}
-                            options={[
-                                { label: '----', value: '' },
-                                { label: 'Active', value: 0 },
-                                { label: 'InActive', value: 1 },
-                            ]}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={(e) => {
-                                handleFieldChange('status', Number(e.target.value));
-                                handleFieldInput('status');
-                            }}
-                        />
-                        <FormGroup
-                            label="Create time:"
-                            id="createdAt"
-                            name="createdAt"
-                            type="text"
-                            // error={error}
-                            // Icon={icon}
-                            value={type !== 'add' ? data?.createdAt : ''}
-                            disabled
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
-                        />
-                        <FormGroup
-                            label="Update time:"
-                            id="updatedAt"
-                            name="updatedAt"
-                            type="text"
-                            // error={error}
-                            // Icon={icon}
-                            value={type !== 'add' ? data?.updatedAt : ''}
-                            disabled
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
-                        />
                         {type !== 'see' && (
                             <div className="d-flex align-items-center gap-2 mt-4">
                                 <Button

@@ -56,7 +56,19 @@ const User = () => {
 
     const [searchInput, setSearchInput] = useState('');
     const [searchedUsers, setSearchedUsers] = useState([]);
+    // const handleUserAdded = (newUser) => {
+    //     setUsers((prevUsers) => [...prevUsers, newUser]);
+    //     setSearchedUsers((prevUsers) => [...prevUsers, newUser]);
+    // };
 
+    // const handleUserUpdated = (currentUser) => {
+    //     setUsers((prevUsers) =>
+    //         prevUsers.map((prevUser) => (prevUser.id === currentUser.id ? { ...currentUser } : prevUser)),
+    //     );
+    //     setSearchedUsers((prevUsers) =>
+    //         prevUsers.map((prevUser) => (prevUser.id === currentUser.id ? { ...currentUser } : prevUser)),
+    //     );
+    // };
     const { user } = useUser();
 
     // For deleting
@@ -170,6 +182,20 @@ const User = () => {
         setShowDeleteAllConfirm(false);
     };
 
+    const handleUserAdded = (newService) => {
+        setUsers((prevUsers) => [...prevUsers, newService]);
+        setSearchedUsers((prevUsers) => [...prevUsers, newService]);
+    };
+
+    const handleUserUpdated = (currentService) => {
+        setUsers((prevUsers) =>
+            prevUsers.map((prevUser) => (prevUser.id === currentService.id ? { ...currentService } : prevUser)),
+        );
+        setSearchedUsers((prevUsers) =>
+            prevUsers.map((prevUser) => (prevUser.id === currentService.id ? { ...currentService } : prevUser)),
+        );
+    };
+
     const data = searchedUsers?.map((user, index) => ({
         id: user.id,
         no: index + 1,
@@ -191,7 +217,11 @@ const User = () => {
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
-                    <div></div>
+                    <FiPlus
+                        size={30}
+                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                        onClick={handleAddClicked}
+                    />
                 ) : (
                     <BsTrash
                         size={30}
@@ -230,6 +260,8 @@ const User = () => {
                             type={showPanel}
                             onClose={() => setShowPanel(false)}
                             isShowed={showPanel}
+                            onUserAdded={handleUserAdded}
+                            onUserUpdated={handleUserUpdated}
                         />
                     )}
                     {showDeleteAllConfirm && (

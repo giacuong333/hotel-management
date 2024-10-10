@@ -71,6 +71,7 @@ namespace backend.Database
                 .HasOne(bd => bd.Room)
                 .WithMany()
                 .HasForeignKey(bd => bd.RoomId);
+
         }
     }
 }

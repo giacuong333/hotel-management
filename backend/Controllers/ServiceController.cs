@@ -89,13 +89,22 @@ namespace backend.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                var newService = new ServiceModel
+                {
+                    Name = service.Name,
+                    Price = service.Price,
+                    Status = service.Status,
+              
+                  
+                    CreatedAt = DateTime.UtcNow
+                };
 
 
 
-                await _context.Service.AddAsync(service);
+                await _context.Service.AddAsync(newService);
                 await _context.SaveChangesAsync();
 
-                return StatusCode(201, new { message = "Service added successfully" });
+                return StatusCode(201, new { message = "Service added successfully", newService });
             }
             catch (Exception e)
             {

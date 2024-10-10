@@ -1,285 +1,260 @@
-import Table from 'react-bootstrap/Table';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 import DataTable from 'react-data-table-component';
 
-import { MdDelete } from 'react-icons/md';
-import { FaRegEdit } from 'react-icons/fa';
+import { FiEdit } from 'react-icons/fi';
+import { BsTrash } from 'react-icons/bs';
+import { FaSortAlphaDownAlt } from 'react-icons/fa';
+import { IoSearchOutline } from 'react-icons/io5';
+import { FiPlus } from 'react-icons/fi';
 
-import { FaUserShield } from 'react-icons/fa';
-const Role = () => {
-    // show edit
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    // show create
-    const [showCreate, setShowCreate] = useState(false);
-    const handleCloseCreate = () => setShowCreate(false);
-    const handleShowCreate = () => setShowCreate(true);
-    // show create
-    const [showPer, setShowPer] = useState(false);
-    const handleClosePer = () => setShowPer(false);
-    const handleShowPer = () => setShowPer(true);
+import PopupPanel from './RoleForm';
+import ToastContainer, { showToast } from '~/utils/showToast';
+import FormGroup from '~/components/FormGroup';
+import ConfirmPopup from '~/components/ConfirmPopup';
+import { useUser } from '~/providers/UserProvider';
 
-    const handeleDelete = (id) => {
-        if (window.confirm('Are you sure to delete ')) {
-            alert('delete');
+const columns = [
+    {
+        name: 'No',
+        selector: (row) => row.no,
+    },
+    {
+        name: 'Name',
+        selector: (row) => row.name,
+        sortable: true,
+    },
+
+    {
+        name: 'Actions',
+        selector: (row) => row.actions,
+    },
+];
+
+const User = () => {
+    const [showPanel, setShowPanel] = useState('');
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
+    const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
+
+    const [searchInput, setSearchInput] = useState('');
+    const [searchedUsers, setSearchedUsers] = useState([]);
+    const { user } = useUser();
+
+    // For deleting
+    useEffect(() => {
+        const deleteAllUsers = async () => {
+            try {
+                // Create payload for deletion
+                const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
+
+                const response = await axios.delete('http://localhost:5058/role', { data: payload });
+                console.log(response);
+                if (response?.status === 200) {
+                    showToast(response?.data?.message, 'success');
+                    reset();
+                    setUsers(response?.data?.newRoles?.$values);
+                    setSearchedUsers(response?.data?.newRoles?.$values);
+                }
+            } catch (error) {
+                console.log(error);
+                showToast(
+                    error?.response?.data?.message ||
+                        'Unable to delete. A selected role is already assigned to the user.',
+                    'error',
+                );
+            }
+        };
+
+        if (deleteAll.yes) deleteAllUsers();
+    }, [deleteAll.yes, deleteAll.payload, user.id]); // Include user.id in dependencies
+
+    // For searching
+    useEffect(() => {
+        if (searchInput.trim() === '') {
+            // If search input is empty, show all users
+            setSearchedUsers(users);
+        } else {
+            // Otherwise, filter users based on search input
+            const filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchInput.toLowerCase()));
+            setSearchedUsers(filteredUsers);
+        }
+    }, [searchInput, users]);
+
+    // For fetching
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get('http://localhost:5058/role', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.status === 200) {
+                    setUsers(response.data.$values || []);
+                    setSearchedUsers(response.data.$values || []);
+                }
+            } catch (error) {
+                console.log('Error fetching users:', error);
+            }
+        };
+
+        fetchUsers();
+    }, []);
+
+    const handleTrashClicked = useCallback(async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:5058/role/${id}`);
+            if (response.status === 200) {
+                showToast(response?.data?.message, 'success');
+                setUsers((prev) => prev.filter((user) => user.id !== id));
+            }
+        } catch (error) {
+            console.error('Error deleting role:', error);
+            showToast(
+                error?.response?.data?.message || 'Unable to delete.This role has been assigned to the user.',
+                'error',
+            );
+        }
+    }, []);
+
+    const handleEditClicked = (user) => {
+        setSelectedUser(user);
+        setShowPanel('edit');
+    };
+
+    const handleAddClicked = async () => {
+        setShowPanel('add');
+    };
+
+    const handleRowClicked = useCallback(async (e) => {
+        const { id } = e;
+        try {
+            const response = await axios.get(`http://localhost:5058/role/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (response.status === 200) {
+                setSelectedUser(response.data);
+                setShowPanel('see');
+            }
+        } catch (error) {
+            console.error('Error fetching user details:', error);
+        }
+    }, []);
+
+    const handleSelectedRowsChanged = ({ allSelected, selectedCount, selectedRows }) => {
+        setDeleteAll({ count: selectedCount, payload: selectedRows });
+    };
+
+    const handleDeleteRowsSelected = () => {
+        if (deleteAll.count !== 0) {
+            setShowDeleteAllConfirm(true);
         }
     };
 
-    const columns = [
-        {
-            name: '#',
-            selector: (row, index) => index + 1,
-        },
-        {
-            name: 'Id',
-            selector: (row) => row.id,
-            sortable: true,
-        },
-        {
-            name: 'Name',
-            selector: (row) => row.name,
-            sortable: true,
-        },
+    const reset = () => {
+        setDeleteAll({ count: 0, payload: [], yes: false });
+        setShowDeleteAllConfirm(false);
+    };
 
-        {
-            name: 'Action',
-            cell: (row) => (
-                <div>
-                    <button className="btn btn-success" disabled={row.status === 0} onClick={handleShowPer}>
-                        <FaUserShield />
-                    </button>
-                    &nbsp;
-                    <button className="btn btn-primary" disabled={row.status === 0} onClick={handleShow}>
-                        <FaRegEdit />
-                    </button>
-                    &nbsp;
-                    <button className="btn btn-danger" onClick={() => handeleDelete()}>
-                        <MdDelete />
-                    </button>
-                </div>
-            ),
-        },
-    ];
+    const handleUserAdded = (newRole) => {
+        setUsers((prevUsers) => [...prevUsers, newRole]);
+        setSearchedUsers((prevUsers) => [...prevUsers, newRole]);
+    };
 
-    const empdata = [
-        {
-            id: 1,
-            name: 'Admin',
-        },
-        {
-            id: 2,
-            name: 'Customer',
-        },
-        {
-            id: 3,
-            name: 'Employee',
-        },
-    ];
+    const handleUserUpdated = (currentRole) => {
+        setUsers((prevUsers) =>
+            prevUsers.map((prevUser) => (prevUser.id === currentRole.id ? { ...currentRole } : prevUser)),
+        );
+        setSearchedUsers((prevUsers) =>
+            prevUsers.map((prevUser) => (prevUser.id === currentRole.id ? { ...currentRole } : prevUser)),
+        );
+    };
 
-    const [data, setData] = useState([]);
-    useEffect(() => {
-        // getData();
-        setData(empdata);
-    }, []);
+    const data = searchedUsers?.map((user, index) => ({
+        id: user.id,
+        no: index + 1,
+        name: user.name,
 
-    function handleFilter(event) {
-        const newdata = empdata.filter((row) => {
-            return row.name.toLowerCase().includes(event.target.value.toLowerCase());
-        });
-        setData(newdata);
-    }
+        actions: (
+            <>
+                <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
+                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+            </>
+        ),
+    }));
+
     return (
-        <Fragment>
-            <ToastContainer />
-            <div>
-                <nav class="navbar navbar-light bg-light justify-content-between">
-                    <p class="navbar-brand"></p>
-                    <form class="form-inline mr-2">
-                        <button
-                            className="btn btn-primary btn-lg"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleShowCreate();
-                            }}
-                        >
-                            Create
-                        </button>
-                    </form>
-                </nav>
-            </div>
-            {/* create */}
-            <Modal show={showCreate} onHide={handleCloseCreate} animation={false}>
-                <Modal.Header closeButton>
-                    <Modal.Title> Create Role</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <form>
-                        <div class="form-group">
-                            <label for="nameserviceCreate">Name Role:</label>
-                            <input type="text" value={'food'} class="form-control" id="nameserviceCreate" />
-                        </div>
-
-                        {/* <div class="form-group">
-                              <label for="statusCreate">Status</label>
-                              <select class="form-control" id="status">
-                                  <option>Active</option>
-                                  <option>InActive</option>
-                              </select>
-                          </div> */}
-                    </form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseCreate}>
-                        Close
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={(e) => {
-                            e.preventDefault();
-                        }}
-                    >
-                        Save
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-            {/* Modal Permission */}
-
-            {/* create */}
-            <Modal show={showPer} onHide={handleClosePer} animation={false}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Role-Permisson</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Table bordered hover>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-
-                                <th>Manage </th>
-                                <th>Fuction </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Manage User</td>
-                                <td>
-                                    <input type="checkbox" id="look"></input>
-                                    &nbsp;
-                                    <label htmlFor="look">Look</label>
-                                    <br></br>
-                                    <input type="checkbox" id="add" />
-                                    &nbsp;
-                                    <label htmlFor="add">Add</label>
-                                    <br></br>
-                                    <input type="checkbox" id="edit" />
-                                    &nbsp;
-                                    <label htmlFor="edit">Edit</label>
-                                    <br></br>
-                                    <input type="checkbox" id="delete" />
-                                    &nbsp;
-                                    <label htmlFor="delete">Delete</label>
-                                    <br></br>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Manage Booking</td>
-                                <td>
-                                    <input type="checkbox" id="look"></input>
-                                    &nbsp;
-                                    <label htmlFor="look">Look</label>
-                                    <br></br>
-                                    <input type="checkbox" id="add" />
-                                    &nbsp;
-                                    <label htmlFor="add">Add</label>
-                                    <br></br>
-                                    <input type="checkbox" id="edit" />
-                                    &nbsp;
-                                    <label htmlFor="edit">Edit</label>
-                                    <br></br>
-                                    <input type="checkbox" id="delete" />
-                                    &nbsp;
-                                    <label htmlFor="delete">Delete</label>
-                                    <br></br>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </Table>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClosePer}>
-                        Close
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={(e) => {
-                            e.preventDefault();
-                        }}
-                    >
-                        Save
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            {/* Search */}
-            <nav class="navbar navbar-light bg-light justify-content-between p-3">
-                <p class="navbar-brand">Role</p>
-                <form class="form-inline mr-5">
-                    <input
-                        class="form-control "
-                        type="search"
-                        placeholder="Search"
-                        aria-label="Search"
-                        onChange={handleFilter}
+        <div>
+            <div className="d-flex align-items-center justify-content-between w-full py-4">
+                {deleteAll.count === 0 ? (
+                    <FiPlus
+                        size={30}
+                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                        onClick={handleAddClicked}
                     />
-                </form>
-            </nav>
+                ) : (
+                    <BsTrash
+                        size={30}
+                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                        onClick={handleDeleteRowsSelected}
+                    />
+                )}
 
-            {/* table */}
-            <DataTable columns={columns} data={data} pagination highlightOnHover />
-
-            {/* Modal */}
-
-            <Modal show={show} onHide={handleClose} animation={false}>
-                <Modal.Header closeButton>
-                    <Modal.Title> Edit Role</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <form>
-                        <div class="form-group">
-                            <label for="nameservice">Name Role:</label>
-                            <input type="text" value={'food'} class="form-control" id="nameservice" />
-                        </div>
-                        {/*                         
-                          <div class="form-group">
-                              <label for="status">Status</label>
-                              <select class="form-control" id="status">
-                                  <option>Active</option>
-                                  <option>InActive</option>
-                              </select>
-                          </div> */}
-                    </form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                    <Button variant="primary">Save </Button>
-                </Modal.Footer>
-            </Modal>
-        </Fragment>
+                <FormGroup
+                    id="search"
+                    name="search"
+                    type="text"
+                    placeHolder="Search..."
+                    Icon={IoSearchOutline}
+                    customParentInputStyle="pe-2 rounded-1"
+                    onChange={(e) => setSearchInput(e.target.value)}
+                />
+            </div>
+            <>
+                <DataTable
+                    columns={columns}
+                    data={data}
+                    selectableRows
+                    striped
+                    highlightOnHover
+                    pagination
+                    sortIcon={<FaSortAlphaDownAlt />}
+                    onRowClicked={handleRowClicked}
+                    onSelectedRowsChange={handleSelectedRowsChanged}
+                />
+                <>
+                    {ToastContainer}
+                    {showPanel && (
+                        <PopupPanel
+                            data={selectedUser}
+                            type={showPanel}
+                            onClose={() => setShowPanel(false)}
+                            isShowed={showPanel}
+                            onUserAdded={handleUserAdded}
+                            onUserUpdated={handleUserUpdated}
+                        />
+                    )}
+                    {showDeleteAllConfirm && (
+                        <ConfirmPopup
+                            header="Are you sure you want to delete all the selected reviews?"
+                            message="This action cannot be undone."
+                            negativeChoice="Cancel"
+                            positiveChoice="Delete"
+                            isShow={showDeleteAllConfirm}
+                            onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                            onClose={() => setShowDeleteAllConfirm(false)}
+                        />
+                    )}
+                </>
+            </>
+        </div>
     );
 };
 
-export default Role;
+export default User;

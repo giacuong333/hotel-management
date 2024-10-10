@@ -475,7 +475,7 @@ namespace backend.Controllers
 
                         }
 
-                        // Set FirstBook flag
+                        // Set FirstBook flagservice
                         payload.FirstBook = true;
 
                         currentUser.Name = payload.Name;
