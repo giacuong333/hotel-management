@@ -16,7 +16,24 @@ const UserProvider = ({ children }) => {
     const [isLogginginAccount, setIsLogginginAccount] = useState(false);
 
     useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401) {
+                    showToast('Session expired. Please log in again.', 'error');
+                    localStorage.removeItem('jwtToken');
+                    delete axios.defaults.headers.common['Authorization'];
+                    setUser(null);
+                }
+                return Promise.reject(error);
+            },
+        );
+        return () => axios.interceptors.response.eject(interceptor);
+    }, []);
+
+    useEffect(() => {
         const fetchUser = async () => {
+            const abortController = new AbortController();
             const token = localStorage.getItem('jwtToken');
             if (!token) return;
 
@@ -34,6 +51,8 @@ const UserProvider = ({ children }) => {
             } finally {
                 setLoading(false);
             }
+
+            return () => abortController.abort();
         };
 
         fetchUser();

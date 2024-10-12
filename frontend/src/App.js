@@ -33,6 +33,10 @@ import Rooms from './components/Customer/Rooms';
 import RoleProvider from './providers/RoleProvider';
 import AccountDetailLayout from './Layouts/AccountDetailLayout';
 import AccountDetail from './components/Customer/AccountDetail';
+import Personal from './components/Customer/AccountDetail/Personal';
+import Payments from './components/Customer/AccountDetail/Payments';
+import BookingHistory from './components/Customer/AccountDetail/BookingHistory';
+import Password from './components/Customer/AccountDetail/Password';
 
 function App() {
     const { user } = useUser();
@@ -51,19 +55,25 @@ function App() {
                         <Route path="/signin" element={<SignIn />} />
                     </>
                 )}
+
+                {/* If user logged in, the user can see he/him account information */}
+                {isAuthenticated && isCustomer && (
+                    <Route path="/account/" element={<AccountDetailLayout />}>
+                        <Route path="personal" element={<AccountDetail />}></Route>
+                        <Route path="payments" element={<Payments />}></Route>
+                        <Route path="bookinghistory" element={<BookingHistory />}></Route>
+                        <Route path="password" element={<Password />}></Route>
+                    </Route>
+                )}
+
                 {/* If customer logged in with roleId = 2 or default customer does not log in, move on to the customer page. */}
                 {(isAuthenticated && isCustomer) || !isAuthenticated ? (
                     // Customer
-                    <>
-                        <Route path="/" element={<CustomerLayout />}>
-                            <Route index element={<CustomerHome />} />
-                            <Route path="/rooms" element={<Rooms />} />
-                            <Route path="/room/:id" element={<RoomDetail />} />
-                        </Route>
-                        <Route path="/account" element={<AccountDetailLayout />}>
-                            <Route index element={<AccountDetail />}></Route>
-                        </Route>
-                    </>
+                    <Route path="/" element={<CustomerLayout />}>
+                        <Route index element={<CustomerHome />} />
+                        <Route path="/rooms" element={<Rooms />} />
+                        <Route path="/room/:id" element={<RoomDetail />} />
+                    </Route>
                 ) : (
                     // If roleId != 4, move on to the admin page
                     isAuthenticated &&

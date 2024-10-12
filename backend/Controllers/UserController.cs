@@ -56,7 +56,7 @@ namespace backend.Controllers
             {
                   try
                   {
-                        var user = await _context.User.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == id);
+                        var user = await _context.User.Where(u => u.DeletedAt == null).Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == id);
 
                         if (user == null)
                         {
@@ -139,6 +139,8 @@ namespace backend.Controllers
                                     id = user.Id,
                                     email = user.Email,
                                     name = user.Name,
+                                    avatar = user.Avatar,
+                                    dob = user.Dob,
                                     phoneNumber = user.PhoneNumber,
                                     createdAt = user.CreatedAt,
                                     roleId = user.RoleId,
@@ -171,7 +173,7 @@ namespace backend.Controllers
                   try
                   {
                         var userId = GetUserIdFromClaims();
-                        var user = _context.User.Include(u => u.Roles).FirstOrDefault(u => u.Id == userId);
+                        var user = _context.User.Where(u => u.DeletedAt == null).Include(u => u.Roles).FirstOrDefault(u => u.Id == userId);
 
                         if (user == null)
                         {
@@ -186,6 +188,8 @@ namespace backend.Controllers
                                     user.Email,
                                     user.Name,
                                     user.PhoneNumber,
+                                    user.Avatar,
+                                    user.Dob,
                                     user.CreatedAt,
                                     user.RoleId,
                                     Role = user.Roles // Include the full Role object if necessary
@@ -356,6 +360,36 @@ namespace backend.Controllers
                   }
             }
 
+            // [DELETE] /user/customer/{id}
+            [HttpDelete("customer/{id}")]
+            public async Task<ActionResult> SoftDeleteCustomerById(int id)
+            {
+                  try
+                  {
+                        var user = await _context.User.FindAsync(id);
+                        if (user == null)
+                        {
+                              return Util.NotFoundResponse("User not found");
+                        }
+
+                        user.DeletedAt = DateTime.UtcNow;
+
+                        _context.User.Update(user);
+                        var result = await _context.SaveChangesAsync();
+                        if (result == 0)
+                        {
+                              _logger.LogError("No changes were saved to the database.");
+                        }
+
+                        return Util.OkResponse("Your account is deleted!");
+                  }
+                  catch (Exception e)
+                  {
+                        _logger.LogError(e.Message);
+                        return Util.InternalServerErrorResponse("Internal server error");
+                  }
+            }
+
             // [DELETE] /user
             [HttpDelete]
             public async Task<ActionResult> DeleteUsers([FromBody] List<UserModel> users)
@@ -496,6 +530,46 @@ namespace backend.Controllers
                   {
                         Console.WriteLine(e);
                         return Util.InternalServerErrorResponse("An unexpected error occured");
+                  }
+            }
+
+            [HttpPost("avatar")]
+            public async Task<ActionResult<ICollection<UserModel>>> AddAvatar([FromForm] int userId, [FromForm] IFormFile avatar)
+            {
+                  try
+                  {
+                        if (!ModelState.IsValid)
+                        {
+                              return Util.BadRequestResponse("Missing data");
+                        }
+
+                        Console.WriteLine("This line run");
+
+                        var user = await _context.User.FindAsync(userId);
+                        if (user == null)
+                        {
+                              return Util.NotFoundResponse("User not found");
+                        }
+
+                        if (avatar == null || avatar.Length > 0)
+                        {
+                              using var ms = new MemoryStream();
+                              await avatar.CopyToAsync(ms);
+                              var imageData = ms.ToArray();
+
+                              user.Avatar = imageData;
+
+
+                              _context.User.Update(user);
+                              await _context.SaveChangesAsync();
+                        }
+
+                        return Util.CreatedResponse(new { message = "Avatar changed successfully" });
+                  }
+                  catch (Exception e)
+                  {
+                        _logger.LogError(e, "Error retrieving galleries");
+                        return Util.InternalServerErrorResponse("Internal server error");
                   }
             }
       }

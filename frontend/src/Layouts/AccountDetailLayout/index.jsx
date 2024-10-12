@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 import Header from '../../components/Customer/AccountDetail/Header';
-import Footer from '../../components/Customer/AccountDetail/Footer';
+import Footer from '../../components/Customer/Footer';
 import Sidebar from '../../components/Customer/AccountDetail/Sidebar';
 
 const AccountDetailLayout = () => {
@@ -11,16 +11,16 @@ const AccountDetailLayout = () => {
                     <Header />
                 </div>
                 <div className="row py-5">
-                    <div className="col-lg-3">
+                    <div className="col-lg-3 col-md-4">
                         <Sidebar />
                     </div>
-                    <div className="col-lg-9">
+                    <div className="col-lg-9 col-md-8">
                         <Outlet />
                     </div>
                 </div>
-                <div className="row">
-                    <Footer />
-                </div>
+            </div>
+            <div className="row">
+                <Footer />
             </div>
         </div>
     );

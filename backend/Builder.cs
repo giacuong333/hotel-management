@@ -31,9 +31,6 @@ class Builder
                   };
             });
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
-
             // Connect MySQL + Migration
             builder.Services.AddDbContext<DatabaseContext>(options =>
                   options.UseMySql(builder.Configuration.GetConnectionString("MySQLConnection"),
@@ -48,12 +45,15 @@ class Builder
                   .AllowAnyHeader());
             });
 
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+
             // Allow the JSON serializer to handle cyclic references properly
             builder.Services.AddControllers()
-                        .AddJsonOptions(options =>
-                        {
-                              options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-                        });
+                  .AddJsonOptions(options =>
+                  {
+                        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                  });
       }
 }
 
