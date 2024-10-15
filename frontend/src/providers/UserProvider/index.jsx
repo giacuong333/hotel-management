@@ -4,6 +4,8 @@ import axios from 'axios';
 import { getAuthHeader } from '../../utils/getAuthHeader';
 
 import { showToast } from '../../utils/showToast';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router';
 
 // Create the UserContext
 const userContext = createContext();
@@ -14,6 +16,7 @@ const UserProvider = ({ children }) => {
     const [error, setError] = useState('');
     const [isCreatingAccount, setIsCreatingAccount] = useState(false);
     const [isLogginginAccount, setIsLogginginAccount] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const interceptor = axios.interceptors.response.use(
@@ -24,55 +27,50 @@ const UserProvider = ({ children }) => {
                     localStorage.removeItem('jwtToken');
                     delete axios.defaults.headers.common['Authorization'];
                     setUser(null);
+                    navigate('/');
                 }
                 return Promise.reject(error);
             },
         );
         return () => axios.interceptors.response.eject(interceptor);
-    }, []);
+    }, [navigate]);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const abortController = new AbortController();
-            const token = localStorage.getItem('jwtToken');
-            if (!token) return;
-
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-            try {
-                setLoading(true);
-                const response = await axios.get('http://localhost:5058/user/profile', {
-                    headers: getAuthHeader(),
-                });
-                setUser(response.data.user); // Adjust this according to your API response
-            } catch (err) {
-                console.error('Failed to fetch user:', err);
-                setUser(null); // Clear user if fetching fails
-            } finally {
-                setLoading(false);
-            }
-
-            return () => abortController.abort();
-        };
-
         fetchUser();
     }, []);
+
+    const fetchUser = async () => {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) return;
+
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        try {
+            setLoading(true);
+            const url = 'http://localhost:5058/user/profile';
+            const headers = { headers: getAuthHeader() };
+            const response = await axios.get(url, headers);
+            setUser(response.data.user);
+        } catch (err) {
+            console.error('Failed to fetch user:', err);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // User Sign In function
     const signIn = async (payload) => {
         try {
             setIsLogginginAccount(true);
-            const response = await axios.post('http://localhost:5058/user/login', payload, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
+            const url = 'http://localhost:5058/user/login';
+            const headers = { headers: { 'Content-Type': 'application/json' } };
+            const response = await axios.post(url, payload, headers);
             if (response.status === 200) {
-                const { token, user } = response.data;
+                const { token } = response.data;
                 localStorage.setItem('jwtToken', token);
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                setUser(user); // Set user after successful login
+                await fetchUser();
                 return response;
             }
         } catch (error) {
@@ -86,14 +84,10 @@ const UserProvider = ({ children }) => {
     const signUp = async (payload) => {
         try {
             setIsCreatingAccount(true);
-            const response = await axios.post('http://localhost:5058/user/register', payload, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (response.status === 201) {
-                return response;
-            }
+            const url = 'http://localhost:5058/user/register';
+            const headers = { headers: { 'Content-Type': 'application/json' } };
+            const response = await axios.post(url, payload, headers);
+            if (response.status === 201) return response;
         } catch (error) {
             handleAuthError(error);
         } finally {
@@ -104,22 +98,19 @@ const UserProvider = ({ children }) => {
     // User Sign Out function
     const signOut = async () => {
         try {
-            const response = await axios.post(
-                'http://localhost:5058/user/logout',
-                {}, // Empty body
-                {
-                    headers: {
-                        ...getAuthHeader(),
-                    },
-                },
-            );
+            setLoading(true);
+            const url = 'http://localhost:5058/user/logout';
+            const headers = { headers: { ...getAuthHeader() } };
+            const response = await axios.post(url, {}, headers);
             if (response.status === 200) {
                 localStorage.removeItem('jwtToken');
                 delete axios.defaults.headers.common['Authorization'];
-                setUser(null); // Clear the user after logout
+                setUser(null);
             }
         } catch (error) {
             console.error('Logout failed:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -143,6 +134,7 @@ const UserProvider = ({ children }) => {
         <userContext.Provider
             value={{
                 user,
+                fetchUser,
                 loading,
                 error,
                 signIn,

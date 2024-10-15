@@ -50,8 +50,8 @@ const FormGroup = ({
                         onInput={onInput}
                     >
                         {options?.map((option, index) => (
-                            <option key={index} value={option.value}>
-                                {option.label}
+                            <option key={index} value={option?.value}>
+                                {option?.label}
                             </option>
                         ))}
                     </Form.Select>

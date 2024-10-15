@@ -33,7 +33,6 @@ import Rooms from './components/Customer/Rooms';
 import RoleProvider from './providers/RoleProvider';
 import AccountDetailLayout from './Layouts/AccountDetailLayout';
 import AccountDetail from './components/Customer/AccountDetail';
-import Personal from './components/Customer/AccountDetail/Personal';
 import Payments from './components/Customer/AccountDetail/Payments';
 import BookingHistory from './components/Customer/AccountDetail/BookingHistory';
 import Password from './components/Customer/AccountDetail/Password';
@@ -46,74 +45,72 @@ function App() {
     console.log('RoleId: ', user?.roleId);
 
     return (
-        <BrowserRouter>
-            <Routes>
-                {/* If customer logged in, the customer can not access to the log in or register page */}
-                {!isAuthenticated && (
-                    <>
-                        <Route path="/signup" element={<SignUp />} />
-                        <Route path="/signin" element={<SignIn />} />
-                    </>
-                )}
+        <Routes>
+            {/* If customer logged in, the customer can not access to the log in or register page */}
+            {!isAuthenticated && (
+                <>
+                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/signin" element={<SignIn />} />
+                </>
+            )}
 
-                {/* If user logged in, the user can see he/him account information */}
-                {isAuthenticated && isCustomer && (
-                    <Route path="/account/" element={<AccountDetailLayout />}>
-                        <Route path="personal" element={<AccountDetail />}></Route>
-                        <Route path="payments" element={<Payments />}></Route>
-                        <Route path="bookinghistory" element={<BookingHistory />}></Route>
-                        <Route path="password" element={<Password />}></Route>
-                    </Route>
-                )}
+            {/* If user logged in, the user can see he/him account information */}
+            {isAuthenticated && isCustomer && (
+                <Route path="/account/" element={<AccountDetailLayout />}>
+                    <Route path="personal" element={<AccountDetail />}></Route>
+                    <Route path="payments" element={<Payments />}></Route>
+                    <Route path="bookinghistory" element={<BookingHistory />}></Route>
+                    <Route path="password" element={<Password />}></Route>
+                </Route>
+            )}
 
-                {/* If customer logged in with roleId = 2 or default customer does not log in, move on to the customer page. */}
-                {(isAuthenticated && isCustomer) || !isAuthenticated ? (
-                    // Customer
-                    <Route path="/" element={<CustomerLayout />}>
-                        <Route index element={<CustomerHome />} />
-                        <Route path="/rooms" element={<Rooms />} />
-                        <Route path="/room/:id" element={<RoomDetail />} />
+            {/* If customer logged in with roleId = 2 or default customer does not log in, move on to the customer page. */}
+            {(isAuthenticated && isCustomer) || !isAuthenticated ? (
+                // Customer
+                <Route path="/" element={<CustomerLayout />}>
+                    <Route index element={<CustomerHome />} />
+                    <Route path="/rooms" element={<Rooms />} />
+                    <Route path="/room/:id" element={<RoomDetail />} />
+                </Route>
+            ) : (
+                // If roleId != 4, move on to the admin page
+                isAuthenticated &&
+                !isCustomer && (
+                    // Admin
+                    <Route path="/admin/" element={<AdminLayout />}>
+                        <Route index element={<AdminHome />} />
+                        <Route path="booking" element={<Booking />} />
+                        <Route path="contact" element={<Contact />} />
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="discount" element={<Discount />} />
+                        <Route path="feedback" element={<Feedback />} />
+                        <Route path="gallery" element={<Gallery />} />
+                        <Route path="permission" element={<Permission />} />
+                        <Route path="receipt" element={<Receipt />} />
+                        <Route path="review" element={<Review />} />
+                        <Route
+                            path="role"
+                            element={
+                                <RoleProvider>
+                                    <Role />
+                                </RoleProvider>
+                            }
+                        />
+                        <Route path="room" element={<Room />} />
+                        <Route path="service" element={<Service />} />
+                        <Route path="statistic" element={<Statistic />} />
+                        <Route
+                            path="user"
+                            element={
+                                <RoleProvider>
+                                    <User />
+                                </RoleProvider>
+                            }
+                        />
                     </Route>
-                ) : (
-                    // If roleId != 4, move on to the admin page
-                    isAuthenticated &&
-                    !isCustomer && (
-                        // Admin
-                        <Route path="/admin/" element={<AdminLayout />}>
-                            <Route index element={<AdminHome />} />
-                            <Route path="booking" element={<Booking />} />
-                            <Route path="contact" element={<Contact />} />
-                            <Route path="dashboard" element={<Dashboard />} />
-                            <Route path="discount" element={<Discount />} />
-                            <Route path="feedback" element={<Feedback />} />
-                            <Route path="gallery" element={<Gallery />} />
-                            <Route path="permission" element={<Permission />} />
-                            <Route path="receipt" element={<Receipt />} />
-                            <Route path="review" element={<Review />} />
-                            <Route
-                                path="role"
-                                element={
-                                    <RoleProvider>
-                                        <Role />
-                                    </RoleProvider>
-                                }
-                            />
-                            <Route path="room" element={<Room />} />
-                            <Route path="service" element={<Service />} />
-                            <Route path="statistic" element={<Statistic />} />
-                            <Route
-                                path="user"
-                                element={
-                                    <RoleProvider>
-                                        <User />
-                                    </RoleProvider>
-                                }
-                            />
-                        </Route>
-                    )
-                )}
-            </Routes>
-        </BrowserRouter>
+                )
+            )}
+        </Routes>
     );
 }
 

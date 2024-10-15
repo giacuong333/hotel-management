@@ -23,6 +23,24 @@ namespace backend.Controllers
             private readonly ILogger<UserController> _logger = logger;
             private readonly IConfiguration _configuration = configuration;
 
+            private bool IsLoggedIn(HttpContext httpContext)
+            {
+                  if (httpContext.User.Identity is not ClaimsIdentity identity || !identity.IsAuthenticated)
+                  {
+                        return false;
+                  }
+
+                  var userIdClaim = identity.FindFirst(ClaimTypes.NameIdentifier);
+                  return userIdClaim != null;
+            }
+
+            private int GetUserIdFromClaims(HttpContext httpContext)
+            {
+                  var identity = httpContext.User.Identity as ClaimsIdentity;
+                  var userIdClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
+                  return userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
+            }
+
             // [GET] /user
             [HttpGet]
             [Produces("application/json")]
@@ -49,6 +67,47 @@ namespace backend.Controllers
                   }
             }
 
+            // [PUT] /user/password/{id}
+            [HttpPut("password/{id}")]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<UserModel>>> ChangePassword(int id, [FromForm] string currentPassword, [FromForm] string newPassword)
+            {
+                  if (IsLoggedIn(HttpContext))
+                  {
+                        try
+                        {
+                              var user = await _context.User.FindAsync(id);
+                              if (user == null)
+                              {
+                                    return Util.NotFoundResponse("User not found");
+                              }
+
+                              var passwordMatches = Crypto.VerifyHashedPassword(user.Password, currentPassword);
+                              if (!passwordMatches)
+                              {
+                                    return Util.BadRequestResponse("Current password is incorrect");
+                              }
+
+                              var passwordHashed = Crypto.HashPassword(newPassword);
+                              user.Password = passwordHashed;
+
+                              _context.User.Update(user);
+                              await _context.SaveChangesAsync();
+
+                              return Util.OkResponse("Password changed successfully.");
+                        }
+                        catch (Exception e)
+                        {
+                              _logger.LogError(e.Message);
+                              return Util.InternalServerErrorResponse("Internal server error");
+                        }
+                  }
+                  else
+                  {
+                        return Util.UnauthorizedResponse("You are unauthorized");
+                  }
+            }
+
             // [GET] /user/{id}
             [HttpGet("{id}")]
             [Produces("application/json")]
@@ -60,10 +119,10 @@ namespace backend.Controllers
 
                         if (user == null)
                         {
-                              return NotFound();
+                              return Util.NotFoundResponse("User not found");
                         }
 
-                        return Ok(user);
+                        return Util.OkResponse(user);
                   }
                   catch (Exception e)
                   {
@@ -134,18 +193,7 @@ namespace backend.Controllers
                         return Ok(new
                         {
                               token = tokenString,
-                              user = new
-                              {
-                                    id = user.Id,
-                                    email = user.Email,
-                                    name = user.Name,
-                                    avatar = user.Avatar,
-                                    dob = user.Dob,
-                                    phoneNumber = user.PhoneNumber,
-                                    createdAt = user.CreatedAt,
-                                    roleId = user.RoleId,
-                                    role = user.Roles
-                              }
+                              roleId = user.Roles.Id
                         });
                   }
                   catch (Exception e)
@@ -155,16 +203,6 @@ namespace backend.Controllers
                   }
             }
 
-            private int GetUserIdFromClaims()
-            {
-                  var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-                  if (userIdClaim != null)
-                  {
-                        return int.Parse(userIdClaim.Value); // Ensure this matches the data type of your user ID
-                  }
-                  throw new UnauthorizedAccessException("User ID not found in claims.");
-            }
-
             // GET /user/profile
             [Authorize]
             [HttpGet("profile")]
@@ -172,12 +210,12 @@ namespace backend.Controllers
             {
                   try
                   {
-                        var userId = GetUserIdFromClaims();
+                        int userId = GetUserIdFromClaims(HttpContext);
                         var user = _context.User.Where(u => u.DeletedAt == null).Include(u => u.Roles).FirstOrDefault(u => u.Id == userId);
 
                         if (user == null)
                         {
-                              return NotFound();
+                              return Util.NotFoundResponse("User not found");
                         }
 
                         return Ok(new
@@ -189,16 +227,17 @@ namespace backend.Controllers
                                     user.Name,
                                     user.PhoneNumber,
                                     user.Avatar,
+                                    user.Gender,
                                     user.Dob,
                                     user.CreatedAt,
                                     user.RoleId,
-                                    Role = user.Roles // Include the full Role object if necessary
+                                    Role = user.Roles
                               }
                         });
                   }
                   catch (UnauthorizedAccessException ex)
                   {
-                        return Unauthorized(new { message = ex.Message });
+                        return Util.UnauthorizedResponse(ex.Message);
                   }
             }
 
@@ -399,8 +438,7 @@ namespace backend.Controllers
                         return BadRequest("No users provided for deletion.");
                   }
 
-                  var claimsIdentity = User.Identity as ClaimsIdentity;
-                  if (claimsIdentity == null)
+                  if (User.Identity is not ClaimsIdentity claimsIdentity)
                   {
                         return Unauthorized("User identity is null.");
                   }
@@ -467,6 +505,10 @@ namespace backend.Controllers
             [Produces("application/json")]
             public async Task<ActionResult<ICollection<UserModel>>> EditUser([FromBody] UserModel payload, int id)
             {
+                  Console.WriteLine("Email: " + payload.Email);
+                  Console.WriteLine("Name: " + payload.Name);
+                  Console.WriteLine("PhoneNumber: " + payload.PhoneNumber);
+                  Console.WriteLine("User logged in Id: " + id);
                   try
                   {
                         if (!ModelState.IsValid)
@@ -502,16 +544,14 @@ namespace backend.Controllers
                         }
 
                         // Hash the password
-                        if (payload.Password.Length != 0)
+                        if (payload.Password != null && payload.Password.Length != 0)
                         {
                               payload.Password = Crypto.HashPassword(payload.Password);
                               currentUser.Password = payload.Password;
-
                         }
 
                         // Set FirstBook flagservice
                         payload.FirstBook = true;
-
                         currentUser.Name = payload.Name;
                         currentUser.Email = payload.Email;
                         currentUser.PhoneNumber = payload.PhoneNumber;

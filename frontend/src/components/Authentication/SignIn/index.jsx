@@ -14,37 +14,33 @@ const SignIn = () => {
 
     const navigate = useNavigate();
 
-    const { signIn, error, loading, isLogginginAccount } = useUser();
+    const { signIn, isLogginginAccount } = useUser();
 
     const handleValidation = () => {
         const validationErrors = {};
-
         if (isEmpty(fields.email)) validationErrors.email = 'Email is required';
         else if (!isEmail(fields.email)) validationErrors.email = 'Email is invalid';
         if (isEmpty(fields.password)) validationErrors.password = 'Password is required';
 
         setErrors(validationErrors);
-
         return Object.keys(validationErrors).length === 0;
     };
 
     const handleSignIn = async (e) => {
         e.preventDefault();
-
         if (handleValidation()) {
             try {
                 const payload = {
                     email: fields.email,
                     password: fields.password,
                 };
-
                 const response = await signIn(payload);
-
                 if (response && response.status === 200) {
-                    showToast(response.data.message, 'success');
+                    showToast(response?.data?.message, 'success');
                     setTimeout(() => {
-                        if (response?.data?.user?.roleId === 4) navigate('/');
-                        else navigate('/admin');
+                        const roleId = response?.data?.roleId;
+                        roleId === 4 && navigate('/');
+                        roleId !== 4 && navigate('/admin');
                     }, 1000);
                 }
             } catch (err) {

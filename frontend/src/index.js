@@ -14,10 +14,13 @@ import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
 // Style
 import './index.css';
+import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <UserProvider>
-        <App />
-    </UserProvider>,
+    <BrowserRouter>
+        <UserProvider>
+            <App />
+        </UserProvider>
+    </BrowserRouter>,
 );

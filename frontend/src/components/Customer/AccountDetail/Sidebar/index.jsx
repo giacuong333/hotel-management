@@ -38,8 +38,6 @@ const Sidebar = () => {
         return () => avatar && URL.revokeObjectURL(avatar.preview);
     }, [avatar]);
 
-    console.log('Logged user', user);
-
     const handleInputChange = async () => {
         const file = avatarRef.current.files[0];
         // Preview
@@ -52,7 +50,6 @@ const Sidebar = () => {
         try {
             const url = 'http://localhost:5058/user/avatar';
             const response = await axios.post(url, payload);
-            console.log(response);
         } catch (error) {
             console.log(error);
         }
@@ -85,8 +82,8 @@ const Sidebar = () => {
                             <small>Upload</small>
                         </Button>
                     </div>
-                    <p className="fw-semibold fs-5">Gia Cường</p>
-                    <small className="text-black-50">legiacuong@gmail.com</small>
+                    <p className="fw-semibold fs-5 text-capitalize">{user?.name}</p>
+                    <small className="text-black-50">{user?.email}</small>
                 </div>
                 <ul className="d-flex flex-column gap-4">
                     {menu.map((item) => {
