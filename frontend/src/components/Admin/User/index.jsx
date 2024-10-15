@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 import DataTable from 'react-data-table-component';
@@ -13,9 +13,8 @@ import UserForm from './UserForm';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
-import { useUser } from '~/providers/UserProvider';
-import Button from 'react-bootstrap/Button';
 import { RotatingLines } from 'react-loader-spinner';
+import { Button } from 'react-bootstrap';
 
 const columns = [
     {
@@ -40,6 +39,10 @@ const columns = [
         selector: (row) => row.roleName,
     },
     {
+        name: 'Avatar',
+        selector: (row) => row.avatar,
+    },
+    {
         name: 'Create time',
         selector: (row) => row.createdAt,
     },
@@ -62,6 +65,8 @@ const User = () => {
 
     const [searchInput, setSearchInput] = useState('');
     const [searchedUsers, setSearchedUsers] = useState([]);
+
+    const avatarRef = useRef();
 
     // For deleting selected users
     useEffect(() => {
@@ -165,6 +170,27 @@ const User = () => {
         setSelectedUser(null);
     };
 
+    const handleSetAvatar = async (userId) => {
+        avatarRef.current.click();
+        const file = avatarRef.current.files[0];
+        const payload = new FormData();
+        payload.append('userId', userId);
+        payload.append('file', file);
+        try {
+            const url = 'http://localhost:5058/user';
+            const response = await axios.put(url, payload);
+            console.log(response);
+        } catch (error) {
+            showToast(
+                error?.response?.data?.message ||
+                    error?.response?.obj ||
+                    error?.response?.data?.obj?.message ||
+                    'Something went wrong while setting avatar',
+                'error',
+            );
+        }
+    };
+
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
         try {
@@ -174,7 +200,7 @@ const User = () => {
                 },
             });
             if (response.status === 200) {
-                setSelectedUser(response.data);
+                setSelectedUser(response?.data?.obj);
                 setShowPanel('see');
             }
         } catch (error) {
@@ -218,6 +244,19 @@ const User = () => {
         email: user.email,
         phoneNumber: user.phoneNumber,
         roleName: user?.roles?.name,
+        avatar: (
+            <>
+                <input type="file" ref={avatarRef} hidden />
+                <Button
+                    type="button"
+                    variant="primary"
+                    className={`w-full p-1 customer-primary-button bg-hover-white text-hover-black`}
+                    onClick={() => handleSetAvatar(user?.id)}
+                >
+                    Set avatar
+                </Button>
+            </>
+        ),
         createdAt: new Date(user.createdAt).toLocaleString(),
         actions: (
             <>

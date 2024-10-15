@@ -505,10 +505,6 @@ namespace backend.Controllers
             [Produces("application/json")]
             public async Task<ActionResult<ICollection<UserModel>>> EditUser([FromBody] UserModel payload, int id)
             {
-                  Console.WriteLine("Email: " + payload.Email);
-                  Console.WriteLine("Name: " + payload.Name);
-                  Console.WriteLine("PhoneNumber: " + payload.PhoneNumber);
-                  Console.WriteLine("User logged in Id: " + id);
                   try
                   {
                         if (!ModelState.IsValid)
@@ -598,7 +594,6 @@ namespace backend.Controllers
                               var imageData = ms.ToArray();
 
                               user.Avatar = imageData;
-
 
                               _context.User.Update(user);
                               await _context.SaveChangesAsync();

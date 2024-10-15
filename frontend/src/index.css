@@ -493,3 +493,21 @@ input.form-check-input:checked {
 .hide-scrollbar::-webkit-scrollbar {
     display: none;
 }
+
+/* Nav in the Account Information */
+.small-nav {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s ease-in-out;
+}
+
+.show-nav {
+    max-height: 600px; /* Adjust based on the content size */
+    opacity: 1;
+}
+
+.hide-nav {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+}

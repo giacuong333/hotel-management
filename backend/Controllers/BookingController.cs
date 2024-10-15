@@ -36,10 +36,8 @@ namespace backend.Controllers
                               .Where(b => b.DeletedAt == null)
                               .ToListAsync();
 
-                        if (bookings == null || !bookings.Any())
-                        {
+                        if (bookings == null || bookings.Count == 0)
                               return Util.NotFoundResponse("Bookings not found");
-                        }
 
                         return Util.OkResponse(bookings);
                   }
@@ -81,12 +79,16 @@ namespace backend.Controllers
             {
                   try
                   {
-                        Console.WriteLine(id);
                         var booking = await _context.Booking.FindAsync(id);
 
                         if (booking == null)
                         {
                               return Util.NotFoundResponse("Booking not found.");
+                        }
+
+                        if (booking.Status == 0)
+                        {
+                              return Util.ForbiddenResponse("Booking can not be deleted.");
                         }
 
                         booking.DeletedAt = DateTime.UtcNow;

@@ -42,8 +42,6 @@ function App() {
     const isAuthenticated = user !== null;
     const isCustomer = user?.roleId === 4;
 
-    console.log('RoleId: ', user?.roleId);
-
     return (
         <Routes>
             {/* If customer logged in, the customer can not access to the log in or register page */}

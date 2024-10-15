@@ -14,46 +14,7 @@ import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import formatCurrency from '~/utils/currencyPipe';
 import { RotatingLines } from 'react-loader-spinner';
-
-const columns = [
-    {
-        name: 'No',
-        selector: (row) => row.no,
-    },
-    {
-        name: 'Customer',
-        selector: (row) => row.customer,
-        sortable: true,
-    },
-    {
-        name: 'Staff Check In',
-        selector: (row) => row.staffCheckIn,
-    },
-    {
-        name: 'Staff Check Out',
-        selector: (row) => row.staffCheckOut,
-        sortable: true,
-    },
-    {
-        name: 'Check In',
-        selector: (row) => row.checkIn,
-        sortable: true,
-    },
-    {
-        name: 'Check Out',
-        selector: (row) => row.checkOut,
-        sortable: true,
-    },
-    {
-        name: 'Status',
-        selector: (row) => row.statusName,
-        sortable: true,
-    },
-    {
-        name: 'Actions',
-        selector: (row) => row.actions,
-    },
-];
+import { Button } from 'react-bootstrap';
 
 const Booking = () => {
     const [pending, setPending] = useState(true);
@@ -133,22 +94,23 @@ const Booking = () => {
                     setBookings(data || []);
                     setSearchedBookings(data || []);
                 }
+                console.log(response);
             } catch (error) {
                 console.log('Error fetching rooms:', error);
                 showToast(
                     error?.response?.obj?.message ||
                         error?.response?.message ||
+                        error?.response?.data?.message ||
                         'Something went wrong while fetching bookings',
                     'error',
                 );
             } finally {
                 setPending(false);
             }
-
             return () => controller.abort();
         };
 
-        const timeout = setTimeout(fetchBookings, 2000);
+        const timeout = setTimeout(fetchBookings, 1000);
         return () => clearTimeout(timeout);
     }, []);
 
@@ -169,7 +131,7 @@ const Booking = () => {
             }
         } catch (error) {
             if (error?.response?.status === 403) {
-                showToast(error?.response?.data?.obj?.message, 'error');
+                showToast(error?.response?.data?.message, 'error');
             } else if (error?.response?.status === 401) {
                 showToast('You need to log in', 'error');
             } else if (error?.response?.status === 409) {
@@ -244,26 +206,37 @@ const Booking = () => {
         setSearchInput('');
     };
 
-    const data = searchedBookings?.map((booking, index) => ({
-        id: booking?.id,
-        no: index + 1,
-        customer: booking?.customer?.name,
-        staffCheckIn: booking?.staffCheckIn?.name,
-        staffCheckOut: booking?.staffCheckOut?.name,
-        checkIn: booking?.checkIn,
-        checkOut: booking?.checkOut,
-        statusName: `${booking?.status === 0 ? 'Check in' : 'Check out'}`,
-        actions: (
-            <>
-                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(booking?.id)} />
-            </>
-        ),
-    }));
-
     return (
         <div>
             {/* Show a toast */}
             {ToastContainer}
+
+            {/* Show confirmation when clicking on delete all rooms */}
+            {showDeleteAllConfirm && (
+                <ConfirmPopup
+                    header="Are you sure you want to delete all the selected rooms?"
+                    message="This action cannot be undone."
+                    negativeChoice="Cancel"
+                    positiveChoice="Delete"
+                    isShow={showDeleteAllConfirm}
+                    onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                    onClose={reset}
+                />
+            )}
+
+            {/* Show confirmation when clicking on delete a booking*/}
+            {showDeleteConfirm && (
+                <ConfirmPopup
+                    header="Are you sure you want to delete the selected booking?"
+                    message="This action cannot be undone."
+                    negativeChoice="Cancel"
+                    positiveChoice="Delete"
+                    isShow={showDeleteConfirm}
+                    onYes={() => deleteBooking(deleteOne.payload)}
+                    onClose={reset}
+                />
+            )}
+
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
                     <FiPlus
@@ -290,71 +263,193 @@ const Booking = () => {
                     onChange={(e) => setSearchInput(e.target.value)}
                 />
             </div>
-            <>
-                <DataTable
-                    columns={columns}
-                    data={data}
-                    selectableRows
-                    striped
-                    highlightOnHover
-                    pagination
-                    sortIcon={<FaSortAlphaDownAlt />}
-                    onRowClicked={handleRowClicked}
-                    onSelectedRowsChange={handleSelectedRowsChanged}
-                    progressPending={pending}
-                    progressComponent={
-                        <RotatingLines
-                            visible={true}
-                            height="50"
-                            width="50"
-                            strokeColor="#e8bf96"
-                            strokeWidth="5"
-                            animationDuration="0.75"
-                            ariaLabel="rotating-lines-loading"
-                            wrapperStyle={{}}
-                            wrapperClass=""
-                        />
-                    }
-                />
 
-                {/* Show Form */}
-                {showPanel && (
-                    <BookingForm
-                        data={selectedRoom}
-                        type={showPanel}
-                        isShowed={showPanel}
-                        onClose={() => setShowPanel(false)}
-                        onRoomAdded={handleRoomAdded}
-                        onRoomUpdated={handleRoomUpdated}
-                    />
-                )}
-
-                {/* Show confirmation when clicking on delete all rooms */}
-                {showDeleteAllConfirm && (
-                    <ConfirmPopup
-                        header="Are you sure you want to delete all the selected rooms?"
-                        message="This action cannot be undone."
-                        negativeChoice="Cancel"
-                        positiveChoice="Delete"
-                        isShow={showDeleteAllConfirm}
-                        onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                        onClose={reset}
-                    />
-                )}
-
-                {/* Show confirmation when clicking on delete a booking*/}
-                {showDeleteConfirm && (
-                    <ConfirmPopup
-                        header="Are you sure you want to delete the selected booking?"
-                        message="This action cannot be undone."
-                        negativeChoice="Cancel"
-                        positiveChoice="Delete"
-                        isShow={showDeleteConfirm}
-                        onYes={() => deleteBooking(deleteOne.payload)}
-                        onClose={reset}
-                    />
-                )}
-            </>
+            <div className="row">
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-4">
+                    <div className="secondary-bg-color rounded-2 text-white shadow p-3">
+                        <div className="pb-2">
+                            <p className="fw-semibold">David Anderson</p>
+                            <p>Service</p>
+                            <p>Counselling</p>
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="">
+                                    <p>Date</p>
+                                    <small>27 May 2021</small>
+                                </div>
+                                <div className="">
+                                    <p>Time</p>
+                                    <small>11:00 - 12:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="py-2 border-top d-flex align-items-center justify-content-between">
+                            <p className="text-capitalize cursor-pointer">Accept Booking</p>
+                            <p className="text-capitalize text-secondary cursor-pointer">Decline</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-4">
+                    <div className="secondary-bg-color rounded-2 text-white shadow p-3">
+                        <div className="pb-2">
+                            <p className="fw-semibold">David Anderson</p>
+                            <p>Service</p>
+                            <p>Counselling</p>
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="">
+                                    <p>Date</p>
+                                    <small>27 May 2021</small>
+                                </div>
+                                <div className="">
+                                    <p>Time</p>
+                                    <small>11:00 - 12:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="py-2 border-top d-flex align-items-center justify-content-between">
+                            <p className="text-capitalize cursor-pointer">Accept Booking</p>
+                            <p className="text-capitalize text-secondary cursor-pointer">Decline</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-4">
+                    <div className="secondary-bg-color rounded-2 text-white shadow p-3">
+                        <div className="pb-2">
+                            <p className="fw-semibold">David Anderson</p>
+                            <p>Service</p>
+                            <p>Counselling</p>
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="">
+                                    <p>Date</p>
+                                    <small>27 May 2021</small>
+                                </div>
+                                <div className="">
+                                    <p>Time</p>
+                                    <small>11:00 - 12:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="py-2 border-top d-flex align-items-center justify-content-between">
+                            <p className="text-capitalize cursor-pointer">Accept Booking</p>
+                            <p className="text-capitalize text-secondary cursor-pointer">Decline</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-4">
+                    <div className="secondary-bg-color rounded-2 text-white shadow p-3">
+                        <div className="pb-2">
+                            <p className="fw-semibold">David Anderson</p>
+                            <p>Service</p>
+                            <p>Counselling</p>
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="">
+                                    <p>Date</p>
+                                    <small>27 May 2021</small>
+                                </div>
+                                <div className="">
+                                    <p>Time</p>
+                                    <small>11:00 - 12:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="py-2 border-top d-flex align-items-center justify-content-between">
+                            <p className="text-capitalize cursor-pointer">Accept Booking</p>
+                            <p className="text-capitalize text-secondary cursor-pointer">Decline</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-4">
+                    <div className="secondary-bg-color rounded-2 text-white shadow p-3">
+                        <div className="pb-2">
+                            <p className="fw-semibold">David Anderson</p>
+                            <p>Service</p>
+                            <p>Counselling</p>
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="">
+                                    <p>Date</p>
+                                    <small>27 May 2021</small>
+                                </div>
+                                <div className="">
+                                    <p>Time</p>
+                                    <small>11:00 - 12:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="py-2 border-top d-flex align-items-center justify-content-between">
+                            <p className="text-capitalize cursor-pointer">Accept Booking</p>
+                            <p className="text-capitalize text-secondary cursor-pointer">Decline</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-4">
+                    <div className="secondary-bg-color rounded-2 text-white shadow p-3">
+                        <div className="pb-2">
+                            <p className="fw-semibold">David Anderson</p>
+                            <p>Service</p>
+                            <p>Counselling</p>
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="">
+                                    <p>Date</p>
+                                    <small>27 May 2021</small>
+                                </div>
+                                <div className="">
+                                    <p>Time</p>
+                                    <small>11:00 - 12:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="py-2 border-top d-flex align-items-center justify-content-between">
+                            <p className="text-capitalize cursor-pointer">Accept Booking</p>
+                            <p className="text-capitalize text-secondary cursor-pointer">Decline</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-4">
+                    <div className="secondary-bg-color rounded-2 text-white shadow p-3">
+                        <div className="pb-2">
+                            <p className="fw-semibold">David Anderson</p>
+                            <p>Service</p>
+                            <p>Counselling</p>
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="">
+                                    <p>Date</p>
+                                    <small>27 May 2021</small>
+                                </div>
+                                <div className="">
+                                    <p>Time</p>
+                                    <small>11:00 - 12:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="py-2 border-top d-flex align-items-center justify-content-between">
+                            <p className="text-capitalize cursor-pointer">Accept Booking</p>
+                            <p className="text-capitalize text-secondary cursor-pointer">Decline</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-4">
+                    <div className="secondary-bg-color rounded-2 text-white shadow p-3">
+                        <div className="pb-2">
+                            <p className="fw-semibold">David Anderson</p>
+                            <p>Service</p>
+                            <p>Counselling</p>
+                            <div className="d-flex align-items-center gap-3">
+                                <div className="">
+                                    <p>Date</p>
+                                    <small>27 May 2021</small>
+                                </div>
+                                <div className="">
+                                    <p>Time</p>
+                                    <small>11:00 - 12:00</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="py-2 border-top d-flex align-items-center justify-content-between">
+                            <p className="text-capitalize cursor-pointer">Accept Booking</p>
+                            <p className="text-capitalize text-secondary cursor-pointer">Decline</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

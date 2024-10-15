@@ -281,16 +281,15 @@ const AccountDetail = () => {
 
                         {/* Buttons */}
                         <div className="row">
-                            <div className="d-flex align-items-center justify-content-between">
+                            <div className="d-flex flex-md-row flex-column gap-3 align-items-center justify-content-between">
                                 <span className="d-flex align-items-center gap-2">
                                     {fieldIsChanging && (
                                         <>
                                             <Button
                                                 type="submit"
-                                                className={`btn secondary-bg-color-hover primary-bd-color-hover fw-semibold ${
+                                                className={`w-full btn secondary-bg-color-hover primary-bd-color-hover fw-semibold ${
                                                     loading ? 'pe-none opacity-75' : ''
                                                 }`}
-                                                style={{ minWidth: '150px' }}
                                             >
                                                 {loading ? (
                                                     <RotatingLines
@@ -310,10 +309,9 @@ const AccountDetail = () => {
                                             </Button>
                                             <Button
                                                 variant="outline-secondary"
-                                                className={`btn primary-bg-color primary-bg-color-hover border fw-semibold text-black ${
+                                                className={`w-full btn primary-bg-color primary-bg-color-hover border fw-semibold text-black ${
                                                     loading ? 'pe-none opacity-75' : ''
                                                 }`}
-                                                style={{ minWidth: '150px' }}
                                                 onClick={handleReset}
                                             >
                                                 Cancel
@@ -321,7 +319,10 @@ const AccountDetail = () => {
                                         </>
                                     )}
                                 </span>
-                                <Button className="btn-danger fw-semibold" onClick={() => setShowDeletePopup(true)}>
+                                <Button
+                                    className="btn-danger fw-semibold text-end ms-auto"
+                                    onClick={() => setShowDeletePopup(true)}
+                                >
                                     Delete Account
                                 </Button>
                             </div>
