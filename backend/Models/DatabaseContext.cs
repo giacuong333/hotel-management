@@ -46,6 +46,10 @@ namespace backend.Database
                 .HasOne(u => u.Users)
                 .WithMany()
                 .HasForeignKey(u => u.UserId);
+            modelBuilder.Entity<ReviewModel>()
+          .HasOne(u => u.Rooms)
+          .WithMany()
+          .HasForeignKey(u => u.RoomId);
 
             modelBuilder.Entity<BookingModel>()
                 .HasMany(b => b.BookingDetails)
