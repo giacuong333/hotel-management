@@ -1124,7 +1124,7 @@ const User = () => {
                                                         type={type}
                                                         id={`Create-Service-${type}`}
                                                         label={`Create Service`}
-                                                        checked={deleteService === 1}
+                                                        checked={createService === 1}
                                                         onChange={(e) => handlePermissionChange(e, setCreateService)}
                                                     />
                                                     <Form.Check
