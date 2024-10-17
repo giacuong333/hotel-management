@@ -80,6 +80,8 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
         onClose();
     };
 
+    
+
     const handleInputChanged = () => {};
 
     const handleInputBlured = () => {};
