@@ -50,7 +50,11 @@ const FormGroup = ({
                         onInput={onInput}
                     >
                         {options?.map((option, index) => (
-                            <option key={index} value={option?.value}>
+                            <option
+                                key={index}
+                                value={option?.value}
+                                className={`${index === 0 ? 'text-black-50' : ''}`}
+                            >
                                 {option?.label}
                             </option>
                         ))}

@@ -53,19 +53,17 @@ const columns = [
 ];
 
 const User = () => {
+    const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [pending, setPending] = useState(true);
+    const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [clearSelectedRows, setClearSelectedRows] = useState(false);
     const [showPanel, setShowPanel] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
-
-    const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
-    const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
     const [deleteOne, setDeleteOne] = useState({ payload: null });
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
     const [searchInput, setSearchInput] = useState('');
     const [searchedUsers, setSearchedUsers] = useState([]);
-
     const avatarRef = useRef();
 
     // For deleting selected users
@@ -74,8 +72,8 @@ const User = () => {
             try {
                 // Create payload for deletion
                 const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
-
-                const response = await axios.delete('http://localhost:5058/user', { data: payload });
+                const url = 'http://localhost:5058/user';
+                const response = await axios.delete(url, { data: payload });
                 console.log(response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
@@ -170,16 +168,22 @@ const User = () => {
         setSelectedUser(null);
     };
 
-    const handleSetAvatar = async (userId) => {
-        avatarRef.current.click();
-        const file = avatarRef.current.files[0];
+    const handleSetAvatar = async (userId, file) => {
+        console.log(userId);
+        if (!file) {
+            showToast('Please select an image to upload', 'error');
+            return;
+        }
+
         const payload = new FormData();
         payload.append('userId', userId);
-        payload.append('file', file);
+        payload.append('avatar', file);
+
         try {
-            const url = 'http://localhost:5058/user';
-            const response = await axios.put(url, payload);
+            const url = 'http://localhost:5058/user/avatar';
+            const response = await axios.post(url, payload);
             console.log(response);
+            response?.status === 201 && showToast(response?.data?.obj?.message, 'success');
         } catch (error) {
             showToast(
                 error?.response?.data?.message ||
@@ -210,6 +214,7 @@ const User = () => {
 
     const handleSelectedRowsChanged = ({ allSelected, selectedCount, selectedRows }) => {
         setDeleteAll({ count: selectedCount, payload: selectedRows });
+        setClearSelectedRows(false);
     };
 
     const handleDeleteRowsSelected = () => {
@@ -233,25 +238,31 @@ const User = () => {
     const reset = () => {
         setDeleteAll({ count: 0, payload: [], yes: false });
         setShowDeleteAllConfirm(false);
-        setDeleteOne({ payload: null });
+        setClearSelectedRows(true);
         setShowDeleteConfirm(false);
+        setDeleteOne({ payload: null });
     };
 
     const data = searchedUsers?.map((user, index) => ({
-        id: user.id,
+        id: user?.id,
         no: index + 1,
-        name: user.name,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
+        name: user?.name,
+        email: user?.email,
+        phoneNumber: user?.phoneNumber,
         roleName: user?.roles?.name,
         avatar: (
             <>
-                <input type="file" ref={avatarRef} hidden />
+                <input
+                    type="file"
+                    hidden
+                    id={`avatar-input-${user?.id}`}
+                    onChange={(e) => handleSetAvatar(user?.id, e.target.files[0])}
+                />
                 <Button
                     type="button"
                     variant="primary"
                     className={`w-full p-1 customer-primary-button bg-hover-white text-hover-black`}
-                    onClick={() => handleSetAvatar(user?.id)}
+                    onClick={() => document.getElementById(`avatar-input-${user?.id}`).click()}
                 >
                     Set avatar
                 </Button>
@@ -260,8 +271,18 @@ const User = () => {
         createdAt: new Date(user.createdAt).toLocaleString(),
         actions: (
             <>
-                <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
-                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+                <FiEdit
+                    size={18}
+                    className="cursor-pointer me-3"
+                    onClick={() => handleEditClicked(user)}
+                    style={{ color: '#80CBC4' }}
+                />
+                <BsTrash
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={() => handleTrashClicked(user.id)}
+                    style={{ color: '#E57373' }}
+                />
             </>
         ),
     }));
@@ -306,6 +327,7 @@ const User = () => {
                     onRowClicked={handleRowClicked}
                     onSelectedRowsChange={handleSelectedRowsChanged}
                     progressPending={pending}
+                    clearSelectedRows={clearSelectedRows}
                     progressComponent={
                         <RotatingLines
                             visible={true}

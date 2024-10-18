@@ -260,7 +260,22 @@ const Room = () => {
         name: room?.name,
         type: room?.type,
         bedNum: room?.bedNum,
-        status: room?.statusName,
+        status:
+            room?.status === 1 ? (
+                <p
+                    className="p-1 px-2 rounded-pill text-white"
+                    style={{ backgroundColor: '#80CBC4', fontSize: '10px' }}
+                >
+                    {room?.statusName}
+                </p>
+            ) : (
+                <p
+                    className="p-1 px-2 rounded-pill"
+                    style={{ backgroundColor: '#ffd5e1', color: '#b74c4c', fontSize: '10px' }}
+                >
+                    {room?.statusName}
+                </p>
+            ),
         price: room?.formattedPrice,
         area: `${room?.area}m2`,
         images: (
@@ -275,8 +290,18 @@ const Room = () => {
         ),
         actions: (
             <>
-                <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(room)} />
-                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(room.id)} />
+                <FiEdit
+                    size={18}
+                    className="cursor-pointer me-3"
+                    onClick={() => handleEditClicked(room)}
+                    style={{ color: '#80CBC4' }}
+                />
+                <BsTrash
+                    size={18}
+                    className="cursor-pointer"
+                    onClick={() => handleTrashClicked(room.id)}
+                    style={{ color: '#E57373' }}
+                />
             </>
         ),
     }));

@@ -2,19 +2,15 @@ import React from 'react';
 import { PiSquaresFour } from 'react-icons/pi';
 import { FaRegUser } from 'react-icons/fa6';
 import { IoTicketOutline } from 'react-icons/io5';
-import { LuContact2 } from 'react-icons/lu';
 import { MdOutlineMeetingRoom } from 'react-icons/md';
 import { RiDiscountPercentLine } from 'react-icons/ri';
 import { VscFeedback } from 'react-icons/vsc';
 import { MdOutlineRateReview } from 'react-icons/md';
-import { LuGalleryVertical } from 'react-icons/lu';
 import { IoReceiptOutline } from 'react-icons/io5';
 import { TbUsersGroup } from 'react-icons/tb';
 import { FaBuffer } from 'react-icons/fa6';
 import { GrBusinessService } from 'react-icons/gr';
-import { FcStatistics } from 'react-icons/fc';
 import { FaChartBar } from 'react-icons/fa';
-
 import { Link } from 'react-router-dom';
 
 const Siderbar = () => {

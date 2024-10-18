@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.Json.Serialization;
 
 namespace backend.Controllers
 {
@@ -33,9 +34,9 @@ namespace backend.Controllers
                                     .ThenInclude(bd => bd!.Room)
                               .Include(b => b.Customer)
                               .Include(b => b.StaffCheckIn)
+                              .Include(b => b.StaffCheckOut)
                               .Where(b => b.DeletedAt == null)
                               .ToListAsync();
-
                         if (bookings == null || bookings.Count == 0)
                               return Util.NotFoundResponse("Bookings not found");
 
@@ -58,8 +59,10 @@ namespace backend.Controllers
                               .Include(b => b.BookingDetails)
                                     .ThenInclude(bd => bd!.Room)
                               .Include(b => b.Customer)
+                              .Include(b => b.StaffCheckIn)
+                              .Include(b => b.StaffCheckOut)
+                              .Where(b => b.DeletedAt == null)
                               .FirstOrDefaultAsync(b => b.Id == id);
-
                         if (booking == null)
                         {
                               return Util.NotFoundResponse("Booking not found");
@@ -80,13 +83,11 @@ namespace backend.Controllers
                   try
                   {
                         var booking = await _context.Booking.FindAsync(id);
-
                         if (booking == null)
                         {
                               return Util.NotFoundResponse("Booking not found.");
                         }
-
-                        if (booking.Status == 0)
+                        if (booking.Status != 0)
                         {
                               return Util.ForbiddenResponse("Booking can not be deleted.");
                         }
@@ -104,5 +105,96 @@ namespace backend.Controllers
                         return Util.InternalServerErrorResponse("Internal server error");
                   }
             }
+
+            // [DELETE] /booking
+            [HttpDelete]
+            public async Task<ActionResult> DeleteBookings([FromBody] List<UserModel> bookings)
+            {
+                  try
+                  {
+                        if (bookings == null || bookings.Count == 0)
+                        {
+                              return Util.BadRequestResponse("No bookings provided for deletion.");
+                        }
+                        foreach (var booking in bookings)
+                        {
+                              var bookingFromDb = await _context.Booking.FindAsync(booking.Id);
+                              if (bookingFromDb == null)
+                              {
+                                    return Util.NotFoundResponse("Booking not found");
+                              }
+                              if (bookingFromDb.Status != 0)
+                              {
+                                    return Util.ForbiddenResponse("These bookings can not be deleted");
+                              }
+
+                              bookingFromDb!.DeletedAt = DateTime.UtcNow;
+                        }
+
+                        await _context.SaveChangesAsync();
+
+                        var updatedBookings = await _context.Booking
+                              .Include(b => b.BookingDetails)
+                                    .ThenInclude(bd => bd!.Room)
+                              .Include(b => b.Customer)
+                              .Include(b => b.StaffCheckIn)
+                              .Include(b => b.StaffCheckOut)
+                              .Where(b => b.DeletedAt == null)
+                              .ToListAsync();
+
+                        return Util.OkResponse(new { message = "Bookings deleted successfully.", updatedBookings });
+                  }
+                  catch (Exception e)
+                  {
+                        _logger.LogError(e.Message);
+                        return Util.InternalServerErrorResponse("Internal server error");
+                  }
+            }
+
+            // [PUT] /booking/status
+            [HttpPut("{id}")]
+            public async Task<ActionResult> ChangeStatus(int id, [FromBody] int statusCode)
+            {
+                  try
+                  {
+                        var booking = await _context.Booking.FindAsync(id);
+                        if (booking == null)
+                        {
+                              return Util.NotFoundResponse("Booking not found");
+                        }
+
+                        booking.Status = statusCode;
+
+                        _context.Booking.Update(booking);
+                        await _context.SaveChangesAsync();
+
+                        return Util.OkResponse("Status changed successfully");
+                  }
+                  catch (Exception e)
+                  {
+                        _logger.LogError(e, "Error while changing booking status");
+                        return Util.InternalServerErrorResponse("Internal server error");
+                  }
+            }
+
+            // [POST] /booking
+            // [HttpPost]
+            // public async Task<ActionResult<IEnumerable<BookingModel>>> AddBooking([FromBody] BookingModel payload)
+            // {
+            //       try
+            //       {
+            //             if (!ModelState.IsValid)
+            //             {
+            //                   return Util.BadRequestResponse("Data missing");
+            //             }
+
+
+            //       }
+            //       catch (Exception e)
+            //       {
+            //             _logger.LogError(e, "Error while adding new booking");
+            //             return Util.InternalServerErrorResponse("Intternal server error");
+            //       }
+            // }
       }
 }

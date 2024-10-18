@@ -53,6 +53,8 @@ class Builder
                   .AddJsonOptions(options =>
                   {
                         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+                        // This is optional but useful for proper formatting
+                        options.JsonSerializerOptions.WriteIndented = true;
                   });
       }
 }

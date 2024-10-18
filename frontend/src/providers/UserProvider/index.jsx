@@ -1,10 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-
 import { getAuthHeader } from '../../utils/getAuthHeader';
-
 import { showToast } from '../../utils/showToast';
-import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router';
 
 // Create the UserContext
@@ -16,7 +13,7 @@ const UserProvider = ({ children }) => {
     const [error, setError] = useState('');
     const [isCreatingAccount, setIsCreatingAccount] = useState(false);
     const [isLogginginAccount, setIsLogginginAccount] = useState(false);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     // useEffect(() => {
     //     const interceptor = axios.interceptors.response.use(

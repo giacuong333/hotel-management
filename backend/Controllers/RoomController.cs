@@ -47,6 +47,30 @@ namespace backend.Controllers
                   }
             }
 
+            // [GET] /room/empty
+            [HttpGet("empty")]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<RoomModel>>> GetEmptyRooms()
+            {
+                  try
+                  {
+                        // Get empty rooms
+                        var rooms = await _context.Room.Where(r => r.DeletedAt == null && r.Status == 1).ToArrayAsync();
+
+                        if (rooms == null)
+                        {
+                              return NotFound(new { message = "Empty rooms not found" });
+                        }
+
+                        return Util.OkResponse(rooms);
+                  }
+                  catch (Exception e)
+                  {
+                        Console.WriteLine(e);
+                        return StatusCode(500, "Internal server error");
+                  }
+            }
+
             // [GET] /room/{id}
             [HttpGet("{id}")]
             [Produces("application/json")]

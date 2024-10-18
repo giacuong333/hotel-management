@@ -36,6 +36,7 @@ import AccountDetail from './components/Customer/AccountDetail';
 import Payments from './components/Customer/AccountDetail/Payments';
 import BookingHistory from './components/Customer/AccountDetail/BookingHistory';
 import Password from './components/Customer/AccountDetail/Password';
+import RoomProvider from './providers/RoomProvider';
 
 function App() {
     const { user } = useUser();
@@ -77,7 +78,14 @@ function App() {
                     // Admin
                     <Route path="/admin/" element={<AdminLayout />}>
                         <Route index element={<AdminHome />} />
-                        <Route path="booking" element={<Booking />} />
+                        <Route
+                            path="booking"
+                            element={
+                                <RoomProvider>
+                                    <Booking />
+                                </RoomProvider>
+                            }
+                        />
                         <Route path="contact" element={<Contact />} />
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="discount" element={<Discount />} />

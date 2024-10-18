@@ -494,10 +494,9 @@ namespace backend.Controllers
 
                   await _context.SaveChangesAsync();
 
-
                   var newUsers = await _context.User.Where(u => u.DeletedAt == null).Include(u => u.Roles).ToListAsync();
 
-                  return Ok(new { message = "Users deleted successfully.", newUsers });
+                  return Util.OkResponse(new { message = "Users deleted successfully.", newUsers });
             }
 
             // [PUT] /user
@@ -579,7 +578,8 @@ namespace backend.Controllers
                               return Util.BadRequestResponse("Missing data");
                         }
 
-                        Console.WriteLine("This line run");
+                        Console.WriteLine("User id: " + userId);
+                        Console.WriteLine("Avatar: " + avatar);
 
                         var user = await _context.User.FindAsync(userId);
                         if (user == null)
