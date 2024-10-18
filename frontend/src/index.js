@@ -5,6 +5,8 @@ import App from './App';
 // Context
 import UserProvider from './providers/UserProvider';
 
+import CheckPermissionProvider from './providers/CheckPermissionProvider';
+
 // Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css';
 // Bootstrap Bundle JS
@@ -20,7 +22,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <UserProvider>
-            <App />
+            <CheckPermissionProvider>
+                <App />
+            </CheckPermissionProvider>
         </UserProvider>
     </BrowserRouter>,
 );
