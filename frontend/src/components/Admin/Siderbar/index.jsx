@@ -69,9 +69,8 @@ const Siderbar = () => {
         assigningPermissions,
         roleAssignment,
     } = useCheckPermission();
-    // console.log('te-------------');
-    // console.log(useCheckPermission());
-    // console.log('Read:' + readUser);
+
+    console.log('Read:  ' + readUser);
 
     return (
         <aside className="sidebar">

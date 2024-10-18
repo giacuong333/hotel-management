@@ -23,6 +23,8 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+
+import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 const columns = [
     {
         name: 'No',
@@ -55,6 +57,8 @@ const User = () => {
     const [searchInput, setSearchInput] = useState('');
     const [searchedUsers, setSearchedUsers] = useState([]);
     const { user } = useUser();
+
+    const { id, fetchPermissions } = useCheckPermission();
 
     // permission UseState
     const [idRole, setIdRole] = useState();
@@ -214,7 +218,7 @@ const User = () => {
                 const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
 
                 const response = await axios.delete('http://localhost:5058/role', { data: payload });
-                console.log(response);
+
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     reset();
@@ -445,6 +449,7 @@ const User = () => {
 
             if (response.status === 201) {
                 showToast('Permissions saved successfully', 'success');
+                fetchPermissions(id);
             }
         } catch (error) {
             console.error('Error saving permissions:', error);
@@ -459,7 +464,6 @@ const User = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            console.log(response.data.$values);
 
             if (response.status === 200 && response.data.$values && Array.isArray(response.data.$values)) {
                 //reset
@@ -700,7 +704,6 @@ const User = () => {
     };
 
     const handelePermison = (id) => {
-        console.log('Permission ID:', id);
         handleShowPermission();
         handleRowClickedPermission(id);
     };
