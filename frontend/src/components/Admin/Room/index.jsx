@@ -67,16 +67,14 @@ const Room = () => {
     const [showPanel, setShowPanel] = useState('');
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [rooms, setRooms] = useState([]);
-
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
     const [deleteOne, setDeleteOne] = useState({ payload: null });
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
     const [searchInput, setSearchInput] = useState('');
     const [searchedRooms, setSearchedRooms] = useState([]);
-
     const [showImage, setShowImage] = useState(null);
+    const [clearSelectedRows, setClearSelectedRows] = useState(false);
 
     // For deleting selected rooms
     useEffect(() => {
@@ -95,7 +93,6 @@ const Room = () => {
                     showToast(response?.data?.obj?.message || response?.data?.message, 'success');
                     setRooms(data);
                     setSearchedRooms(data);
-                    reset();
                 }
             } catch (error) {
                 console.log(error);
@@ -218,6 +215,7 @@ const Room = () => {
 
     const handleSelectedRowsChanged = ({ allSelected, selectedCount, selectedRows }) => {
         setDeleteAll({ count: selectedCount, payload: selectedRows });
+        setClearSelectedRows(false);
     };
 
     const handleDeleteRowsSelected = () => {
@@ -245,8 +243,9 @@ const Room = () => {
     const reset = () => {
         setDeleteAll({ count: 0, payload: [], yes: false });
         setShowDeleteAllConfirm(false);
-        setDeleteOne({ payload: null });
         setShowDeleteConfirm(false);
+        setClearSelectedRows(true);
+        setDeleteOne({ payload: null });
         setSearchInput('');
     };
 
@@ -284,6 +283,7 @@ const Room = () => {
                 variant="primary"
                 className={`w-full p-1 customer-primary-button bg-hover-white text-hover-black`}
                 onClick={() => handleImageActions(room?.id)}
+                style={{ fontSize: '12px' }}
             >
                 Images
             </Button>
@@ -350,6 +350,7 @@ const Room = () => {
                     onRowClicked={handleRowClicked}
                     onSelectedRowsChange={handleSelectedRowsChanged}
                     progressPending={pending}
+                    clearSelectedRows={clearSelectedRows}
                     progressComponent={
                         <RotatingLines
                             visible={true}

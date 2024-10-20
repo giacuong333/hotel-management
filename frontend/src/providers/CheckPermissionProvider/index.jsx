@@ -1,9 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-
-import { getAuthHeader } from '../../utils/getAuthHeader';
 import { useUser } from '~/providers/UserProvider';
-import { showToast } from '../../utils/showToast';
 
 // Create the role context
 const CheckPermissionContext = createContext();

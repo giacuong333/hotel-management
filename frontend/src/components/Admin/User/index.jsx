@@ -1,56 +1,18 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-
 import DataTable from 'react-data-table-component';
-
 import { FiEdit } from 'react-icons/fi';
 import { BsTrash } from 'react-icons/bs';
 import { FaSortAlphaDownAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { FiPlus } from 'react-icons/fi';
-
 import UserForm from './UserForm';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import { RotatingLines } from 'react-loader-spinner';
 import { Button } from 'react-bootstrap';
-
-const columns = [
-    {
-        name: 'No',
-        selector: (row) => row.no,
-    },
-    {
-        name: 'Name',
-        selector: (row) => row.name,
-        sortable: true,
-    },
-    {
-        name: 'Email',
-        selector: (row) => row.email,
-    },
-    {
-        name: 'Phone number',
-        selector: (row) => row.phoneNumber,
-    },
-    {
-        name: 'Role',
-        selector: (row) => row.roleName,
-    },
-    {
-        name: 'Avatar',
-        selector: (row) => row.avatar,
-    },
-    {
-        name: 'Create time',
-        selector: (row) => row.createdAt,
-    },
-    {
-        name: 'Actions',
-        selector: (row) => row.actions,
-    },
-];
+import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 
 const User = () => {
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
@@ -64,26 +26,33 @@ const User = () => {
     const [deleteOne, setDeleteOne] = useState({ payload: null });
     const [searchInput, setSearchInput] = useState('');
     const [searchedUsers, setSearchedUsers] = useState([]);
-    const avatarRef = useRef();
+    const [pendingDelete, setPendingDelete] = useState(false);
+    const {
+        readUser: hasPermissionRead,
+        createUser: hasPermissionCreate,
+        updateUser: hasPermissionUpdate,
+        deleteUser: hasPermissionDelete,
+    } = useCheckPermission();
 
     // For deleting selected users
     useEffect(() => {
         const deleteAllUsers = async () => {
             try {
                 // Create payload for deletion
+                setPendingDelete(true);
                 const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
                 const url = 'http://localhost:5058/user';
                 const response = await axios.delete(url, { data: payload });
-                console.log(response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     setUsers(response?.data?.newUsers?.$values);
                     setSearchedUsers(response?.data?.newUsers?.$values);
+                    reset();
                 }
             } catch (error) {
-                console.log(error);
+                showToast(error?.response?.data?.message, 'error');
             } finally {
-                reset();
+                setPendingDelete(false);
             }
         };
 
@@ -93,10 +62,8 @@ const User = () => {
     // For searching
     useEffect(() => {
         if (searchInput.trim() === '') {
-            // If search input is empty, show all users
             setSearchedUsers(users);
         } else {
-            // Otherwise, filter users based on search input
             const filteredUsers = users.filter(
                 (user) =>
                     user.name.toLowerCase().includes(searchInput.toLowerCase()) ||
@@ -243,6 +210,50 @@ const User = () => {
         setDeleteOne({ payload: null });
     };
 
+    const columns = [
+        {
+            name: 'No',
+            selector: (row) => row.no,
+        },
+        {
+            name: 'Name',
+            selector: (row) => row.name,
+            sortable: true,
+        },
+        {
+            name: 'Email',
+            selector: (row) => row.email,
+        },
+        {
+            name: 'Phone number',
+            selector: (row) => row.phoneNumber,
+        },
+        {
+            name: 'Role',
+            selector: (row) => row.roleName,
+        },
+        {
+            name: 'Create time',
+            selector: (row) => row.createdAt,
+        },
+    ];
+
+    // Conditionally add Avatar column if update permission exists
+    if (hasPermissionUpdate) {
+        columns.push({
+            name: 'Avatar',
+            selector: (row) => row.avatar,
+        });
+    }
+
+    // Conditionally add Actions column if update or delete permission exists
+    if (hasPermissionUpdate || hasPermissionDelete) {
+        columns.push({
+            name: 'Actions',
+            selector: (row) => row.actions,
+        });
+    }
+
     const data = searchedUsers?.map((user, index) => ({
         id: user?.id,
         no: index + 1,
@@ -262,6 +273,7 @@ const User = () => {
                     type="button"
                     variant="primary"
                     className={`w-full p-1 customer-primary-button bg-hover-white text-hover-black`}
+                    style={{ fontSize: '12px' }}
                     onClick={() => document.getElementById(`avatar-input-${user?.id}`).click()}
                 >
                     Set avatar
@@ -271,18 +283,26 @@ const User = () => {
         createdAt: new Date(user.createdAt).toLocaleString(),
         actions: (
             <>
-                <FiEdit
-                    size={18}
-                    className="cursor-pointer me-3"
-                    onClick={() => handleEditClicked(user)}
-                    style={{ color: '#80CBC4' }}
-                />
-                <BsTrash
-                    size={18}
-                    className="cursor-pointer"
-                    onClick={() => handleTrashClicked(user.id)}
-                    style={{ color: '#E57373' }}
-                />
+                {hasPermissionUpdate ? (
+                    <FiEdit
+                        size={18}
+                        className="cursor-pointer me-3"
+                        onClick={() => handleEditClicked(user)}
+                        style={{ color: '#80CBC4' }}
+                    />
+                ) : (
+                    ''
+                )}
+                {hasPermissionDelete ? (
+                    <BsTrash
+                        size={18}
+                        className="cursor-pointer"
+                        onClick={() => handleTrashClicked(user.id)}
+                        style={{ color: '#E57373' }}
+                    />
+                ) : (
+                    ''
+                )}
             </>
         ),
     }));
@@ -291,11 +311,15 @@ const User = () => {
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
-                    <FiPlus
-                        size={30}
-                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                        onClick={handleAddClicked}
-                    />
+                    hasPermissionCreate ? (
+                        <FiPlus
+                            size={30}
+                            className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                            onClick={handleAddClicked}
+                        />
+                    ) : (
+                        ''
+                    )
                 ) : (
                     <BsTrash
                         size={30}
@@ -363,7 +387,23 @@ const User = () => {
                         header="Are you sure you want to delete all the selected users?"
                         message="This action cannot be undone."
                         negativeChoice="Cancel"
-                        positiveChoice="Delete"
+                        positiveChoice={
+                            pendingDelete ? (
+                                <RotatingLines
+                                    visible={true}
+                                    height="22"
+                                    width="22"
+                                    strokeColor="#ffffff"
+                                    strokeWidth="5"
+                                    animationDuration="0.75"
+                                    ariaLabel="rotating-lines-loading"
+                                    wrapperStyle={{}}
+                                    wrapperClass=""
+                                />
+                            ) : (
+                                'Delete'
+                            )
+                        }
                         isShow={showDeleteAllConfirm}
                         onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
                         onClose={() => setShowDeleteAllConfirm(false)}

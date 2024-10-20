@@ -9,7 +9,7 @@ namespace backend.Models
             // Parameterless constructor required by EF Core
             public UserModel() { }
 
-            public UserModel(int? id, string? name, string? email, byte[]? avatar, string? password, string? phoneNumber, string? gender, DateTime dob, int roleId, bool firstBook, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt)
+            public UserModel(int? id, string? name, string? email, byte[]? avatar, string? password, string? phoneNumber, string? gender, DateTime? dob, int? roleId, bool? firstBook, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt)
             {
                   Id = id;
                   Name = name;
@@ -35,8 +35,8 @@ namespace backend.Models
             public string? PhoneNumber { get; set; }
             public string? Gender { get; set; }
             [ForeignKey("Roles")]
-            public int RoleId { get; set; }
-            public bool FirstBook { get; set; }
+            public int? RoleId { get; set; }
+            public bool? FirstBook { get; set; }
             public DateTime? Dob { get; set; }
 
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

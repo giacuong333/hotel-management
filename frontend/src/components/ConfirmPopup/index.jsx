@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Overlay from '../Overlay';
 
 import { IoClose } from 'react-icons/io5';
@@ -48,7 +47,7 @@ const ConfirmPopup = ({ header, message, positiveChoice, negativeChoice, onYes, 
                             </button>
                             <button
                                 onClick={onYes}
-                                className="w-full py-2 px-4 rounded-3 text-uppercase customer-primary-button text-white"
+                                className="w-full py-2 px-4 rounded-3 text-uppercase customer-primary-button text-white align-middle"
                             >
                                 {positiveChoice}
                             </button>

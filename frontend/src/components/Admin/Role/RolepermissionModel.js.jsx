@@ -5,8 +5,6 @@ class RolepermissionModel {
         this.permissionId = permissionId;
         this.resource = resource;
     }
-
-    
 }
 
 export default RolepermissionModel;

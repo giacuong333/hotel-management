@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Web.Helpers;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace backend.Controllers
 {
@@ -206,12 +207,16 @@ namespace backend.Controllers
             // GET /user/profile
             [Authorize]
             [HttpGet("profile")]
+            [Produces("application/json")]
             public ActionResult<UserModel> GetProfile()
             {
                   try
                   {
                         int userId = GetUserIdFromClaims(HttpContext);
-                        var user = _context.User.Where(u => u.DeletedAt == null).Include(u => u.Roles).FirstOrDefault(u => u.Id == userId);
+                        var user = _context.User
+                              .Where(u => u.DeletedAt == null)
+                              .Include(u => u.Roles)
+                              .FirstOrDefault(u => u.Id == userId);
 
                         if (user == null)
                         {
@@ -454,7 +459,7 @@ namespace backend.Controllers
                   {
                         loggingInId = int.Parse(userIdClaim.Value);
                   }
-                  catch (Exception ex)
+                  catch (Exception e)
                   {
                         return BadRequest("Invalid User ID in the claim.");
                   }
@@ -469,24 +474,32 @@ namespace backend.Controllers
                   foreach (var user in users)
                   {
                         // Fetch user details from the database
-                        var userFromDb = await _context.User.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == user.Id);
+                        var userFromDb = await _context.User
+                              .Include(u => u.Roles)
+                              .FirstOrDefaultAsync(u => u.Id == user.Id);
                         if (userFromDb == null)
                         {
-                              Console.WriteLine($"User with ID: {user.Id} not found in the database, skipping.");
-                              continue;
+                              Console.WriteLine($"User with email: {user.Email} not found in the database, skipping.");
+                              return Util.NotFoundResponse($"User with email: {user.Email} not found in the database.");
                         }
 
                         // Skip deletion if the user is a manager or the logged-in user
                         if (userFromDb.Roles == null)
                         {
-                              Console.WriteLine($"User with ID: {user.Id} has no roles assigned, skipping.");
-                              continue;
+                              Console.WriteLine($"User with email: {user.Email} has no roles assigned, skipping.");
+                              return Util.ForbiddenResponse($"User with email: {user.Email} has no roles assigned");
                         }
 
-                        if (userFromDb.Roles.Id == 1 || userFromDb.Id == loggingInId)
+                        if (userFromDb.Roles.Id == 1)
                         {
                               Console.WriteLine($"Skipping deletion for User ID: {user.Id} (Role: {userFromDb.Roles.Name}, Logged-in User ID: {loggingInId})");
-                              continue;
+                              return Util.ForbiddenResponse($"Can not delete the manager");
+                        }
+
+                        if (userFromDb.Id == loggingInId)
+                        {
+                              Console.WriteLine($"Skipping deletion for User ID: {user.Id} (Role: {userFromDb.Roles.Name}, Logged-in User ID: {loggingInId})");
+                              return Util.ForbiddenResponse($"You can not delete yourself");
                         }
 
                         userFromDb.DeletedAt = DateTime.UtcNow;
@@ -504,10 +517,13 @@ namespace backend.Controllers
             [Produces("application/json")]
             public async Task<ActionResult<ICollection<UserModel>>> EditUser([FromBody] UserModel payload, int id)
             {
+                  Console.WriteLine("Received PUT request for user ID: " + id); // Add this
+                  Console.WriteLine("Payload: " + JsonConvert.SerializeObject(payload)); // Log the full payload
                   try
                   {
                         if (!ModelState.IsValid)
                         {
+                              var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                               return Util.BadRequestResponse("Missing data");
                         }
 

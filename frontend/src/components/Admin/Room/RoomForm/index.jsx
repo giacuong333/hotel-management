@@ -143,7 +143,11 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                 >
                     <div className="d-flex align-items-center justify-content-between">
                         <p className="fw-semibold fs-5 text-start text-capitalize">Details</p>
-                        <IoClose size={28} className="cursor-pointer" onClick={handleClose} />
+                        <IoClose
+                            size={28}
+                            className="cursor-pointer btn-close-hover p-1 rounded-circle"
+                            onClick={handleClose}
+                        />
                     </div>
                     <div
                         className="hide-scrollbar w-full h-full pb-4"

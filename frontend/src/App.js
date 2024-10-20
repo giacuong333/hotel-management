@@ -1,12 +1,10 @@
-import React, { useEffect } from 'react';
-import { Route, BrowserRouter, Routes, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
 
 import CustomerLayout from './Layouts/CustomerLayout';
 import AdminLayout from './Layouts/AdminLayout';
 
 import CustomerHome from './components/Customer/Home';
-import Bus from './components/Customer/Bus';
-import Cart from './components/Customer/Cart';
 import AdminHome from './components/Admin/Home';
 import Booking from './components/Admin/Booking';
 import Contact from './components/Admin/Contact';
@@ -14,7 +12,6 @@ import Dashboard from './components/Admin/Dashboard';
 import Discount from './components/Admin/Discount';
 import Feedback from './components/Admin/Feedback';
 import Gallery from './components/Admin/Gallery';
-import Permission from './components/Admin/Permission';
 import Receipt from './components/Admin/Receipt';
 import Review from './components/Admin/Review';
 import Role from './components/Admin/Role';
@@ -91,7 +88,6 @@ function App() {
                         <Route path="discount" element={<Discount />} />
                         <Route path="feedback" element={<Feedback />} />
                         <Route path="gallery" element={<Gallery />} />
-                        <Route path="permission" element={<Permission />} />
                         <Route path="receipt" element={<Receipt />} />
                         <Route path="review" element={<Review />} />
                         <Route

@@ -16,7 +16,7 @@ import { useRole } from '~/providers/RoleProvider';
 import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
 
 const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed }) => {
-    const { roles } = useRole();
+    const { roles, fetchRoles } = useRole();
     const [fields, setFields] = useState({
         name: data?.name || '',
         email: data?.email || '',
@@ -29,6 +29,10 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
     });
     const [isPasswordChanged, setIsPasswordChanged] = useState(false);
     const [errors, setErrors] = useState({});
+
+    useEffect(() => {
+        fetchRoles();
+    }, []);
 
     // Reset form fields whenever `type` or `data` changes
     useEffect(() => {
@@ -68,23 +72,23 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
     const handleSubmitClicked = async (e) => {
         e.preventDefault();
 
-        const apiUrl = 'http://localhost:5058/user';
-
         if (handleValidation()) {
-            const payload = { ...fields };
-
+            const payload = {
+                ...fields,
+                dob: fields.dob ? fields.dob.toISOString().split('.')[0] : null, // Converting to YYYY-MM-DD format
+            };
+            const url = 'http://localhost:5058/user';
+            const headers = { headers: { 'Content-Type': 'application/json' } };
             try {
                 if (type === 'add') {
-                    const response = await axios.post(`${apiUrl}/register`, payload);
-                    console.log(response);
+                    const response = await axios.post(`${url}/register`, payload, headers);
                     if (response?.status === 201) {
                         showToast('User created successfully', 'success');
                         setTimeout(handleClose, 4000);
                         onUserAdded(response?.data?.newUser);
                     }
                 } else if (type === 'edit') {
-                    const response = await axios.put(`${apiUrl}/${data?.id}`, payload);
-                    console.log(response);
+                    const response = await axios.put(`${url}/${data?.id}`, payload, headers);
                     if (response?.status === 200) {
                         showToast(response?.data?.obj?.message, 'success');
                         setTimeout(handleClose, 4000);
@@ -161,7 +165,11 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                 >
                     <div className="d-flex align-items-center justify-content-between">
                         <p className="fw-semibold fs-5 text-start text-capitalize">Details</p>
-                        <IoClose size={28} className="cursor-pointer" onClick={handleClose} />
+                        <IoClose
+                            size={28}
+                            className="cursor-pointer btn-close-hover p-1 rounded-circle"
+                            onClick={handleClose}
+                        />
                     </div>
                     <div
                         className="hide-scrollbar w-full h-full pb-4"

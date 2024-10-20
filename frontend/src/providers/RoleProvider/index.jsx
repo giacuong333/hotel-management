@@ -1,8 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-
-import { getAuthHeader } from '../../utils/getAuthHeader';
-
 import { showToast } from '../../utils/showToast';
 
 // Create the role context
@@ -15,30 +13,27 @@ const RoleProvider = ({ children }) => {
 
     // For fetching
     useEffect(() => {
-        const fetchRoles = async () => {
-            const token = localStorage.getItem('jwtToken');
-            if (!token) return;
-
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-            try {
-                setLoading(true);
-                const response = await axios.get('http://localhost:5058/role');
-                console.log(response);
-                if (response?.status === 200) {
-                    setRoles(response?.data?.$values);
-                }
-            } catch (err) {
-                console.error('Failed to fetch user:', err);
-                setRoles(null); // Clear user if fetching fails
-                handleAuthError(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchRoles();
     }, []);
+
+    const fetchRoles = useCallback(async () => {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) return;
+
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+        try {
+            setLoading(true);
+            const response = await axios.get('http://localhost:5058/role');
+            response?.status === 200 && setRoles(response?.data?.$values);
+        } catch (err) {
+            console.error('Failed to fetch user:', err);
+            setRoles(null); // Clear user if fetching fails
+            handleAuthError(error);
+        } finally {
+            setLoading(false);
+        }
+    });
 
     // Helper to handle API errors and show corresponding toast messages
     const handleAuthError = (error) => {
@@ -60,6 +55,7 @@ const RoleProvider = ({ children }) => {
         <roleContext.Provider
             value={{
                 roles,
+                fetchRoles,
                 loading,
                 error,
             }}
