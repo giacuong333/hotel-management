@@ -208,6 +208,10 @@ h4 {
     transform: rotate(90deg);
 }
 
+.rotate180 {
+    transform: rotate(180deg);
+}
+
 .rotate-default {
     transform: rotate(0);
 }
@@ -403,12 +407,11 @@ h4 {
     background-color: var(--customer-primary-color);
     width: 100%;
     height: 100%;
-    padding: 1rem 0;
 
     ul {
         li {
             transition: all 0.4s ease-in-out;
-            font-size: 1.2rem;
+            font-size: 1rem;
 
             svg,
             a {
@@ -421,6 +424,15 @@ h4 {
             &:hover svg,
             &:hover a {
                 color: #000 !important;
+            }
+
+            &.selectedItem {
+                background-color: var(--primary-color);
+
+                a,
+                svg {
+                    color: #000 !important;
+                }
             }
         }
     }

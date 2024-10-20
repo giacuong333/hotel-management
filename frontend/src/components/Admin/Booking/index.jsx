@@ -11,42 +11,7 @@ import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import formatCurrency from '~/utils/currencyPipe';
 import { RotatingLines } from 'react-loader-spinner';
-
-const columns = [
-    {
-        name: 'No',
-        selector: (row) => row.no,
-    },
-    {
-        name: 'Customer',
-        selector: (row) => row.customer,
-        sortable: true,
-    },
-    {
-        name: 'Phone Number',
-        selector: (row) => row.phoneNumber,
-        sortable: true,
-    },
-    {
-        name: 'Check In',
-        selector: (row) => row.checkIn,
-        sortable: true,
-    },
-    {
-        name: 'Check Out',
-        selector: (row) => row.checkOut,
-        sortable: true,
-    },
-    {
-        name: 'Status',
-        selector: (row) => row.statusName,
-        sortable: true,
-    },
-    {
-        name: 'Actions',
-        selector: (row) => row.actions,
-    },
-];
+import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 
 const Booking = () => {
     const [pending, setPending] = useState(true);
@@ -60,6 +25,12 @@ const Booking = () => {
     const [deleteOne, setDeleteOne] = useState({ payload: null });
     const [searchInput, setSearchInput] = useState('');
     const [searchedBookings, setSearchedBookings] = useState([]);
+    const {
+        readBooking: hasPermissionRead,
+        createBooking: hasPermissionCreate,
+        updateBooking: hasPermissionUpdate,
+        deleteBooking: hasPermissionDelete,
+    } = useCheckPermission();
 
     // For deleting selected bookings
     useEffect(() => {
@@ -236,6 +207,48 @@ const Booking = () => {
         setSearchInput('');
     };
 
+    const columns = [
+        {
+            name: 'No',
+            selector: (row) => row.no,
+        },
+        {
+            name: 'Customer',
+            selector: (row) => row.customer,
+            sortable: true,
+        },
+        {
+            name: 'Phone Number',
+            selector: (row) => row.phoneNumber,
+            sortable: true,
+        },
+        {
+            name: 'Check In',
+            selector: (row) => row.checkIn,
+            sortable: true,
+        },
+        {
+            name: 'Check Out',
+            selector: (row) => row.checkOut,
+            sortable: true,
+        },
+    ];
+
+    if (hasPermissionUpdate) {
+        columns.push({
+            name: 'Status',
+            selector: (row) => row.statusName,
+            sortable: true,
+        });
+    }
+
+    if (hasPermissionDelete) {
+        columns.push({
+            name: 'Actions',
+            selector: (row) => row.actions,
+        });
+    }
+
     const data = searchedBookings?.map((booking, index) => ({
         id: booking?.id,
         no: index + 1,
@@ -244,7 +257,7 @@ const Booking = () => {
         checkIn: booking?.checkIn,
         checkOut: booking?.checkOut,
         statusName:
-            booking?.status !== 0 ? (
+            hasPermissionUpdate && booking?.status !== 0 ? (
                 <p
                     className="p-1 px-2 rounded-pill text-white"
                     style={{ backgroundColor: '#80CBC4', fontSize: '10px' }}
@@ -259,15 +272,15 @@ const Booking = () => {
                     Cancel
                 </p>
             ),
-        actions: (
-            <>
-                <BsTrash
-                    size={18}
-                    className="cursor-pointer"
-                    onClick={() => handleTrashClicked(booking?.id)}
-                    style={{ color: '#E57373' }}
-                />
-            </>
+        actions: hasPermissionDelete ? (
+            <BsTrash
+                size={18}
+                className="cursor-pointer"
+                onClick={() => handleTrashClicked(booking?.id)}
+                style={{ color: '#E57373' }}
+            />
+        ) : (
+            <></>
         ),
     }));
 
@@ -277,17 +290,23 @@ const Booking = () => {
             {ToastContainer}
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
-                    <FiPlus
-                        size={30}
-                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                        onClick={handleAddClicked}
-                    />
-                ) : (
+                    hasPermissionCreate ? (
+                        <FiPlus
+                            size={30}
+                            className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                            onClick={handleAddClicked}
+                        />
+                    ) : (
+                        <></>
+                    )
+                ) : hasPermissionDelete ? (
                     <BsTrash
                         size={30}
                         className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
                         onClick={handleDeleteRowsSelected}
                     />
+                ) : (
+                    <></>
                 )}
 
                 <FormGroup

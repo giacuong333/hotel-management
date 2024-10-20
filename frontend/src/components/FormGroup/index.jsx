@@ -49,12 +49,11 @@ const FormGroup = ({
                         onChange={onChange}
                         onInput={onInput}
                     >
+                        <option value="" className="text-black-50">
+                            ----- Select -----
+                        </option>
                         {options?.map((option, index) => (
-                            <option
-                                key={index}
-                                value={option?.value}
-                                className={`${index === 0 ? 'text-black-50' : ''}`}
-                            >
+                            <option key={index} value={option?.value}>
                                 {option?.label}
                             </option>
                         ))}

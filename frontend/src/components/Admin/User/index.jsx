@@ -28,7 +28,6 @@ const User = () => {
     const [searchedUsers, setSearchedUsers] = useState([]);
     const [pendingDelete, setPendingDelete] = useState(false);
     const {
-        readUser: hasPermissionRead,
         createUser: hasPermissionCreate,
         updateUser: hasPermissionUpdate,
         deleteUser: hasPermissionDelete,
@@ -269,15 +268,19 @@ const User = () => {
                     id={`avatar-input-${user?.id}`}
                     onChange={(e) => handleSetAvatar(user?.id, e.target.files[0])}
                 />
-                <Button
-                    type="button"
-                    variant="primary"
-                    className={`w-full p-1 customer-primary-button bg-hover-white text-hover-black`}
-                    style={{ fontSize: '12px' }}
-                    onClick={() => document.getElementById(`avatar-input-${user?.id}`).click()}
-                >
-                    Set avatar
-                </Button>
+                {hasPermissionUpdate ? (
+                    <Button
+                        type="button"
+                        variant="primary"
+                        className={`w-full p-1 customer-primary-button bg-hover-white text-hover-black`}
+                        style={{ fontSize: '12px' }}
+                        onClick={() => document.getElementById(`avatar-input-${user?.id}`).click()}
+                    >
+                        Set avatar
+                    </Button>
+                ) : (
+                    ''
+                )}
             </>
         ),
         createdAt: new Date(user.createdAt).toLocaleString(),

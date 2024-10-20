@@ -375,7 +375,6 @@ const CheckPermissionProvider = ({ children }) => {
             console.error('Error fetching role permissions:', error);
         }
     };
-    console.log(readUser + '  :Provider');
 
     useEffect(() => {
         if (id) {

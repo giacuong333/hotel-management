@@ -1,14 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-
 import DataTable from 'react-data-table-component';
-
 import { FiEdit } from 'react-icons/fi';
 import { BsTrash } from 'react-icons/bs';
 import { FaSortAlphaDownAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { FiPlus } from 'react-icons/fi';
-
 import RoomForm from './RoomForm';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
@@ -17,50 +14,7 @@ import formatCurrency from '~/utils/currencyPipe';
 import { Button } from 'react-bootstrap';
 import ImageForm from './ImageForm';
 import { RotatingLines } from 'react-loader-spinner';
-
-const columns = [
-    {
-        name: 'No',
-        selector: (row) => row.no,
-    },
-    {
-        name: 'Name',
-        selector: (row) => row.name,
-        sortable: true,
-    },
-    {
-        name: 'Type',
-        selector: (row) => row.type,
-    },
-    {
-        name: 'Bed',
-        selector: (row) => row.bedNum,
-        sortable: true,
-    },
-    {
-        name: 'Status',
-        selector: (row) => row.status,
-        sortable: true,
-    },
-    {
-        name: 'Price',
-        selector: (row) => row.price,
-        sortable: true,
-    },
-    {
-        name: 'Area',
-        selector: (row) => row.area,
-        sortable: true,
-    },
-    {
-        name: 'Images',
-        selector: (row) => row.images,
-    },
-    {
-        name: 'Actions',
-        selector: (row) => row.actions,
-    },
-];
+import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 
 const Room = () => {
     const [pending, setPending] = useState(true);
@@ -75,6 +29,12 @@ const Room = () => {
     const [searchedRooms, setSearchedRooms] = useState([]);
     const [showImage, setShowImage] = useState(null);
     const [clearSelectedRows, setClearSelectedRows] = useState(false);
+    const {
+        createRoom: hasPermissionCreateRoom,
+        updateRoom: hasPermissionUpdateRoom,
+        deleteRoom: hasPermissionDeleteRoom,
+        readGallery: hasPermissionReadGallery,
+    } = useCheckPermission();
 
     // For deleting selected rooms
     useEffect(() => {
@@ -253,6 +213,58 @@ const Room = () => {
         setShowImage(roomId);
     };
 
+    const columns = [
+        {
+            name: 'No',
+            selector: (row) => row.no,
+        },
+        {
+            name: 'Name',
+            selector: (row) => row.name,
+            sortable: true,
+        },
+        {
+            name: 'Type',
+            selector: (row) => row.type,
+        },
+        {
+            name: 'Bed',
+            selector: (row) => row.bedNum,
+            sortable: true,
+        },
+        {
+            name: 'Status',
+            selector: (row) => row.status,
+            sortable: true,
+        },
+        {
+            name: 'Price',
+            selector: (row) => row.price,
+            sortable: true,
+        },
+        {
+            name: 'Area',
+            selector: (row) => row.area,
+            sortable: true,
+        },
+    ];
+
+    // Conditionally add Avatar column if update permission exists
+    if (hasPermissionReadGallery) {
+        columns.push({
+            name: 'Images',
+            selector: (row) => row.images,
+        });
+    }
+
+    // Conditionally add Actions column if update or delete permission exists
+    if (hasPermissionUpdateRoom || hasPermissionDeleteRoom) {
+        columns.push({
+            name: 'Actions',
+            selector: (row) => row.actions,
+        });
+    }
+
     const data = searchedRooms?.map((room, index) => ({
         id: room?.id,
         no: index + 1,
@@ -277,7 +289,7 @@ const Room = () => {
             ),
         price: room?.formattedPrice,
         area: `${room?.area}m2`,
-        images: (
+        images: hasPermissionReadGallery ? (
             <Button
                 type="button"
                 variant="primary"
@@ -287,21 +299,31 @@ const Room = () => {
             >
                 Images
             </Button>
+        ) : (
+            ''
         ),
         actions: (
             <>
-                <FiEdit
-                    size={18}
-                    className="cursor-pointer me-3"
-                    onClick={() => handleEditClicked(room)}
-                    style={{ color: '#80CBC4' }}
-                />
-                <BsTrash
-                    size={18}
-                    className="cursor-pointer"
-                    onClick={() => handleTrashClicked(room.id)}
-                    style={{ color: '#E57373' }}
-                />
+                {hasPermissionUpdateRoom ? (
+                    <FiEdit
+                        size={18}
+                        className="cursor-pointer me-3"
+                        onClick={() => handleEditClicked(room)}
+                        style={{ color: '#80CBC4' }}
+                    />
+                ) : (
+                    ''
+                )}
+                {hasPermissionDeleteRoom ? (
+                    <BsTrash
+                        size={18}
+                        className="cursor-pointer"
+                        onClick={() => handleTrashClicked(room.id)}
+                        style={{ color: '#E57373' }}
+                    />
+                ) : (
+                    ''
+                )}
             </>
         ),
     }));
@@ -314,17 +336,23 @@ const Room = () => {
             {ToastContainer}
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
-                    <FiPlus
-                        size={30}
-                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                        onClick={handleAddClicked}
-                    />
-                ) : (
+                    hasPermissionCreateRoom ? (
+                        <FiPlus
+                            size={30}
+                            className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                            onClick={handleAddClicked}
+                        />
+                    ) : (
+                        ''
+                    )
+                ) : hasPermissionDeleteRoom ? (
                     <BsTrash
                         size={30}
                         className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
                         onClick={handleDeleteRowsSelected}
                     />
+                ) : (
+                    ''
                 )}
 
                 <FormGroup

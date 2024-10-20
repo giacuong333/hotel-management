@@ -6,7 +6,7 @@ import Overlay from '~/components/Overlay';
 import Button from 'react-bootstrap/Button';
 import ToastContainer, { showToast } from '~/utils/showToast';
 
-import { FaRegUser } from 'react-icons/fa6';
+import { FaGalacticSenate, FaRegUser } from 'react-icons/fa6';
 import { MdOutlineEmail } from 'react-icons/md';
 import { MdLockOutline } from 'react-icons/md';
 import { FiPhone } from 'react-icons/fi';
@@ -14,6 +14,7 @@ import { IoClose } from 'react-icons/io5';
 
 import { useRole } from '~/providers/RoleProvider';
 import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
+import { RotatingLines } from 'react-loader-spinner';
 
 const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed }) => {
     const { roles, fetchRoles } = useRole();
@@ -29,6 +30,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
     });
     const [isPasswordChanged, setIsPasswordChanged] = useState(false);
     const [errors, setErrors] = useState({});
+    const [pendingSubmit, setPendingSubmit] = useState(false);
 
     useEffect(() => {
         fetchRoles();
@@ -81,6 +83,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
             const headers = { headers: { 'Content-Type': 'application/json' } };
             try {
                 if (type === 'add') {
+                    setPendingSubmit(true);
                     const response = await axios.post(`${url}/register`, payload, headers);
                     if (response?.status === 201) {
                         showToast('User created successfully', 'success');
@@ -88,6 +91,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                         onUserAdded(response?.data?.newUser);
                     }
                 } else if (type === 'edit') {
+                    setPendingSubmit(true);
                     const response = await axios.put(`${url}/${data?.id}`, payload, headers);
                     if (response?.status === 200) {
                         showToast(response?.data?.obj?.message, 'success');
@@ -102,6 +106,8 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                     showToast(error?.message, 'error');
                 }
                 console.log(error);
+            } finally {
+                setPendingSubmit(false);
             }
         }
     };
@@ -306,10 +312,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                             // Icon={icon}
                             value={fields?.roleId}
                             disabled={type === 'see'}
-                            options={roles?.map((role, index) => {
-                                if (index === 0) {
-                                    return { label: '----', value: '' };
-                                }
+                            options={roles?.map((role) => {
                                 return { label: role?.name, value: role?.id };
                             })}
                             customParentInputStyle="p-1 pe-3 rounded-2"
@@ -348,10 +351,24 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                                 <Button
                                     type="submit"
                                     variant="primary"
-                                    className={`w-full p-2 customer-primary-button`}
+                                    className={`w-full p-2 customer-primary-button ${pendingSubmit ? 'pe-none' : ''}`}
                                     onClick={handleSubmitClicked}
                                 >
-                                    Submit
+                                    {pendingSubmit ? (
+                                        <RotatingLines
+                                            visible={true}
+                                            height="20"
+                                            width="20"
+                                            strokeColor="#ffffff"
+                                            strokeWidth="5"
+                                            animationDuration="0.75"
+                                            ariaLabel="rotating-lines-loading"
+                                            wrapperStyle={{}}
+                                            wrapperClass=""
+                                        />
+                                    ) : (
+                                        'Submit'
+                                    )}
                                 </Button>
                             </div>
                         )}

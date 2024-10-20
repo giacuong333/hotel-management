@@ -11,6 +11,7 @@ import { FiPhone } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
 import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
 import { useRoom } from '~/providers/RoomProvider';
+import { RotatingLines } from 'react-loader-spinner';
 
 const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed }) => {
     const [fields, setFields] = useState({
@@ -24,6 +25,7 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
     const [errors, setErrors] = useState({});
     const [emptyRooms, setEmptyRooms] = useState([]);
     const { rooms, roomError, roomLoading } = useRoom();
+    const [pendingSubmit, setPendingSubmit] = useState(false);
 
     console.log('fields ', fields);
 
@@ -35,7 +37,6 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                 .map((room) => {
                     return { label: room?.name, value: room?.id };
                 });
-            newRooms.unshift({ label: '-- Select Room --', value: '' });
             return newRooms;
         });
     }, [rooms]);
@@ -60,6 +61,7 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
         if (handleValidation()) {
             const payload = { ...fields };
             try {
+                setPendingSubmit(true);
                 const url = 'http://localhost:5058/booking';
                 if (type === 'add') {
                     const response = await axios.post(`${url}/register`, payload);
@@ -70,6 +72,7 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                         onUserAdded(response?.data?.newUser);
                     }
                 } else if (type === 'edit') {
+                    setPendingSubmit(true);
                     const response = await axios.put(`${url}/${data?.id}`, payload);
                     console.log(response);
                     if (response?.status === 200) {
@@ -85,6 +88,8 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                     showToast(error?.message, 'error');
                 }
                 console.log(error);
+            } finally {
+                setPendingSubmit(false);
             }
         }
     };
@@ -281,7 +286,21 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                                     className={`w-full p-2 customer-primary-button`}
                                     onClick={handleSubmitClicked}
                                 >
-                                    Submit
+                                    {pendingSubmit ? (
+                                        <RotatingLines
+                                            visible={true}
+                                            height="20"
+                                            width="20"
+                                            strokeColor="#ffffff"
+                                            strokeWidth="5"
+                                            animationDuration="0.75"
+                                            ariaLabel="rotating-lines-pendingSubmit"
+                                            wrapperStyle={{}}
+                                            wrapperClass=""
+                                        />
+                                    ) : (
+                                        'Submit'
+                                    )}
                                 </Button>
                             </div>
                         )}

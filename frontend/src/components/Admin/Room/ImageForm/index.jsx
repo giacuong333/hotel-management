@@ -4,6 +4,8 @@ import { IoClose } from 'react-icons/io5';
 import Overlay from '~/components/Overlay';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import Image from './Image';
+import { useCheckPermission } from '~/providers/CheckPermissionProvider';
+import { RotatingLines } from 'react-loader-spinner';
 
 // isShow is roomId
 const ImageForm = ({ isShow, onClose }) => {
@@ -12,6 +14,9 @@ const ImageForm = ({ isShow, onClose }) => {
     const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
     const [menuItems, setMenuItems] = useState([{ label: 'Delete' }]);
     const [idDelete, setIdDelete] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const { createGallery: hasPermissionCreateGallery, deleteGallery: hasPermissionDeleteGallery } =
+        useCheckPermission();
     const inputRef = useRef(null);
 
     useEffect(() => {
@@ -20,6 +25,7 @@ const ImageForm = ({ isShow, onClose }) => {
 
     const fetchGallery = async () => {
         try {
+            setLoading(true);
             const url = 'http://localhost:5058/gallery';
             const response = await axios.get(`${url}/${isShow}`);
             response?.status === 200 && setImages(response?.data?.obj?.$values);
@@ -31,6 +37,8 @@ const ImageForm = ({ isShow, onClose }) => {
                     'Something went wrong while fetching gallery',
                 'error',
             );
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -79,6 +87,8 @@ const ImageForm = ({ isShow, onClose }) => {
     const handleClick = () => {
         menuVisible && setMenuVisible(false);
     };
+
+    console.log('Loading: ', loading);
 
     return (
         <>
@@ -135,32 +145,64 @@ const ImageForm = ({ isShow, onClose }) => {
                         }}
                         onClick={onClose}
                     />
-                    <input type="file" hidden ref={inputRef} onChange={handleInputChange} />
-                    <button
-                        size={30}
-                        className="p-2 rounded-pill cursor-pointer text-white customer-primary-button bg-hover-white text-hover-black"
-                        style={{
-                            position: 'absolute',
-                            top: 'calc(0px + 30px + 6px)',
-                            right: -36,
-                            zIndex: 20,
-                        }}
-                        onClick={handleAddClick}
+                    {hasPermissionCreateGallery ? (
+                        <>
+                            <input type="file" hidden ref={inputRef} onChange={handleInputChange} />
+                            <button
+                                size={30}
+                                className="p-2 rounded-pill cursor-pointer text-white customer-primary-button bg-hover-white text-hover-black"
+                                style={{
+                                    position: 'absolute',
+                                    top: 'calc(0px + 30px + 6px)',
+                                    right: -36,
+                                    zIndex: 20,
+                                }}
+                                onClick={handleAddClick}
+                            >
+                                A<br />d<br />d
+                            </button>
+                        </>
+                    ) : (
+                        <></>
+                    )}
+                    <div
+                        className={`container mx-auto h-full ${
+                            loading ? 'd-flex align-items-center justify-content-center' : ''
+                        }`}
                     >
-                        A<br />d<br />d
-                    </button>
-                    <div className="container mx-auto">
-                        <div className="row">
-                            {images?.map((image) => (
-                                <div
-                                    key={image.id}
-                                    className="col-lg-4 col-sm-6 p-1"
-                                    onContextMenu={(e) => handleContextMenu(e, image.id)}
-                                    onClick={handleClick}
-                                >
-                                    <Image url={`data:image/jpeg;base64,${image.image}`} />
+                        <div
+                            className={`row ${
+                                loading ? 'h-full d-flex align-items-center justify-content-center' : ''
+                            }`}
+                        >
+                            {loading ? (
+                                <div className="col-3">
+                                    <RotatingLines
+                                        visible={true}
+                                        height=""
+                                        width=""
+                                        strokeColor="#e8bf96"
+                                        strokeWidth="5"
+                                        animationDuration="0.75"
+                                        ariaLabel="rotating-lines-loading"
+                                        wrapperStyle={{}}
+                                        wrapperClass=""
+                                    />
                                 </div>
-                            ))}
+                            ) : (
+                                images?.map((image) => (
+                                    <div
+                                        key={image.id}
+                                        className="col-lg-4 col-sm-6 p-1"
+                                        onContextMenu={(e) =>
+                                            hasPermissionDeleteGallery && handleContextMenu(e, image.id)
+                                        }
+                                        onClick={handleClick}
+                                    >
+                                        <Image url={`data:image/jpeg;base64,${image.image}`} />
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
                 </div>

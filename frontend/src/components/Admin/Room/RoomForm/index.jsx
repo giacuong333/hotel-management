@@ -11,6 +11,7 @@ import { FiPhone } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
 import { isEmpty } from '~/utils/formValidation';
 import formatCurrency from '~/utils/currencyPipe';
+import { RotatingLines } from 'react-loader-spinner';
 
 const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed }) => {
     const [fields, setFields] = useState({
@@ -24,6 +25,7 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
         createdAt: data?.createdAt ? new Date(data?.createdAt) : null,
     });
     const [errors, setErrors] = useState({});
+    const [pendingSubmit, setPendingSubmit] = useState(false);
 
     // Reset form fields whenever `type` or `data` changes
     useEffect(() => {
@@ -65,6 +67,7 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
             const payload = { ...fields };
             try {
                 if (type === 'add') {
+                    setPendingSubmit(true);
                     const response = await axios.post(`${apiUrl}`, payload);
                     console.log(response);
                     if (response?.status === 201) {
@@ -73,6 +76,7 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                         onRoomAdded(response?.data?.obj?.room);
                     }
                 } else if (type === 'edit') {
+                    setPendingSubmit(true);
                     const response = await axios.put(`${apiUrl}/${data?.id}`, payload);
                     console.log(response);
                     if (response?.status === 200) {
@@ -83,6 +87,8 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                 }
             } catch (error) {
                 showToast(error?.response?.data?.obj.message, 'error');
+            } finally {
+                setPendingSubmit(false);
             }
         }
     };
@@ -225,7 +231,6 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                             value={fields?.status}
                             disabled={type === 'see'}
                             options={[
-                                { label: '----', value: '' },
                                 { label: 'Empty', value: 1 },
                                 { label: 'Booked', value: 2 },
                                 { label: 'Staying', value: 3 },
@@ -297,10 +302,24 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                                 <Button
                                     type="submit"
                                     variant="primary"
-                                    className={`w-full p-2 customer-primary-button`}
+                                    className={`w-full p-2 customer-primary-button ${pendingSubmit ? 'pe-none' : ''}`}
                                     onClick={handleSubmitClicked}
                                 >
-                                    Submit
+                                    {pendingSubmit ? (
+                                        <RotatingLines
+                                            visible={true}
+                                            height="20"
+                                            width="20"
+                                            strokeColor="#ffffff"
+                                            strokeWidth="5"
+                                            animationDuration="0.75"
+                                            ariaLabel="rotating-lines-loading"
+                                            wrapperStyle={{}}
+                                            wrapperClass=""
+                                        />
+                                    ) : (
+                                        'Submit'
+                                    )}
                                 </Button>
                             </div>
                         )}
