@@ -25,6 +25,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 
 import { useCheckPermission } from '~/providers/CheckPermissionProvider';
+
 const columns = [
     {
         name: 'No',
@@ -58,10 +59,11 @@ const User = () => {
     const [searchedUsers, setSearchedUsers] = useState([]);
     const { user } = useUser();
 
-    const { id, fetchPermissions } = useCheckPermission();
+    const { id, fetchPermissions, assigningPermissionsP, createRoleP, updateRoleP, deleteRoleP } = useCheckPermission();
 
     // permission UseState
     const [idRole, setIdRole] = useState();
+    const [readDashboard, setReadDashboard] = useState();
 
     const [readUser, setReadUser] = useState();
     const [createUser, setCreateUser] = useState();
@@ -123,6 +125,7 @@ const User = () => {
     const [roleAssignment, setRoleAssignment] = useState();
 
     function clearPermission() {
+        setReadDashboard();
         setIdRole();
         setReadUser();
 
@@ -432,6 +435,9 @@ const User = () => {
         if (roleAssignment === 1) {
             permissionsList.push(new RolepermissionModel(null, idRole, 47, 'RoleAssignment'));
         }
+        if (readDashboard === 1) {
+            permissionsList.push(new RolepermissionModel(null, idRole, 48, 'Dashboard'));
+        }
 
         return permissionsList;
     };
@@ -615,6 +621,9 @@ const User = () => {
                         case 47:
                             setRoleAssignment(1);
                             break;
+                        case 48:
+                            setReadDashboard(1);
+                            break;
                         default:
                             break;
                     }
@@ -715,9 +724,22 @@ const User = () => {
 
         actions: (
             <>
-                <FaUserShield size={18} className="cursor-pointer me-3" onClick={() => handelePermison(user.id)} />
-                <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
-                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+                {assigningPermissionsP === 1 ? (
+                    <FaUserShield size={18} className="cursor-pointer me-3" onClick={() => handelePermison(user.id)} />
+                ) : (
+                    <></>
+                )}
+                {updateRoleP === 1 ? (
+                    <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
+                ) : (
+                    <></>
+                )}
+
+                {deleteRoleP === 1 ? (
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+                ) : (
+                    <></>
+                )}
             </>
         ),
     }));
@@ -726,17 +748,23 @@ const User = () => {
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
-                    <FiPlus
-                        size={30}
-                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                        onClick={handleAddClicked}
-                    />
-                ) : (
+                    createRoleP === 1 ? (
+                        <FiPlus
+                            size={30}
+                            className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                            onClick={handleAddClicked}
+                        />
+                    ) : (
+                        <></>
+                    )
+                ) : deleteRoleP === 1 ? (
                     <BsTrash
                         size={30}
                         className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
                         onClick={handleDeleteRowsSelected}
                     />
+                ) : (
+                    <></>
                 )}
 
                 <FormGroup
@@ -773,6 +801,27 @@ const User = () => {
                         </Modal.Header>
                         <Modal.Body>
                             <Container>
+                                <Row>
+                                    <Col xs={5} md={5} xl={6}>
+                                        DashBoard
+                                    </Col>
+                                    <Col xs={7} md={7} xl={6}>
+                                        <Form>
+                                            {['checkbox'].map((type) => (
+                                                <div key={`default-${type}`} className="mb-3">
+                                                    <Form.Check
+                                                        type={type}
+                                                        id={`Read-DashBoard-${type}`}
+                                                        label={`Read DashBoard`}
+                                                        checked={readDashboard === 1}
+                                                        onChange={(e) => handlePermissionChange(e, setReadDashboard)}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </Form>
+                                    </Col>
+                                </Row>
+
                                 <Row>
                                     <Col xs={5} md={5} xl={6}>
                                         User
@@ -1081,20 +1130,7 @@ const User = () => {
                                                         checked={readReview === 1}
                                                         onChange={(e) => handlePermissionChange(e, setReadReview)}
                                                     />
-                                                    <Form.Check
-                                                        type={type}
-                                                        id={`Create-Review-${type}`}
-                                                        label={`Create Review`}
-                                                        checked={createReview === 1}
-                                                        onChange={(e) => handlePermissionChange(e, setCreateReview)}
-                                                    />
-                                                    <Form.Check
-                                                        type={type}
-                                                        id={`Update-Review-${type}`}
-                                                        label={`Update Review`}
-                                                        checked={updateReview === 1}
-                                                        onChange={(e) => handlePermissionChange(e, setUpdateReview)}
-                                                    />
+
                                                     <Form.Check
                                                         type={type}
                                                         id={`Delete-Review-${type}`}

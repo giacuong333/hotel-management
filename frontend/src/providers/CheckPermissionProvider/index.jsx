@@ -9,6 +9,7 @@ const CheckPermissionProvider = ({ children }) => {
     const { user } = useUser();
 
     const id = user?.roleId;
+    const [readDashboard, setReadDashboard] = useState(0);
 
     const [readUser, setReadUser] = useState(0);
     const [createUser, setCreateUser] = useState(0);
@@ -61,12 +62,12 @@ const CheckPermissionProvider = ({ children }) => {
     const [deleteAdditionalFee, setDeleteAdditionalFee] = useState(0);
 
     const [readRole, setReadRole] = useState(0);
-    const [createRole, setCreateRole] = useState(0);
-    const [updateRole, setUpdateRole] = useState(0);
-    const [deleteRole, setDeleteRole] = useState(0);
+    const [createRoleP, setCreateRole] = useState(0);
+    const [updateRoleP, setUpdateRole] = useState(0);
+    const [deleteRoleP, setDeleteRole] = useState(0);
 
     const [readStatistic, setReadStatistic] = useState(0);
-    const [assigningPermissions, setAssigningPermissions] = useState(0);
+    const [assigningPermissionsP, setAssigningPermissions] = useState(0);
     const [roleAssignment, setRoleAssignment] = useState(0);
 
     const fetchPermissions = async (id) => {
@@ -78,6 +79,7 @@ const CheckPermissionProvider = ({ children }) => {
             });
 
             if (response.status === 200 && response.data.$values && Array.isArray(response.data.$values)) {
+                let readDashBoardFound = false;
                 let readUserFound = false,
                     createUserFound = false,
                     updateUserFound = false,
@@ -316,11 +318,16 @@ const CheckPermissionProvider = ({ children }) => {
                             setRoleAssignment(1);
                             roleAssignmentFound = true;
                             break;
+                        case 48:
+                            setReadDashboard(1);
+                            readDashBoardFound = true;
+                            break;
                         default:
                             break;
                     }
                 });
                 //setUseSate when not found
+                if (!readDashBoardFound) setReadDashboard(0);
                 if (!readUserFound) setReadUser(0);
                 if (!createUserFound) setCreateUser(0);
                 if (!updateUserFound) setUpdateUser(0);
@@ -386,6 +393,7 @@ const CheckPermissionProvider = ({ children }) => {
             value={{
                 id,
                 fetchPermissions,
+                readDashboard,
                 readUser,
                 createUser,
                 updateUser,
@@ -427,11 +435,11 @@ const CheckPermissionProvider = ({ children }) => {
                 updateAdditionalFee,
                 deleteAdditionalFee,
                 readRole,
-                createRole,
-                updateRole,
-                deleteRole,
+                createRoleP,
+                updateRoleP,
+                deleteRoleP,
                 readStatistic,
-                assigningPermissions,
+                assigningPermissionsP,
                 roleAssignment,
             }}
         >

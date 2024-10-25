@@ -6,6 +6,7 @@ import { useCheckPermission } from '../../../providers/CheckPermissionProvider';
 
 const Siderbar = ({ showSidebar, setShowSidebar }) => {
     const {
+        readDashboard,
         readUser,
         readRoom,
         readBooking,
@@ -22,6 +23,7 @@ const Siderbar = ({ showSidebar, setShowSidebar }) => {
     const [selectedItemId, setSelectedItemId] = useState(null);
 
     const permissions = {
+        readDashboard,
         readUser,
         readRoom,
         readBooking,

@@ -192,36 +192,7 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
                                 handleFieldInput('status');
                             }}
                         />
-                        <FormGroup
-                            label="Create time:"
-                            id="createdAt"
-                            name="createdAt"
-                            type="text"
-                            // error={error}
-                            // Icon={icon}
-                            value={type !== 'add' ? data?.createdAt : ''}
-                            disabled
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
-                        />
-                        <FormGroup
-                            label="Update time:"
-                            id="updatedAt"
-                            name="updatedAt"
-                            type="text"
-                            // error={error}
-                            // Icon={icon}
-                            value={type !== 'add' ? data?.updatedAt : ''}
-                            disabled
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={handleInputChanged}
-                            onInput={handleInputTyped}
-                            onBlur={handleInputBlured}
-                        />
+
                         {type !== 'see' && (
                             <div className="d-flex align-items-center gap-2 mt-4">
                                 <Button

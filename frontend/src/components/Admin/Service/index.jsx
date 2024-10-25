@@ -14,7 +14,7 @@ import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import { useUser } from '~/providers/UserProvider';
-
+import { useCheckPermission } from '../../../providers/CheckPermissionProvider';
 const columns = [
     {
         name: 'No',
@@ -34,20 +34,14 @@ const columns = [
         selector: (row) => (row.status == 1 ? 'Active' : 'InActice'),
     },
     {
-        name: 'Create time',
-        selector: (row) => row.createdAt,
-    },
-    {
-        name: 'Update time',
-        selector: (row) => row.updatedAt,
-    },
-    {
         name: 'Actions',
         selector: (row) => row.actions,
     },
 ];
 
 const User = () => {
+    const { createService, updateService, deleteService } = useCheckPermission();
+
     const [showPanel, setShowPanel] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
@@ -202,13 +196,18 @@ const User = () => {
         name: user.name,
         price: user.price,
         status: user.status,
-
-        createdAt: new Date(user.createdAt).toLocaleString(),
-        updatedAt: new Date(user.updatedAt).toLocaleString(),
         actions: (
             <>
-                <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
-                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+                {updateService === 1 ? (
+                    <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
+                ) : (
+                    <></>
+                )}
+                {deleteService === 1 ? (
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+                ) : (
+                    <></>
+                )}
             </>
         ),
     }));
@@ -217,17 +216,23 @@ const User = () => {
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
-                    <FiPlus
-                        size={30}
-                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                        onClick={handleAddClicked}
-                    />
-                ) : (
+                    createService === 1 ? (
+                        <FiPlus
+                            size={30}
+                            className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                            onClick={handleAddClicked}
+                        />
+                    ) : (
+                        <></>
+                    )
+                ) : deleteService === 1 ? (
                     <BsTrash
                         size={30}
                         className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
                         onClick={handleDeleteRowsSelected}
                     />
+                ) : (
+                    <></>
                 )}
 
                 <FormGroup
