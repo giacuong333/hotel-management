@@ -61,7 +61,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
         if (!isVerifyPassword(fields.password, fields.retypePassword))
             validationErrors.retypePassword = 'Password does not match';
         if (isEmpty(fields.phoneNumber)) validationErrors.phoneNumber = 'Phone number is required';
-        else if (!isPhoneNumber(fields.phoneNumber)) validationErrors.phoneNumber = 'Email is invalid';
+        else if (!isPhoneNumber(fields.phoneNumber)) validationErrors.phoneNumber = 'Phone number is invalid';
         if (isEmpty(fields.gender)) validationErrors.gender = 'Gender is required';
         if (!isValidDate(fields.dob)) validationErrors.dob = 'Date of birth is required';
         if (isEmpty(fields.roleId)) validationErrors.roleId = 'Role is required';
@@ -94,14 +94,14 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                     setPendingSubmit(true);
                     const response = await axios.put(`${url}/${data?.id}`, payload, headers);
                     if (response?.status === 200) {
-                        showToast(response?.data?.obj?.message, 'success');
+                        showToast('User updated successfully', 'success');
                         setTimeout(handleClose, 4000);
-                        onUserUpdated(response?.data?.obj?.currentUser);
+                        onUserUpdated(response?.data?.currentUser);
                     }
                 }
             } catch (error) {
                 if (error?.status === 409) {
-                    showToast(error?.response?.data?.obj?.message, 'error');
+                    showToast(error?.response?.data?.message, 'error');
                 } else {
                     showToast(error?.message, 'error');
                 }
@@ -214,20 +214,37 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                             // onBlur={handleInputBlured}
                         />
                         <FormGroup
-                            label="Password"
-                            id="password"
-                            name="password"
-                            type="password"
-                            error={errors.password}
-                            Icon={MdLockOutline}
-                            value={fields?.password}
+                            label="Phone number"
+                            id="phonenumber"
+                            name="phoneNumber"
+                            type="text"
+                            error={errors.phoneNumber}
+                            Icon={FiPhone}
+                            value={fields?.phoneNumber}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={(e) => handleFieldChange('password', e.target.value)}
-                            onInput={() => handleFieldInput('password')}
+                            onChange={(e) => handleFieldChange('phoneNumber', e.target.value)}
+                            onInput={() => handleFieldInput('phoneNumber')}
                             // onBlur={handleInputBlured}
                         />
+                        {type !== 'see' && (
+                            <FormGroup
+                                label="Password"
+                                id="password"
+                                name="password"
+                                type="password"
+                                error={errors.password}
+                                Icon={MdLockOutline}
+                                value={fields?.password}
+                                disabled={type === 'see'}
+                                customParentInputStyle="p-1 pe-3 rounded-2"
+                                customParentParentInputStyle="mt-2"
+                                onChange={(e) => handleFieldChange('password', e.target.value)}
+                                onInput={() => handleFieldInput('password')}
+                                // onBlur={handleInputBlured}
+                            />
+                        )}
                         {(type === 'add' || isPasswordChanged) && (
                             <FormGroup
                                 label="Retype-password"
@@ -246,21 +263,6 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                             />
                         )}
                         <FormGroup
-                            label="Phone number"
-                            id="phonenumber"
-                            name="phoneNumber"
-                            type="text"
-                            error={errors.phoneNumber}
-                            Icon={FiPhone}
-                            value={fields?.phoneNumber}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={(e) => handleFieldChange('phoneNumber', e.target.value)}
-                            onInput={() => handleFieldInput('phoneNumber')}
-                            // onBlur={handleInputBlured}
-                        />
-                        <FormGroup
                             label="Gender"
                             id="gender"
                             name="gender"
@@ -270,7 +272,6 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                             value={fields?.gender}
                             disabled={type === 'see'}
                             options={[
-                                { label: '----', value: '' },
                                 { label: 'Male', value: 'male' },
                                 { label: 'Female', value: 'female' },
                             ]}

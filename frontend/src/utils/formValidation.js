@@ -20,3 +20,11 @@ export const isPhoneNumber = (phoneNumber) => {
 export const isValidDate = (date) => {
     return date instanceof Date && !isNaN(date);
 };
+
+export const isCheckInLessThanCheckOut = (checkInDate, checkOutDate) => {
+    return checkInDate >= checkOutDate;
+};
+
+// export const isPeopleLargerThanBed = (people, bed) => {
+//     return Number(people) > Number(bed);
+// };

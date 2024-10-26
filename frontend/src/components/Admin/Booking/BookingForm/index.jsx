@@ -6,12 +6,13 @@ import Button from 'react-bootstrap/Button';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import { FaRegUser } from 'react-icons/fa6';
 import { MdOutlineEmail } from 'react-icons/md';
-import { MdLockOutline } from 'react-icons/md';
 import { FiPhone } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
-import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
-import { useRoom } from '~/providers/RoomProvider';
+import { isCheckInLessThanCheckOut, isEmail, isEmpty, isPhoneNumber, isValidDate } from '~/utils/formValidation';
 import { RotatingLines } from 'react-loader-spinner';
+import { useRoom } from '~/providers/RoomProvider';
+import { useService } from '~/providers/Service';
+import formatCurrency from '~/utils/currencyPipe';
 
 const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed }) => {
     const [fields, setFields] = useState({
@@ -20,14 +21,30 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
         phoneNumber: '',
         checkIn: new Date(),
         checkOut: '',
+        people: '',
         roomId: '',
+        serviceId: '',
     });
     const [errors, setErrors] = useState({});
     const [emptyRooms, setEmptyRooms] = useState([]);
-    const { rooms, roomError, roomLoading } = useRoom();
+    const [activeServices, setActiveServices] = useState([]);
+    const { rooms } = useRoom();
+    const { services } = useService();
     const [pendingSubmit, setPendingSubmit] = useState(false);
 
-    console.log('fields ', fields);
+    console.log('errors', errors);
+
+    // Fetch services
+    useEffect(() => {
+        setActiveServices(() => {
+            const newActiveServices = services
+                .filter((service) => service?.id && service?.name)
+                .map((service) => {
+                    return { label: `${service?.name} - ${formatCurrency(service?.price)}`, value: service?.id };
+                });
+            return newActiveServices;
+        });
+    }, [services]);
 
     // Fetch rooms
     useEffect(() => {
@@ -35,7 +52,7 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
             const newRooms = rooms
                 .filter((room) => room?.id && room?.name)
                 .map((room) => {
-                    return { label: room?.name, value: room?.id };
+                    return { label: `${room?.name} - ${room?.bedNum}`, value: room?.id };
                 });
             return newRooms;
         });
@@ -50,6 +67,20 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
     const handleValidation = () => {
         const errors = {};
 
+        if (isEmpty(fields.name)) errors.name = 'Name is required';
+        if (isEmpty(fields.email)) errors.email = 'Email is required';
+        else if (!isEmail(fields.email)) errors.email = 'Email is invalid';
+        if (isEmpty(fields.phoneNumber)) errors.phoneNumber = 'Phone number is required';
+        else if (!isPhoneNumber(fields.phoneNumber)) errors.phoneNumber = 'Phone number is invalid';
+        if (!isValidDate(fields.checkIn)) errors.checkIn = 'Check-in date is invalid';
+        if (!isValidDate(fields.checkOut)) errors.checkOut = 'Check-out date is invalid';
+        if (isEmpty(fields.people)) errors.people = 'People is required';
+        if (isEmpty(fields.roomId)) errors.roomId = 'Room is not selected';
+        if (isCheckInLessThanCheckOut(fields.checkIn, fields.checkOut)) {
+            errors.isCheckInLessThanCheckOut = 'Check-in date can not be larger than check-out date.';
+            showToast(errors.isCheckInLessThanCheckOut, 'error');
+        }
+
         setErrors(errors);
 
         return Object.keys(errors).length === 0;
@@ -62,25 +93,25 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
             const payload = { ...fields };
             try {
                 setPendingSubmit(true);
-                const url = 'http://localhost:5058/booking';
-                if (type === 'add') {
-                    const response = await axios.post(`${url}/register`, payload);
-                    console.log(response);
-                    if (response?.status === 201) {
-                        showToast('User created successfully', 'success');
-                        setTimeout(handleClose, 4000);
-                        onUserAdded(response?.data?.newUser);
-                    }
-                } else if (type === 'edit') {
-                    setPendingSubmit(true);
-                    const response = await axios.put(`${url}/${data?.id}`, payload);
-                    console.log(response);
-                    if (response?.status === 200) {
-                        showToast(response?.data?.obj?.message, 'success');
-                        setTimeout(handleClose, 4000);
-                        onUserUpdated(response?.data?.obj?.currentUser);
-                    }
-                }
+                // const url = 'http://localhost:5058/booking';
+                // if (type === 'add') {
+                //     const response = await axios.post(`${url}/register`, payload);
+                //     console.log(response);
+                //     if (response?.status === 201) {
+                //         showToast('User created successfully', 'success');
+                //         setTimeout(handleClose, 4000);
+                //         onUserAdded(response?.data?.newUser);
+                //     }
+                // } else if (type === 'edit') {
+                //     setPendingSubmit(true);
+                //     const response = await axios.put(`${url}/${data?.id}`, payload);
+                //     console.log(response);
+                //     if (response?.status === 200) {
+                //         showToast(response?.data?.obj?.message, 'success');
+                //         setTimeout(handleClose, 4000);
+                //         onUserUpdated(response?.data?.obj?.currentUser);
+                //     }
+                // }
             } catch (error) {
                 if (error?.status === 409) {
                     showToast(error?.response?.data?.obj?.message, 'error');
@@ -236,6 +267,21 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                             // onBlur={handleInputBlured}
                         />
                         <FormGroup
+                            label="How many people?"
+                            id="people"
+                            name="people"
+                            type="text"
+                            error={errors.people}
+                            Icon={FiPhone}
+                            value={fields?.people}
+                            disabled={type === 'see'}
+                            customParentInputStyle="p-1 pe-3 rounded-2"
+                            customParentParentInputStyle="mt-2"
+                            onChange={(e) => handleFieldChange('people', e.target.value)}
+                            onInput={() => handleFieldInput('people')}
+                            // onBlur={handleInputBlured}
+                        />
+                        <FormGroup
                             label="Room"
                             id="roomId"
                             name="roomId"
@@ -251,6 +297,26 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                             onChange={(e) => {
                                 handleFieldChange('roomId', e.target.value);
                                 handleFieldInput('roomId');
+                            }}
+                            // onSelect={() => handleFieldInput('gender')}
+                            // onBlur={handleInputBlured}
+                        />
+                        <FormGroup
+                            label="Services"
+                            id="serviceId"
+                            name="serviceId"
+                            type="select"
+                            error={errors.serviceId}
+                            // Icon={icon}
+                            value={fields?.serviceId}
+                            disabled={type === 'see'}
+                            options={activeServices}
+                            customInputStyle="cursor-pointer"
+                            customParentInputStyle="p-1 pe-3 rounded-2"
+                            customParentParentInputStyle="mt-2"
+                            onChange={(e) => {
+                                handleFieldChange('serviceId', e.target.value);
+                                handleFieldInput('serviceId');
                             }}
                             // onSelect={() => handleFieldInput('gender')}
                             // onBlur={handleInputBlured}
@@ -283,7 +349,7 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                                 <Button
                                     type="submit"
                                     variant="primary"
-                                    className={`w-full p-2 customer-primary-button`}
+                                    className={`w-full p-2 customer-primary-button ${pendingSubmit ? 'pe-none' : ''}`}
                                     onClick={handleSubmitClicked}
                                 >
                                     {pendingSubmit ? (

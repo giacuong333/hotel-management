@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { items } from './itemList';
-import { IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { useCheckPermission } from '../../../providers/CheckPermissionProvider';
 
 const Siderbar = ({ showSidebar, setShowSidebar }) => {
@@ -20,6 +20,7 @@ const Siderbar = ({ showSidebar, setShowSidebar }) => {
         readStatistic,
     } = useCheckPermission();
     const [selectedItemId, setSelectedItemId] = useState(null);
+    const currentPath = useLocation();
 
     const permissions = {
         readUser,
@@ -37,21 +38,28 @@ const Siderbar = ({ showSidebar, setShowSidebar }) => {
     };
 
     return (
-        <aside className={`sidebar shadow position-relative ${showSidebar ? 'expanded' : 'collapsed'}`}>
+        <aside className={`sidebar shadow position-relative`}>
             {/* Hide/Show Sidebar */}
-            <IoIosArrowBack
-                size={26}
-                className={`bg-white rounded-circle p-1 cursor-pointer shadow-sm animation-effect ${
-                    showSidebar ? 'rotate180' : ''
-                }`}
-                style={{ position: 'absolute', top: '20px', right: 0, transform: 'translateX(50%)' }}
-                onClick={() => setShowSidebar(!showSidebar)}
-            />
+            {showSidebar ? (
+                <IoIosArrowBack
+                    size={26}
+                    className="bg-white rounded-circle p-1 cursor-pointer shadow-sm animation-effect"
+                    style={{ position: 'absolute', top: '20px', right: 0, transform: 'translateX(50%)' }}
+                    onClick={() => setShowSidebar(!showSidebar)}
+                />
+            ) : (
+                <IoIosArrowForward
+                    size={26}
+                    className="bg-white rounded-circle p-1 cursor-pointer shadow-sm animation-effect"
+                    style={{ position: 'absolute', top: '20px', right: 0, transform: 'translateX(50%)' }}
+                    onClick={() => setShowSidebar(!showSidebar)}
+                />
+            )}
             <h2
-                className={`animation-effect mx-3 px-2 py-3 ${
+                className={`animation-effect mx-3 px-2 py-3 border-bottom ${
                     showSidebar
-                        ? 'text-white border-bottom border-light-subtle'
-                        : 'bg-white text-black p-3 text-center mx-auto'
+                        ? 'text-white border-light-subtle'
+                        : 'border-black bg-white text-black p-3 text-center mx-auto'
                 }`}
             >
                 {showSidebar ? 'LuxStay' : 'Lux'}
@@ -63,7 +71,7 @@ const Siderbar = ({ showSidebar, setShowSidebar }) => {
                         <li
                             key={item.id}
                             className={`cursor-pointer ${showSidebar ? 'm-3' : 'mx-4 my-3'} rounded-2 ${
-                                selectedItemId === item.id ? 'selectedItem' : ''
+                                selectedItemId === item.id || currentPath.pathname === item.path ? 'selectedItem' : ''
                             }`}
                             onClick={() => setSelectedItemId(item.id)}
                         >

@@ -12,6 +12,7 @@ import ConfirmPopup from '~/components/ConfirmPopup';
 import formatCurrency from '~/utils/currencyPipe';
 import { RotatingLines } from 'react-loader-spinner';
 import { useCheckPermission } from '~/providers/CheckPermissionProvider';
+import Tippy from '@tippyjs/react';
 
 const Booking = () => {
     const [pending, setPending] = useState(true);
@@ -20,13 +21,19 @@ const Booking = () => {
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
     const [clearSelectedRows, setClearSelectedRows] = useState(false);
     const [showPanel, setShowPanel] = useState('');
-    const [selectedBookings, setSelectedBooking] = useState(null);
     const [bookings, setBookings] = useState([]);
+    const [selectedBookings, setSelectedBooking] = useState(null);
+    const [searchedBookings, setSearchedBookings] = useState([]);
     const [deleteOne, setDeleteOne] = useState({ payload: null });
     const [searchInput, setSearchInput] = useState('');
-    const [searchedBookings, setSearchedBookings] = useState([]);
+    const [menuVisible, setMenuVisible] = useState(false);
+    const [menuItems, setMenuItems] = useState([
+        { label: 'Confirmed', value: 1 },
+        { label: 'Check-in', value: 2 },
+        { label: 'Check-out', value: 3 },
+        { label: 'Cancel', value: 0 },
+    ]);
     const {
-        readBooking: hasPermissionRead,
         createBooking: hasPermissionCreate,
         updateBooking: hasPermissionUpdate,
         deleteBooking: hasPermissionDelete,
@@ -99,36 +106,41 @@ const Booking = () => {
 
     // For fetching
     useEffect(() => {
-        const fetchBookings = async () => {
-            const controller = new AbortController();
-
-            try {
-                const url = 'http://localhost:5058/booking';
-                const headers = { headers: { 'Content-Type': 'application/json' } };
-                const response = await axios.get(url, headers);
-                if (response?.status === 200) {
-                    const data = response?.data?.obj?.$values;
-                    setBookings(data || []);
-                    setSearchedBookings(data || []);
-                }
-            } catch (error) {
-                console.log('Error fetching bookings:', error);
-                showToast(
-                    error?.response?.obj?.message ||
-                        error?.response?.message ||
-                        'Something went wrong while fetching bookings',
-                    'error',
-                );
-            } finally {
-                setPending(false);
-            }
-
-            return () => controller.abort();
-        };
-
-        const timeout = setTimeout(fetchBookings, 2000);
-        return () => clearTimeout(timeout);
+        fetchBookings();
     }, []);
+
+    const fetchBookings = async () => {
+        try {
+            const url = 'http://localhost:5058/booking';
+            const headers = { headers: { 'Content-Type': 'application/json' } };
+            const response = await axios.get(url, headers);
+            if (response?.status === 200) {
+                const data = response?.data?.obj?.$values.map((booking) => {
+                    booking.statusName =
+                        booking.status === 0
+                            ? 'Cancel'
+                            : booking.status === 1
+                            ? 'Confirmed'
+                            : booking.status === 2
+                            ? 'Check-in'
+                            : 'Check-out';
+                    return booking;
+                });
+                setBookings(data || []);
+                setSearchedBookings(data || []);
+            }
+        } catch (error) {
+            console.log('Error fetching bookings:', error);
+            showToast(
+                error?.response?.obj?.message ||
+                    error?.response?.message ||
+                    'Something went wrong while fetching bookings',
+                'error',
+            );
+        } finally {
+            setPending(false);
+        }
+    };
 
     const handleTrashClicked = (id) => {
         setDeleteOne({ payload: id });
@@ -166,8 +178,8 @@ const Booking = () => {
         setSelectedBooking(null);
     };
 
-    const handleRowClicked = useCallback(async (e) => {
-        const { id } = e;
+    const handleRowClicked = useCallback(async (event) => {
+        const { id } = event;
         try {
             const url = 'http://localhost:5058/booking';
             const headers = { headers: { 'Content-Type': 'application/json' } };
@@ -206,6 +218,26 @@ const Booking = () => {
         setDeleteOne({ payload: null });
         setSearchInput('');
     };
+
+    const handleStatusChange = async (bookingId, statusCode) => {
+        console.log('Payload: ', bookingId, statusCode);
+        try {
+            const url = 'http://localhost:5058/booking/status';
+            const headers = { headers: { 'Content-Type': 'application/json' } };
+            const response = await axios.put(`${url}/${bookingId}`, statusCode, headers);
+            response?.status === 200 && fetchBookings() && hideContext();
+            console.log(response);
+        } catch (error) {
+            showToast(
+                error?.repsonse?.data || error?.repsonse?.message || 'Something went wrong while changing status',
+                'error',
+            );
+            console.log(error);
+        }
+    };
+
+    const showContext = (id) => setMenuVisible(id);
+    const hideContext = () => setMenuVisible(null);
 
     const columns = [
         {
@@ -256,22 +288,76 @@ const Booking = () => {
         phoneNumber: booking?.customer?.phoneNumber,
         checkIn: booking?.checkIn,
         checkOut: booking?.checkOut,
-        statusName:
-            hasPermissionUpdate && booking?.status !== 0 ? (
-                <p
-                    className="p-1 px-2 rounded-pill text-white"
-                    style={{ backgroundColor: '#80CBC4', fontSize: '10px' }}
+        statusName: (
+            <Tippy
+                interactive={true}
+                placement="right"
+                arrow={false}
+                visible={menuVisible === booking?.id}
+                onClickOutside={hideContext}
+                className="border bg-white rounded-0 shadow-sm p-0"
+                zIndex={9999}
+                content={
+                    booking?.status !== 0 ? (
+                        <ul>
+                            {menuItems
+                                .filter((item) => {
+                                    // Show only relevant menu items based on current status
+                                    if (booking.status === 1) {
+                                        // If status is Confirmed (1), show Cancel and Check-in options
+                                        return item.value === 0 || item.value === 2;
+                                    } else if (booking.status === 2) {
+                                        // If status is Check-in (2), show Check-out option
+                                        return item.value === 3;
+                                    }
+                                    // Hide all options for other statuses
+                                    return false;
+                                })
+                                .map((item, index) => {
+                                    return (
+                                        item.value !== booking?.status && (
+                                            <li
+                                                key={item.value}
+                                                className={`text-black py-2 px-4 cursor-pointer customer-primary-color-hover ${
+                                                    index === 0 ? '' : 'border-top'
+                                                }`}
+                                                onClick={() =>
+                                                    booking?.status !== 0 && handleStatusChange(booking?.id, item.value)
+                                                }
+                                            >
+                                                {item.label}
+                                            </li>
+                                        )
+                                    );
+                                })}
+                        </ul>
+                    ) : (
+                        <></>
+                    )
+                }
+            >
+                <div
+                    className={`${booking?.status !== 0 || booking?.status !== 3 ? 'cursor-pointer' : 'pe-none'}`}
+                    onClick={() => booking?.status !== 0 || (booking?.status !== 3 && showContext(booking?.id))}
                 >
-                    Confirmed
-                </p>
-            ) : (
-                <p
-                    className="p-1 px-2 rounded-pill"
-                    style={{ backgroundColor: '#ffd5e1', color: '#b74c4c', fontSize: '10px' }}
-                >
-                    Cancel
-                </p>
-            ),
+                    {hasPermissionUpdate && booking?.status !== 0 ? (
+                        <p
+                            className="p-1 px-2 rounded-pill text-white text-capitalize"
+                            style={{ backgroundColor: '#80CBC4', fontSize: '10px' }}
+                        >
+                            {booking?.statusName}
+                        </p>
+                    ) : (
+                        <p
+                            className="p-1 px-2 rounded-pill text-capitalize"
+                            style={{ backgroundColor: '#ffd5e1', color: '#b74c4c', fontSize: '10px' }}
+                        >
+                            {booking?.statusName}
+                        </p>
+                    )}
+                </div>
+            </Tippy>
+        ),
         actions: hasPermissionDelete ? (
             <BsTrash
                 size={18}
@@ -288,6 +374,7 @@ const Booking = () => {
         <div>
             {/* Show a toast */}
             {ToastContainer}
+
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
                     hasPermissionCreate ? (

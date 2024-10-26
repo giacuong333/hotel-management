@@ -63,7 +63,7 @@ const UserProvider = ({ children }) => {
             const url = 'http://localhost:5058/user/login';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.post(url, payload, headers);
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 const { token } = response.data;
                 localStorage.setItem('jwtToken', token);
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -84,7 +84,7 @@ const UserProvider = ({ children }) => {
             const url = 'http://localhost:5058/user/register';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.post(url, payload, headers);
-            if (response.status === 201) return response;
+            if (response?.status === 201) return response;
         } catch (error) {
             handleAuthError(error);
         } finally {
@@ -99,7 +99,7 @@ const UserProvider = ({ children }) => {
             const url = 'http://localhost:5058/user/logout';
             const headers = { headers: { ...getAuthHeader() } };
             const response = await axios.post(url, {}, headers);
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 localStorage.removeItem('jwtToken');
                 delete axios.defaults.headers.common['Authorization'];
                 setUser(null);
@@ -118,7 +118,7 @@ const UserProvider = ({ children }) => {
         } else if (error.response?.status === 401) {
             showToast('Invalid credentials.', 'error');
         } else if (error.response?.status === 409) {
-            showToast('Email or phone number already exists.', 'error');
+            showToast(error.response.data?.message || 'Email or phone number already exists.', 'error');
         } else if (error.response?.status === 500) {
             showToast('Server error, please try again later.', 'error');
         } else {

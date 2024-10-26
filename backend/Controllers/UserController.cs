@@ -1,141 +1,25 @@
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using backend.Models;
-using backend.Database;
-using Microsoft.Extensions.Logging;
-using System.Text;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using System.Web.Helpers;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
+using backend.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Services.Interfaces;
 
 namespace backend.Controllers
 {
       [Route("[controller]")]
       [ApiController]
-      public class UserController(DatabaseContext context, ILogger<UserController> logger, IConfiguration configuration) : ControllerBase
+      public class UserController(IAuthService authService, IUserService userService, IRoleService roleService) : ControllerBase
       {
-            private readonly DatabaseContext _context = context;
-            private readonly ILogger<UserController> _logger = logger;
-            private readonly IConfiguration _configuration = configuration;
+            private readonly IAuthService _authService = authService;
+            private readonly IUserService _userService = userService;
+            private readonly IRoleService _roleService = roleService;
 
-            private bool IsLoggedIn(HttpContext httpContext)
-            {
-                  if (httpContext.User.Identity is not ClaimsIdentity identity || !identity.IsAuthenticated)
-                  {
-                        return false;
-                  }
-
-                  var userIdClaim = identity.FindFirst(ClaimTypes.NameIdentifier);
-                  return userIdClaim != null;
-            }
-
-            private int GetUserIdFromClaims(HttpContext httpContext)
-            {
-                  var identity = httpContext.User.Identity as ClaimsIdentity;
-                  var userIdClaim = identity?.FindFirst(ClaimTypes.NameIdentifier);
-                  return userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
-            }
-
-            // [GET] /user
-            [HttpGet]
-            [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
-            {
-                  try
-                  {
-                        var users = await _context.User
-                              .Where(u => u.DeletedAt == null)
-                              .Include(u => u.Roles)
-                              .ToListAsync();
-
-                        if (users == null)
-                        {
-                              return NotFound(new { message = "Users not found." });
-                        }
-
-                        return Ok(users);
-                  }
-                  catch (Exception e)
-                  {
-                        _logger.LogError(e, "Error retrieving users");
-                        return StatusCode(500, "Internal server error");
-                  }
-            }
-
-            // [PUT] /user/password/{id}
-            [HttpPut("password/{id}")]
-            [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<UserModel>>> ChangePassword(int id, [FromForm] string currentPassword, [FromForm] string newPassword)
-            {
-                  if (IsLoggedIn(HttpContext))
-                  {
-                        try
-                        {
-                              var user = await _context.User.FindAsync(id);
-                              if (user == null)
-                              {
-                                    return Util.NotFoundResponse("User not found");
-                              }
-
-                              var passwordMatches = Crypto.VerifyHashedPassword(user.Password, currentPassword);
-                              if (!passwordMatches)
-                              {
-                                    return Util.BadRequestResponse("Current password is incorrect");
-                              }
-
-                              var passwordHashed = Crypto.HashPassword(newPassword);
-                              user.Password = passwordHashed;
-
-                              _context.User.Update(user);
-                              await _context.SaveChangesAsync();
-
-                              return Util.OkResponse("Password changed successfully.");
-                        }
-                        catch (Exception e)
-                        {
-                              _logger.LogError(e.Message);
-                              return Util.InternalServerErrorResponse("Internal server error");
-                        }
-                  }
-                  else
-                  {
-                        return Util.UnauthorizedResponse("You are unauthorized");
-                  }
-            }
-
-            // [GET] /user/{id}
-            [HttpGet("{id}")]
-            [Produces("application/json")]
-            public async Task<ActionResult<UserModel>> GetUserById(int id)
-            {
-                  try
-                  {
-                        var user = await _context.User.Where(u => u.DeletedAt == null).Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == id);
-
-                        if (user == null)
-                        {
-                              return Util.NotFoundResponse("User not found");
-                        }
-
-                        return Util.OkResponse(user);
-                  }
-                  catch (Exception e)
-                  {
-                        _logger.LogError(e, "Error retrieving user");
-                        return StatusCode(500, "Internal server error");
-                  }
-            }
-
-            // [POST] /user/login
+            // [POST] user/login
             [HttpPost("login")]
             [Produces("application/json")]
-            public async Task<ActionResult<UserModel>> Login([FromBody] UserModel value)
+            public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest request)
             {
                   try
                   {
@@ -144,84 +28,42 @@ namespace backend.Controllers
                               return BadRequest(ModelState);
                         }
 
-                        var user = await _context.User.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Email == value.Email && u.DeletedAt == null);
-
-                        if (user == null)
-                        {
-                              return NotFound(new { message = "Email does not exist" });
-                        }
-
-                        bool isPasswordValid = Crypto.VerifyHashedPassword(user.Password, value.Password);
-
-                        if (!isPasswordValid)
-                        {
-                              return Unauthorized(new { message = "Password is incorrect" });
-                        }
-
-                        // Generate JWT token
-                        var jwtKey = _configuration["JwtKey:Key"];
-
-                        // Check if the key is null or empty
-                        if (string.IsNullOrEmpty(jwtKey))
-                        {
-                              throw new ArgumentNullException("JWT signing key is not configured in appsettings.json.");
-                        }
-
-                        var tokenHandler = new JwtSecurityTokenHandler();
-                        var key = Encoding.ASCII.GetBytes(jwtKey); // Use a stronger secret key
-
-                        if (key.Length < 32)
-                        {
-                              throw new ArgumentOutOfRangeException(nameof(key), "JWT signing key must be at least 256 bits (32 bytes) long.");
-                        }
-
-                        var tokenDescriptor = new SecurityTokenDescriptor
-                        {
-                              Subject = new ClaimsIdentity(new[]
-                              {
-                                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Use NameIdentifier for user ID
-                                    new Claim(ClaimTypes.Name, user.Name), // You can also include the user's name if needed
-                                    new Claim(ClaimTypes.Email, user.Email), // You can also include the user's name if needed
-                                    new Claim(ClaimTypes.Role, user.Roles.Name),
-                        }),
-                              Expires = DateTime.UtcNow.AddHours(1),
-                              SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                        };
-
-                        var token = tokenHandler.CreateToken(tokenDescriptor);
-                        var tokenString = tokenHandler.WriteToken(token);
-
-                        return Ok(new
-                        {
-                              token = tokenString,
-                              roleId = user.Roles.Id
-                        });
+                        var response = await _authService.LoginAsync(request);
+                        return Ok(response);
                   }
-                  catch (Exception e)
+                  catch (NotFoundException ex)
                   {
-                        _logger.LogError(e, "Error logging in user");
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
                         return StatusCode(500, "Internal server error");
                   }
             }
 
-            // GET /user/profile
+            private static int GetUserIdFromClaims(HttpContext httpContext)
+            {
+                  var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+                  if (userIdClaim != null)
+                        return int.Parse(userIdClaim!.Value);
+
+                  throw new UnauthorizedAccessException("User ID not found in claims.");
+            }
+
+            // [GET] /user/profile
             [Authorize]
             [HttpGet("profile")]
             [Produces("application/json")]
-            public ActionResult<UserModel> GetProfile()
+            public async Task<ActionResult<UserModel>> GetProfile()
             {
                   try
                   {
                         int userId = GetUserIdFromClaims(HttpContext);
-                        var user = _context.User
-                              .Where(u => u.DeletedAt == null)
-                              .Include(u => u.Roles)
-                              .FirstOrDefault(u => u.Id == userId);
-
-                        if (user == null)
-                        {
-                              return Util.NotFoundResponse("User not found");
-                        }
+                        var user = await _authService.GetProfile(userId);
 
                         return Ok(new
                         {
@@ -242,14 +84,113 @@ namespace backend.Controllers
                   }
                   catch (UnauthorizedAccessException ex)
                   {
-                        return Util.UnauthorizedResponse(ex.Message);
+                        return Unauthorized(new { message = ex.Message });
+                  }
+            }
+
+            // [GET] /user
+            [HttpGet]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<UserModel>>> GetUsers()
+            {
+                  try
+                  {
+                        var users = await _userService.GetUsersAsync();
+                        return Ok(users);
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        return StatusCode(500, "Internal server error");
+                  }
+            }
+
+            // [GET] /user/{id}
+            [HttpGet("{id}")]
+            [Produces("application/json")]
+            public async Task<ActionResult<UserModel>> GetUserById(int id)
+            {
+                  try
+                  {
+                        var user = await _userService.GetUserByIdAsync(id);
+                        return Ok(user);
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        return StatusCode(500, "Internal server error");
+                  }
+            }
+
+            private bool IsLoggedIn(HttpContext httpContext)
+            {
+                  return httpContext.User.Identity != null && httpContext.User.Identity.IsAuthenticated;
+            }
+
+            // [PUT] /user/password/{id}
+            [HttpPut("password/{id}")]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<UserModel>>> ChangePassword(int id, [FromForm] string currentPassword, [FromForm] string newPassword)
+            {
+                  if (IsLoggedIn(HttpContext))
+                  {
+                        try
+                        {
+                              var user = await _userService.GetUserByIdAsync(id);
+                              if (user == null)
+                                    return NotFound("User not found");
+
+                              var passwordMatches = Crypto.VerifyHashedPassword(user.Password, currentPassword);
+                              if (!passwordMatches)
+                              {
+                                    return BadRequest("Current password is incorrect");
+                              }
+
+                              var passwordHashed = Crypto.HashPassword(newPassword);
+                              user.Password = passwordHashed;
+
+                              await _userService.UpdateUserAsync(user);
+                              await _userService.SaveAsync();
+
+                              return Ok("Password changed successfully");
+                        }
+                        catch (NotFoundException ex)
+                        {
+                              return NotFound(new { message = ex.Message });
+                        }
+                        catch (UnauthorizedException ex)
+                        {
+                              return Unauthorized(new { message = ex.Message });
+                        }
+                        catch (Exception ex)
+                        {
+                              return StatusCode(500, "Internal server error");
+                        }
+                  }
+                  else
+                  {
+                        return Unauthorized("You are unauthorized");
                   }
             }
 
             // [POST] /user/register
             [HttpPost("register")]
             [Produces("application/json")]
-            public async Task<ActionResult> Register([FromBody] UserModel value)
+            public async Task<ActionResult> Register([FromBody] UserModel request)
             {
                   try
                   {
@@ -259,83 +200,87 @@ namespace backend.Controllers
                         }
 
                         // Check if the email already exists
-                        var emailExists = await _context.User.AnyAsync(user => (user.Email == value.Email) && user.DeletedAt == null);
-                        if (emailExists)
+                        var emailExists = await _userService.GetUserByEmailAsync(request.Email);
+                        if (emailExists != null)
                         {
-                              return Conflict(new { message = "Email already exists" }); // 409 Conflict
-                        }
-
-                        // Check if the role exists
-                        var roleExists = await _context.Role.AnyAsync(role => role.Id == value.RoleId);
-                        if (!roleExists)
-                        {
-                              value.RoleId = 4; // Default role ID, can be moved to a config setting
+                              return Conflict(new { message = "Email already exists" });
                         }
 
                         // Check if the phone number already exists
-                        var phoneExists = await _context.User.AnyAsync(user => user.PhoneNumber == value.PhoneNumber && user.DeletedAt == null);
-                        if (phoneExists)
+                        var phoneExists = await _userService.GetUserByPhoneAsync(request.PhoneNumber);
+                        if (phoneExists != null)
                         {
                               return Conflict(new { message = "Phone number already exists" }); // 409 Conflict
                         }
 
+                        // Check if the role exists
+                        int defaultRoleId = 4;
+                        if (request.RoleId != null)
+                        {
+                              var roleExists = await _roleService.GetRoleByIdAsync((int)request.RoleId);
+                              if (roleExists != null)
+                                    defaultRoleId = (int)roleExists.Id; // Default role ID, can be moved to a config setting
+                        }
+
                         // Hash the password
-                        value.Password = Crypto.HashPassword(value.Password);
+                        request.Password = Crypto.HashPassword(request.Password);
 
                         // Set FirstBook flag
-                        value.FirstBook = true;
+                        request.FirstBook = true;
 
                         var newUser = new UserModel
                         {
-                              Name = value.Name,
-                              Email = value.Email,
-                              PhoneNumber = value.PhoneNumber,
-                              Password = value.Password,
-                              Gender = value.Gender,
-                              Dob = value.Dob,
-                              RoleId = value.RoleId,
-                              FirstBook = value.FirstBook,
+                              Name = request.Name,
+                              Email = request.Email,
+                              PhoneNumber = request.PhoneNumber,
+                              Password = request.Password,
+                              Gender = request.Gender,
+                              Dob = request.Dob,
+                              RoleId = defaultRoleId,
+                              FirstBook = request.FirstBook,
                               CreatedAt = DateTime.UtcNow
                         };
 
-                        await _context.User.AddAsync(newUser);
-                        await _context.SaveChangesAsync();
+                        await _userService.CreateUserAsync(newUser);
 
                         return StatusCode(201, new { message = "Sign up successfully", newUser });
                   }
-                  catch (DbUpdateException dbEx)
+                  catch (NotFoundException ex)
                   {
-                        _logger.LogError(dbEx, "Database update error during user registration");
-                        return StatusCode(500, new
-                        {
-                              error = "A database error occurred while processing the request.",
-                              details = dbEx.Message
-                        });
+                        return NotFound(new { message = ex.Message });
                   }
                   catch (Exception ex)
                   {
-                        _logger.LogError(ex, "Error registering user");
-                        return StatusCode(500, new
-                        {
-                              error = "An unexpected error occurred while processing the request.",
-                              details = ex.Message
-                        });
+                        // Log the exception details
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
                   }
             }
 
             // [POST] /user/logout
             [HttpPost("logout")]
             [Produces("application/json")]
-            public IActionResult Logout()
+            public ActionResult Logout()
             {
                   try
                   {
                         var token = Request.Headers.Authorization.ToString().Replace("Bearer ", "");
-                        return Ok(new { message = "Logout successful" });
+                        if (string.IsNullOrEmpty(token))
+                              return BadRequest(new { message = "Token is required" });
+                        return Ok("Logout successfully");
                   }
-                  catch (Exception e)
+                  catch (NotFoundException ex)
                   {
-                        _logger.LogError(e, "Error logging in user");
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
                         return StatusCode(500, "Internal server error");
                   }
             }
@@ -348,59 +293,46 @@ namespace backend.Controllers
                   {
                         var claimsIdentity = User.Identity as ClaimsIdentity;
                         if (claimsIdentity == null)
-                        {
                               return Unauthorized("User identity is null.");
-                        }
 
                         var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                        if (userIdClaim == null)
-                        {
+                        if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int loggingInId))
                               return Unauthorized("User ID claim is missing.");
-                        }
 
-                        int loggingInId;
-                        try
-                        {
-                              loggingInId = int.Parse(userIdClaim.Value);
-                        }
-                        catch (Exception e)
-                        {
-                              return BadRequest("Invalid User ID in the claim.");
-                        }
-
+                        // Check manager role
                         var userRoleClaim = claimsIdentity.FindFirst(ClaimTypes.Role);
-                        if (userRoleClaim != null && userRoleClaim.Value == "Manager")
-                        {
-                              Console.WriteLine("User is a Manager, skipping deletion.");
-                        }
+                        if (userRoleClaim?.Value == "Manager")
+                              return StatusCode(403, new { message = "Managers cannot be deleted." });
 
-                        var user = await _context.User.FindAsync(id);
-
+                        var user = await _userService.GetUserByIdAsync(id);
                         if (user == null)
-                        {
                               return NotFound(new { message = "User not found." });
-                        }
 
                         if (user.RoleId == 1)
-                        {
-                              return StatusCode(403, new { message = "This user must not be deleted." });
-                        }
+                              return StatusCode(403, new { message = "This user can not be deleted." });
 
                         if (user.Id == loggingInId)
-                        {
-                              return StatusCode(403, new { message = "You can not delete yourself." });
-                        }
+                              return StatusCode(403, new { message = "You can not delete your own account." });
 
-                        user.DeletedAt = DateTime.UtcNow;
+                        await _userService.DeleteUserAsync(id);
+                        await _userService.SaveAsync();
 
-                        await _context.SaveChangesAsync();
-
-                        return Ok(new { message = "User deleted successfully" });
+                        return Ok("User deleted successfully");
                   }
-                  catch (Exception e)
+                  catch (UnauthorizedException ex)
                   {
-                        Console.WriteLine(e);
-                        return StatusCode(500, "Internal server error");
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
                   }
             }
 
@@ -410,27 +342,29 @@ namespace backend.Controllers
             {
                   try
                   {
-                        var user = await _context.User.FindAsync(id);
+                        var user = await _userService.GetUserByIdAsync(id);
                         if (user == null)
-                        {
-                              return Util.NotFoundResponse("User not found");
-                        }
+                              return NotFound("User not found");
 
-                        user.DeletedAt = DateTime.UtcNow;
+                        await _userService.DeleteUserAsync(id);
+                        await _userService.SaveAsync();
 
-                        _context.User.Update(user);
-                        var result = await _context.SaveChangesAsync();
-                        if (result == 0)
-                        {
-                              _logger.LogError("No changes were saved to the database.");
-                        }
-
-                        return Util.OkResponse("Your account is deleted!");
+                        return Ok("Your account is deleted successfully");
                   }
-                  catch (Exception e)
+                  catch (UnauthorizedException ex)
                   {
-                        _logger.LogError(e.Message);
-                        return Util.InternalServerErrorResponse("Internal server error");
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
                   }
             }
 
@@ -443,147 +377,145 @@ namespace backend.Controllers
                         return BadRequest("No users provided for deletion.");
                   }
 
-                  if (User.Identity is not ClaimsIdentity claimsIdentity)
-                  {
+                  var claimsIdentity = User.Identity as ClaimsIdentity;
+                  if (claimsIdentity == null)
                         return Unauthorized("User identity is null.");
-                  }
 
                   var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
-                  if (userIdClaim == null)
-                  {
+                  if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out int loggingInId))
                         return Unauthorized("User ID claim is missing.");
-                  }
 
-                  int loggingInId;
-                  try
-                  {
-                        loggingInId = int.Parse(userIdClaim.Value);
-                  }
-                  catch (Exception e)
-                  {
-                        return BadRequest("Invalid User ID in the claim.");
-                  }
-
+                  // Check manager role
                   var userRoleClaim = claimsIdentity.FindFirst(ClaimTypes.Role);
-                  if (userRoleClaim != null && userRoleClaim.Value == "Manager")
-                  {
-                        Console.WriteLine("User is a Manager, skipping deletion.");
-                  }
+                  if (userRoleClaim?.Value == "Manager")
+                        return StatusCode(403, new { message = "Managers cannot be deleted." });
 
                   // Filter out users who are managers or the currently logged-in user
                   foreach (var user in users)
                   {
                         // Fetch user details from the database
-                        var userFromDb = await _context.User
-                              .Include(u => u.Roles)
-                              .FirstOrDefaultAsync(u => u.Id == user.Id);
+                        var userFromDb = await _userService.GetUserByIdAsync((int)user.Id);
                         if (userFromDb == null)
                         {
                               Console.WriteLine($"User with email: {user.Email} not found in the database, skipping.");
-                              return Util.NotFoundResponse($"User with email: {user.Email} not found in the database.");
+                              return NotFound($"User with email: {user.Email} not found in the database.");
                         }
 
                         // Skip deletion if the user is a manager or the logged-in user
-                        if (userFromDb.Roles == null)
+                        if (userFromDb.RoleId == null)
                         {
                               Console.WriteLine($"User with email: {user.Email} has no roles assigned, skipping.");
-                              return Util.ForbiddenResponse($"User with email: {user.Email} has no roles assigned");
+                              return StatusCode(403, new { message = $"User with email: {user.Email} has no roles assigned" });
                         }
 
-                        if (userFromDb.Roles.Id == 1)
+                        if (userFromDb.RoleId == 1)
                         {
-                              Console.WriteLine($"Skipping deletion for User ID: {user.Id} (Role: {userFromDb.Roles.Name}, Logged-in User ID: {loggingInId})");
-                              return Util.ForbiddenResponse($"Can not delete the manager");
+                              Console.WriteLine($"Skipping deletion for User ID: {user.Id}, Logged-in User ID: {loggingInId})");
+                              return StatusCode(403, new { message = "Can not delete the manager" });
                         }
 
                         if (userFromDb.Id == loggingInId)
                         {
-                              Console.WriteLine($"Skipping deletion for User ID: {user.Id} (Role: {userFromDb.Roles.Name}, Logged-in User ID: {loggingInId})");
-                              return Util.ForbiddenResponse($"You can not delete yourself");
+                              Console.WriteLine($"Skipping deletion for User ID: {user.Id}, Logged-in User ID: {loggingInId})");
+                              return StatusCode(403, new { message = "You can not delete yourself" });
                         }
 
-                        userFromDb.DeletedAt = DateTime.UtcNow;
+                        await _userService.DeleteUserAsync(user.Id);
                   }
 
-                  await _context.SaveChangesAsync();
+                  await _userService.SaveAsync();
 
-                  var newUsers = await _context.User.Where(u => u.DeletedAt == null).Include(u => u.Roles).ToListAsync();
+                  var newUsers = await _userService.GetUsersAsync();
 
-                  return Util.OkResponse(new { message = "Users deleted successfully.", newUsers });
+                  return Ok(new { message = "Users deleted successfully.", newUsers });
             }
 
             // [PUT] /user
             [HttpPut("{id}")]
             [Produces("application/json")]
-            public async Task<ActionResult<ICollection<UserModel>>> EditUser([FromBody] UserModel payload, int id)
+            public async Task<ActionResult<ICollection<UserModel>>> EditUser([FromBody] UserModel request, int id)
             {
-                  Console.WriteLine("Received PUT request for user ID: " + id); // Add this
-                  Console.WriteLine("Payload: " + JsonConvert.SerializeObject(payload)); // Log the full payload
                   try
                   {
                         if (!ModelState.IsValid)
                         {
                               var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                              return Util.BadRequestResponse("Missing data");
+                              return BadRequest("Missing data");
                         }
 
-                        var currentUser = await _context.User.Include(u => u.Roles).FirstAsync(u => u.Id == id);
+                        var currentUser = await _userService.GetUserByIdAsync(id);
                         if (currentUser == null)
                         {
-                              return Util.NotFoundResponse("User not found");
+                              return NotFound("User not found");
                         }
 
                         // Check if the email already exists
-                        var emailExists = await _context.User.AnyAsync(user => (user.Email == payload.Email) && user.DeletedAt == null && user.Id != currentUser.Id);
-                        if (emailExists)
+                        if (currentUser.Email != request.Email)
                         {
-                              return Util.ConflictResponse("Email already exists");
-                        }
-
-                        // Check if the role exists
-                        var roleExists = await _context.Role.AnyAsync(role => role.Id == payload.RoleId);
-                        if (!roleExists)
-                        {
-                              payload.RoleId = 4; // Default role ID, can be moved to a config setting
+                              var emailExists = await _userService.GetUserByEmailAsync(currentUser.Email);
+                              if (emailExists != null)
+                                    return Conflict("Email already exists");
                         }
 
                         // Check if the phone number already exists
-                        var phoneExists = await _context.User.AnyAsync(user => user.PhoneNumber == payload.PhoneNumber && user.DeletedAt == null && user.Id != currentUser.Id);
-                        if (phoneExists)
+                        if (currentUser.PhoneNumber != request.PhoneNumber)
                         {
-                              return Util.ConflictResponse("Phone number already exists");
+                              var phoneExists = await _userService.GetUserByPhoneAsync(currentUser.PhoneNumber);
+                              if (phoneExists != null)
+                                    return Conflict("Phone number already exists");
+                        }
+
+                        // Check if the role exists
+                        int defaultRoleId = 4;
+                        if (request.RoleId != null)
+                        {
+                              var roleExists = await _roleService.GetRoleByIdAsync((int)currentUser.RoleId);
+                              if (roleExists != null)
+                                    defaultRoleId = (int)roleExists.Id; // Default role ID, can be moved to a config setting
                         }
 
                         // Hash the password
-                        if (payload.Password != null && payload.Password.Length != 0)
+                        if (request.Password != null && request.Password.Length != 0)
                         {
-                              payload.Password = Crypto.HashPassword(payload.Password);
-                              currentUser.Password = payload.Password;
+                              request.Password = Crypto.HashPassword(request.Password);
+                              currentUser.Password = request.Password;
                         }
 
                         // Set FirstBook flagservice
-                        payload.FirstBook = true;
-                        currentUser.Name = payload.Name;
-                        currentUser.Email = payload.Email;
-                        currentUser.PhoneNumber = payload.PhoneNumber;
-                        currentUser.Gender = payload.Gender;
-                        currentUser.Dob = payload.Dob;
-                        currentUser.RoleId = payload.RoleId;
-                        currentUser.FirstBook = payload.FirstBook;
+                        request.FirstBook = true;
+                        currentUser.Id = id;
+                        currentUser.Name = request.Name;
+                        currentUser.Email = request.Email;
+                        currentUser.PhoneNumber = request.PhoneNumber;
+                        currentUser.Gender = request.Gender;
+                        currentUser.Dob = request.Dob;
+                        currentUser.RoleId = defaultRoleId;
+                        currentUser.FirstBook = request.FirstBook;
                         currentUser.UpdatedAt = DateTime.UtcNow;
 
-                        _context.User.Update(currentUser);
-                        await _context.SaveChangesAsync();
+                        await _userService.UpdateUserAsync(currentUser);
+                        await _userService.SaveAsync();
 
-                        return Util.OkResponse(new { message = "User updated successfully", currentUser });
+                        return Ok(new { message = "User updated successfully", currentUser });
                   }
-                  catch (Exception e)
+                  catch (UnauthorizedException ex)
                   {
-                        Console.WriteLine(e);
-                        return Util.InternalServerErrorResponse("An unexpected error occured");
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
                   }
             }
 
+            // [POST] user/avatar
             [HttpPost("avatar")]
             public async Task<ActionResult<ICollection<UserModel>>> AddAvatar([FromForm] int userId, [FromForm] IFormFile avatar)
             {
@@ -591,17 +523,12 @@ namespace backend.Controllers
                   {
                         if (!ModelState.IsValid)
                         {
-                              return Util.BadRequestResponse("Missing data");
+                              return BadRequest("Missing data");
                         }
 
-                        Console.WriteLine("User id: " + userId);
-                        Console.WriteLine("Avatar: " + avatar);
-
-                        var user = await _context.User.FindAsync(userId);
+                        var user = await _userService.GetUserByIdAsync(userId);
                         if (user == null)
-                        {
-                              return Util.NotFoundResponse("User not found");
-                        }
+                              return NotFound("User not found");
 
                         if (avatar == null || avatar.Length > 0)
                         {
@@ -611,16 +538,26 @@ namespace backend.Controllers
 
                               user.Avatar = imageData;
 
-                              _context.User.Update(user);
-                              await _context.SaveChangesAsync();
+                              await _userService.UpdateUserAsync(user);
+                              await _userService.SaveAsync();
                         }
 
-                        return Util.CreatedResponse(new { message = "Avatar changed successfully" });
+                        return StatusCode(201, new { message = "Avatar changed successfully" });
                   }
-                  catch (Exception e)
+                  catch (UnauthorizedException ex)
                   {
-                        _logger.LogError(e, "Error retrieving galleries");
-                        return Util.InternalServerErrorResponse("Internal server error");
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
                   }
             }
       }

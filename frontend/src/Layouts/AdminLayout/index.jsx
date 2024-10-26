@@ -5,7 +5,7 @@ import Header from '~/components/Admin/Header';
 import { useState } from 'react';
 
 const AdminLayout = () => {
-    const [showSidebar, setShowSidebar] = useState(false);
+    const [showSidebar, setShowSidebar] = useState(true);
 
     return (
         <div className="row admin-bg-color">

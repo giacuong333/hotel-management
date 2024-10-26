@@ -17,14 +17,17 @@ import 'tippy.js/animations/scale.css';
 // Style
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
+import ServiceProvider from './providers/Service';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <UserProvider>
-            <CheckPermissionProvider>
-                <App />
-            </CheckPermissionProvider>
-        </UserProvider>
+        <ServiceProvider>
+            <UserProvider>
+                <CheckPermissionProvider>
+                    <App />
+                </CheckPermissionProvider>
+            </UserProvider>
+        </ServiceProvider>
     </BrowserRouter>,
 );

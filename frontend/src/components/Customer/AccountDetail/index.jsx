@@ -48,7 +48,7 @@ const AccountDetail = () => {
                     await signOut();
                     navigate('/signin');
                 }, 4000);
-                showToast(response?.data?.obj, 'success');
+                showToast(response?.data?.message || 'Your account is deleted successfully', 'success');
                 setShowDeletePopup(false);
             }
         } catch (error) {
@@ -191,7 +191,6 @@ const AccountDetail = () => {
                                     // error={fieldsError.name}
                                     value={fields?.gender}
                                     options={[
-                                        { label: '----', value: '' },
                                         { label: 'Male', value: 'male' },
                                         { label: 'Female', value: 'female' },
                                     ]}

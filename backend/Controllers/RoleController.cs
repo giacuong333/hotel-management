@@ -81,7 +81,7 @@ namespace backend.Controllers
                 await _context.Role.AddAsync(newRole);
                 await _context.SaveChangesAsync();
 
-                return StatusCode(201, new { message = "Role added successfully" , newRole });
+                return StatusCode(201, new { message = "Role added successfully", newRole });
             }
             catch (Exception e)
             {
@@ -92,39 +92,39 @@ namespace backend.Controllers
 
 
         // [PUT] /role
-        [HttpPut("{id}")]
-        [Produces("application/json")]
-        public async Task<ActionResult<ICollection<RoleModel>>> EditRole([FromBody] RoleModel payload, int id)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return Util.BadRequestResponse("Missing data");
-                }
+        // [HttpPut("{id}")]
+        // [Produces("application/json")]
+        // public async Task<ActionResult<ICollection<RoleModel>>> EditRole([FromBody] RoleModel payload, int id)
+        // {
+        //     try
+        //     {
+        //         if (!ModelState.IsValid)
+        //         {
+        //             return Util.BadRequestResponse("Missing data");
+        //         }
 
-                var currentRole = await _context.Role.FirstAsync(r => r.Id == id);
-                if (currentRole == null)
-                {
-                    return Util.NotFoundResponse("Role not found");
-                }
-
-
-
-                currentRole.Name = payload.Name;
+        //         var currentRole = await _context.Role.FirstAsync(r => r.Id == id);
+        //         if (currentRole == null)
+        //         {
+        //             return Util.NotFoundResponse("Role not found");
+        //         }
 
 
-                _context.Role.Update(currentRole);
-                await _context.SaveChangesAsync();
 
-                return Util.OkResponse(new { message = "Role updated successfully", currentRole });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return Util.InternalServerErrorResponse("An unexpected error occured");
-            }
-        }
+        //         currentRole.Name = payload.Name;
+
+
+        //         _context.Role.Update(currentRole);
+        //         await _context.SaveChangesAsync();
+
+        //         return Util.OkResponse(new { message = "Role updated successfully", currentRole });
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         Console.WriteLine(e);
+        //         return Util.InternalServerErrorResponse("An unexpected error occured");
+        //     }
+        // }
 
         // [DELETE] /role/{id}
         [HttpDelete("{id}")]
@@ -174,7 +174,7 @@ namespace backend.Controllers
 
                 if (roleFromDb == null)
                 {
-                
+
                     continue;
                 }
 

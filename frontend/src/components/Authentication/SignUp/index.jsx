@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
 import Button from 'react-bootstrap/Button';
-
 import { FiUser, FiMail, FiLock, FiPhone } from 'react-icons/fi';
-
 import FormGroup from '../../FormGroup';
-
 import { useUser } from '../../../providers/UserProvider';
-
 import { isEmail, isEmpty, isPhoneNumber, isVerifyPassword } from '../../../utils/formValidation';
-
 import ToastContainer, { showToast } from '../../../utils/showToast';
 import { RotatingLines } from 'react-loader-spinner';
 
@@ -25,15 +19,11 @@ const SignUp = () => {
     const handleValidation = () => {
         const validationErrors = {};
         if (isEmpty(fields.name)) validationErrors.name = 'Name is required';
-
         if (isEmpty(fields.email)) validationErrors.email = 'Email is required';
         else if (!isEmail(fields.email)) validationErrors.email = 'Email is invalid';
-
         if (isEmpty(fields.phoneNumber)) validationErrors.phoneNumber = 'Phone number is required';
-        else if (!isPhoneNumber(fields.phoneNumber)) validationErrors.phoneNumber = 'Email is invalid';
-
+        else if (!isPhoneNumber(fields.phoneNumber)) validationErrors.phoneNumber = 'Phone number is invalid';
         if (isEmpty(fields.password)) validationErrors.password = 'Password is required';
-
         if (!isVerifyPassword(fields.password, fields.retypePassword))
             validationErrors.retypePassword = 'Password does not match';
 
@@ -53,8 +43,8 @@ const SignUp = () => {
                     password: fields.password,
                     phoneNumber: fields.phoneNumber,
                 };
-                const response = await signUp(payload);
 
+                const response = await signUp(payload);
                 if (response.status === 201) {
                     showToast(response.data.message, 'success');
                     setTimeout(() => navigate('/signin'), 2000);

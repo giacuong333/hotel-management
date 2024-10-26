@@ -40,8 +40,10 @@ const User = () => {
                 // Create payload for deletion
                 setPendingDelete(true);
                 const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
+                console.log('Delete payload', payload);
                 const url = 'http://localhost:5058/user';
                 const response = await axios.delete(url, { data: payload });
+                console.log('Delete response', response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     setUsers(response?.data?.newUsers?.$values);
@@ -91,9 +93,7 @@ const User = () => {
             }
         };
 
-        const timeout = setTimeout(fetchUsers, 2000);
-
-        return () => clearTimeout(timeout);
+        fetchUsers();
     }, []);
 
     const handleTrashClicked = (id) => {
@@ -105,7 +105,7 @@ const User = () => {
     const deleteUser = async (payload) => {
         try {
             const response = await axios.delete(`http://localhost:5058/user/${payload}`);
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 showToast(response?.data?.message, 'success');
                 setUsers((prev) => prev.filter((user) => user.id !== payload));
                 setSearchInput('');
@@ -164,13 +164,11 @@ const User = () => {
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
         try {
-            const response = await axios.get(`http://localhost:5058/user/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (response.status === 200) {
-                setSelectedUser(response?.data?.obj);
+            const url = 'http://localhost:5058/user';
+            const headers = { headers: { 'Content-Type': 'application/json' } };
+            const response = await axios.get(`${url}/${id}`, headers);
+            if (response?.status === 200) {
+                setSelectedUser(response.data);
                 setShowPanel('see');
             }
         } catch (error) {
@@ -283,7 +281,7 @@ const User = () => {
                 )}
             </>
         ),
-        createdAt: new Date(user.createdAt).toLocaleString(),
+        createdAt: new Date(user?.createdAt).toLocaleString(),
         actions: (
             <>
                 {hasPermissionUpdate ? (

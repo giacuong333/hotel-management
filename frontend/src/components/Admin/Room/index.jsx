@@ -36,6 +36,8 @@ const Room = () => {
         readGallery: hasPermissionReadGallery,
     } = useCheckPermission();
 
+    console.log(rooms);
+
     // For deleting selected rooms
     useEffect(() => {
         const deleteAllRooms = async () => {
@@ -106,10 +108,7 @@ const Room = () => {
                 setPending(false);
             }
         };
-
-        const timeout = setTimeout(fetchRooms, 2000);
-
-        return () => clearTimeout(timeout);
+        fetchRooms();
     }, []);
 
     const handleTrashClicked = (id) => {

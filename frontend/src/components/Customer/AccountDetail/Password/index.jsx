@@ -55,16 +55,16 @@ const Password = () => {
                 const response = await axios.put(`${url}/${user?.id}`, payload);
                 if (response?.status === 200) {
                     console.log(response);
-                    showToast(
-                        response?.data?.message || response?.data?.obj?.message || 'Password changed successfully',
-                        'success',
-                    );
+                    showToast(response?.data?.message || response?.data || 'Password changed successfully', 'success');
                     await fetchUser();
                     handleReset();
                 }
             } catch (error) {
                 console.log(error);
-                showToast(error?.response?.data?.message || 'Something went wrong while changing', 'error');
+                showToast(
+                    error?.response?.data?.message || error?.response?.data || 'Something went wrong while changing',
+                    'error',
+                );
             } finally {
                 setLoading(false);
             }

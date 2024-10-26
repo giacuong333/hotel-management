@@ -31,7 +31,7 @@ const RoomProvider = ({ children }) => {
             response?.status === 200 && setRooms(response?.data?.$values || response?.data?.obj);
         } catch (err) {
             console.error('Failed to fetch room:', err);
-            setRooms(null); // Clear user if fetching fails
+            setRooms(null);
             handleAuthError(error);
         } finally {
             setLoading(false);

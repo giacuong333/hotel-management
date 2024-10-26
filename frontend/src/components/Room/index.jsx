@@ -3,7 +3,6 @@ import { BiArea } from 'react-icons/bi';
 import { FaDollarSign } from 'react-icons/fa';
 import { IoBedOutline } from 'react-icons/io5';
 import { LuUsers2 } from 'react-icons/lu';
-import { Link } from 'react-router-dom';
 
 const Room = ({ image, price, area, guest, bed, name, description, exploreMore }) => {
     return (
