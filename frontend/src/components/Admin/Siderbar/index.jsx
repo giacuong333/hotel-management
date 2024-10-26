@@ -6,6 +6,7 @@ import { useCheckPermission } from '../../../providers/CheckPermissionProvider';
 
 const Siderbar = ({ showSidebar, setShowSidebar }) => {
     const {
+        readDashboard,
         readUser,
         readRoom,
         readBooking,
@@ -23,6 +24,7 @@ const Siderbar = ({ showSidebar, setShowSidebar }) => {
     const currentPath = useLocation();
 
     const permissions = {
+        readDashboard,
         readUser,
         readRoom,
         readBooking,

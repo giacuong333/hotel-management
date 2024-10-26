@@ -14,6 +14,7 @@ import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import { useUser } from '~/providers/UserProvider';
+import { useCheckPermission } from '../../../providers/CheckPermissionProvider';
 
 const columns = [
     {
@@ -44,6 +45,7 @@ const columns = [
 ];
 
 const User = () => {
+    const { deleteReview } = useCheckPermission();
     const [showPanel, setShowPanel] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [users, setUsers] = useState([]);
@@ -182,7 +184,11 @@ const User = () => {
         actions: (
             <>
                 {/* <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} /> */}
-                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+                {deleteReview === 1 ? (
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+                ) : (
+                    <></>
+                )}
             </>
         ),
     }));
@@ -192,12 +198,14 @@ const User = () => {
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
                     <div></div>
-                ) : (
+                ) : deleteReview === 1 ? (
                     <BsTrash
                         size={30}
                         className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
                         onClick={handleDeleteRowsSelected}
                     />
+                ) : (
+                    <></>
                 )}
 
                 <FormGroup
