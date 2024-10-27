@@ -4,11 +4,6 @@ using backend.Database;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Interfaces;
-using backend.Models;
-using Repositories.Implementations;
-using Repositories.Interfaces;
-using Services.Interfaces;
 
 class Builder
 {
@@ -41,19 +36,8 @@ class Builder
                   options.UseMySql(builder.Configuration.GetConnectionString("MySQLConnection"),
                   ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))));
 
-            // Register Repositories
-            builder.Services.AddScoped<IGenericRepository<UserModel>, GenericRepository<UserModel>>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IGenericRepository<RoleModel>, GenericRepository<RoleModel>>();
-            builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-            builder.Services.AddScoped<IGenericRepository<RoomModel>, GenericRepository<RoomModel>>();
-            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
-
-            // Register Services
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IRoleService, RoleService>();
-            builder.Services.AddScoped<IRoomService, RoomService>();
+            // Register services
+            RegisterServices.Register(builder);
 
             // CORS
             builder.Services.AddCors(options =>
