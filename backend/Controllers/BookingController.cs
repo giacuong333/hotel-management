@@ -16,7 +16,7 @@ namespace backend.Controllers
                   try
                   {
                         var bookings = await _bookingService.GetBookingsAsync();
-                        if (bookings == null || bookings.Count() == 0)
+                        if (bookings == null || !bookings.Any())
                               return NotFound("Bookings not found");
 
                         return Ok(bookings);
@@ -38,173 +38,147 @@ namespace backend.Controllers
                   }
             }
 
-            // // [GET] /booking/{id}
-            // [HttpGet("{id}")]
-            // public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingById(int id)
-            // {
-            //       try
-            //       {
-            //             var booking = await _context.Booking
-            //                   .Include(b => b.BookingDetails)
-            //                         .ThenInclude(bd => bd!.Room)
-            //                   .Include(b => b.Customer)
-            //                   .Include(b => b.StaffCheckIn)
-            //                   .Include(b => b.StaffCheckOut)
-            //                   .Where(b => b.DeletedAt == null)
-            //                   .FirstOrDefaultAsync(b => b.Id == id);
-            //             if (booking == null)
-            //             {
-            //                   return Util.NotFoundResponse("Booking not found");
-            //             }
+            // [GET] /booking/{id}
+            [HttpGet("{id}")]
+            public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingById(int id)
+            {
+                  try
+                  {
+                        var booking = await _bookingService.GetBookingByIdAsync(id);
+                        if (booking == null)
+                              return NotFound("Booking not found");
 
-            //             return Util.OkResponse(booking);
-            //       }
-            //       catch (Exception)
-            //       {
-            //             return Util.InternalServerErrorResponse("Internal server error");
-            //       }
-            // }
+                        return Ok(booking);
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+                  }
+            }
 
-            // // [DELETE] /booking/{id}
-            // [HttpDelete("{id}")]
-            // public async Task<ActionResult> DeleteBookingById(int id)
-            // {
-            //       try
-            //       {
-            //             var booking = await _context.Booking.FindAsync(id);
-            //             if (booking == null)
-            //             {
-            //                   return Util.NotFoundResponse("Booking not found.");
-            //             }
-            //             if (booking.Status != 0)
-            //             {
-            //                   return Util.ForbiddenResponse("Booking can not be deleted.");
-            //             }
+            // [DELETE] /booking/{id}
+            [HttpDelete("{id}")]
+            public async Task<ActionResult> DeleteBookingById(int id)
+            {
+                  try
+                  {
+                        var booking = await _bookingService.GetBookingByIdAsync(id);
+                        if (booking == null)
+                              return NotFound("Booking not found.");
 
-            //             booking.DeletedAt = DateTime.UtcNow;
+                        if (booking.Status != 0 || booking.Status != 3)
+                              return StatusCode(403, new { message = "You only delete the booking that is canceled or checked-out" });
 
-            //             _context.Booking.Update(booking);
-            //             await _context.SaveChangesAsync();
+                        booking.DeletedAt = DateTime.UtcNow;
 
-            //             return Util.OkResponse(new { message = "Booking delete successfully." });
-            //       }
-            //       catch (Exception e)
-            //       {
-            //             _logger.LogError(e.Message);
-            //             return Util.InternalServerErrorResponse("Internal server error");
-            //       }
-            // }
+                        await _bookingService.DeleteBookingAsync(id);
+                        await _bookingService.SaveAsync();
 
-            // // [DELETE] /booking
-            // [HttpDelete]
-            // public async Task<ActionResult> DeleteBookings([FromBody] List<UserModel> bookings)
-            // {
-            //       try
-            //       {
-            //             if (bookings == null || bookings.Count == 0)
-            //             {
-            //                   return Util.BadRequestResponse("No bookings provided for deletion.");
-            //             }
-            //             foreach (var booking in bookings)
-            //             {
-            //                   var bookingFromDb = await _context.Booking.FindAsync(booking.Id);
-            //                   if (bookingFromDb == null)
-            //                   {
-            //                         return Util.NotFoundResponse("Booking not found");
-            //                   }
-            //                   if (bookingFromDb.Status != 0)
-            //                   {
-            //                         return Util.ForbiddenResponse("These bookings can not be deleted");
-            //                   }
+                        return Ok("Booking delete successfully");
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+                  }
+            }
 
-            //                   bookingFromDb!.DeletedAt = DateTime.UtcNow;
-            //             }
+            // [DELETE] /booking
+            [HttpDelete]
+            public async Task<ActionResult> DeleteBookings([FromBody] List<UserModel> bookings)
+            {
+                  try
+                  {
+                        if (bookings == null || bookings.Count == 0)
+                              return BadRequest("No bookings provided for deletion.");
 
-            //             await _context.SaveChangesAsync();
+                        foreach (var booking in bookings)
+                        {
+                              var bookingFromDb = await _bookingService.GetBookingByIdAsync(booking.Id);
+                              if (bookingFromDb == null)
+                                    return NotFound("Booking not found");
 
-            //             var updatedBookings = await _context.Booking
-            //                   .Include(b => b.BookingDetails)
-            //                         .ThenInclude(bd => bd!.Room)
-            //                   .Include(b => b.Customer)
-            //                   .Include(b => b.StaffCheckIn)
-            //                   .Include(b => b.StaffCheckOut)
-            //                   .Where(b => b.DeletedAt == null)
-            //                   .ToListAsync();
+                              if (bookingFromDb.Status != 0 || bookingFromDb.Status != 3)
+                                    return StatusCode(403, new { message = "You only can delete bookings that is canceled or checked-out" });
 
-            //             return Util.OkResponse(new { message = "Bookings deleted successfully.", updatedBookings });
-            //       }
-            //       catch (Exception e)
-            //       {
-            //             _logger.LogError(e.Message);
-            //             return Util.InternalServerErrorResponse("Internal server error");
-            //       }
-            // }
+                              await _bookingService.DeleteBookingAsync(booking.Id);
+                        }
 
-            // // [PUT] /booking/status
-            // [HttpPut("status/{id}")]
-            // [Produces("application/json")]
-            // public async Task<ActionResult> ChangeStatus(int id, [FromBody] int statusCode)
-            // {
-            //       var transaction = await _context.Database.BeginTransactionAsync();
-            //       try
-            //       {
-            //             var booking = await _context.Booking.Include(bd => bd.BookingDetails).FirstAsync(b => b.Id == id);
-            //             if (booking == null)
-            //             {
-            //                   return Util.NotFoundResponse("Booking not found");
-            //             }
+                        await _bookingService.SaveAsync();
 
-            //             booking.Status = statusCode;
+                        var updatedBookings = await _bookingService.GetBookingsAsync();
 
-            //             Console.WriteLine("Booking status : " + booking.Status);
+                        return Ok(new { message = "Bookings deleted successfully.", updatedBookings });
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+                  }
+            }
 
-            //             if (booking.BookingDetails != null)
-            //             {
-            //                   foreach (var bookingDetail in booking.BookingDetails)
-            //                   {
-            //                         var room = await _context.Room.FindAsync(bookingDetail.RoomId);
-            //                         if (room != null)
-            //                         {
-            //                               switch (statusCode)
-            //                               {
-            //                                     case 1: // Confirmed
-            //                                           room.Status = 2; // Booked
-            //                                           break;
-            //                                     case 2: // Check-in
-            //                                           room.Status = 3; // Staying
-            //                                           break;
-            //                                     case 3: // Check-out
-            //                                           room.Status = 1; // Empty
-            //                                           break;
-            //                                     case 0:
-            //                                           room.Status = 1; // Empty
-            //                                           break;
-            //                                     default:
-            //                                           break;
-            //                               }
-            //                         }
-            //                         _context.Room.Update(room);
-            //                   }
-            //             }
+            // [PUT] /booking/status
+            [HttpPut("status/{id}")]
+            [Produces("application/json")]
+            public async Task<ActionResult> ChangeStatus(int id, [FromBody] int statusCode)
+            {
+                  try
+                  {
+                        var booking = await _bookingService.GetBookingByIdAsync((int)id);
+                        if (booking == null)
+                              return NotFound("Booking not found");
 
-            //             foreach (var bookingDetail in booking.BookingDetails.Where(bd => bd.BookingId == id))
-            //             {
-            //                   _context.BookingDetail.Remove(bookingDetail);
-            //             }
+                        await _bookingService.ChangeStatusAsync(booking, statusCode);
 
-            //             _context.Booking.Update(booking);
-            //             await _context.SaveChangesAsync();
-            //             await transaction.CommitAsync();
-
-            //             return Util.OkResponse("Status changed successfully");
-            //       }
-            //       catch (Exception e)
-            //       {
-            //             await transaction.RollbackAsync();
-            //             _logger.LogError(e, "Error while changing booking status");
-            //             return Util.InternalServerErrorResponse("Internal server error");
-            //       }
-            // }
+                        return Ok("Status changed successfully");
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+                  }
+            }
 
             // [POST] /booking
             // [HttpPost]

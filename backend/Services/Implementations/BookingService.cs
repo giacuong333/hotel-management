@@ -14,6 +14,11 @@ public class BookingService : IBookingService
             _logger = logger;
       }
 
+      public async Task ChangeStatusAsync(BookingModel booking, int status)
+      {
+            await _bookingRepository.ChangeBookingStatus(booking, status);
+      }
+
       public Task CreateBookingAsync(BookingModel room)
       {
             throw new NotImplementedException();
@@ -24,14 +29,14 @@ public class BookingService : IBookingService
             throw new NotImplementedException();
       }
 
-      public Task DeleteBookingAsync(object id)
+      public async Task DeleteBookingAsync(object id)
       {
-            throw new NotImplementedException();
+            await _bookingRepository.DeleteAsync(id);
       }
 
-      public Task<BookingModel> GetBookingByIdAsync(object id)
+      public async Task<BookingModel> GetBookingByIdAsync(object id)
       {
-            throw new NotImplementedException();
+            return await _bookingRepository.GetBookingByIdAsync(id);
       }
 
       public async Task<IEnumerable<BookingModel>> GetBookingsAsync()

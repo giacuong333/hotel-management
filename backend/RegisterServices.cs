@@ -17,6 +17,8 @@ class RegisterServices
             builder.Services.AddScoped<IRoomRepository, RoomRepository>();
             builder.Services.AddScoped<IGenericRepository<BookingModel>, GenericRepository<BookingModel>>();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddScoped<IGenericRepository<GalleryModel>, GenericRepository<GalleryModel>>();
+            builder.Services.AddScoped<IGalleryRepository, GalleryRepository>();
 
             // Register Services
             builder.Services.AddScoped<IAuthService, AuthService>();
@@ -24,5 +26,6 @@ class RegisterServices
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
             builder.Services.AddScoped<IBookingService, BookingService>();
+            builder.Services.AddScoped<IGalleryService, GalleryService>();
       }
 }

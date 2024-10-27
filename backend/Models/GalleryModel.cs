@@ -1,4 +1,5 @@
-﻿using System.Reflection.Metadata;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata;
 
 namespace backend.Models
 {
@@ -11,7 +12,7 @@ namespace backend.Models
             RoomId = roomId;
             Image = image;
         }
-
+        [Key]
         public int? Id { get; set; }
         public int? RoomId { get; set; }
         public byte[]? Image { get; set; }

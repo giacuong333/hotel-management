@@ -26,7 +26,7 @@ const Booking = () => {
     const [searchedBookings, setSearchedBookings] = useState([]);
     const [deleteOne, setDeleteOne] = useState({ payload: null });
     const [searchInput, setSearchInput] = useState('');
-    const [menuVisible, setMenuVisible] = useState(false);
+    const [menuVisible, setMenuVisible] = useState(null);
     const [menuItems, setMenuItems] = useState([
         { label: 'Confirmed', value: 1 },
         { label: 'Check-in', value: 2 },
@@ -45,11 +45,10 @@ const Booking = () => {
             try {
                 // Create payload for deletion (id list)
                 const payload = deleteAll.payload.map((bookingDelete) => ({ id: bookingDelete.id }));
-                console.log('Payload', payload);
                 const response = await axios.delete('http://localhost:5058/booking', { data: payload });
                 console.log(response);
                 if (response?.status === 200) {
-                    const data = response?.data?.obj?.updatedBookings?.$values.map((booking) => {
+                    const data = response?.data?.updatedBookings?.$values.map((booking) => {
                         booking.statusName =
                             booking.status === 0
                                 ? 'Cancle'
@@ -114,8 +113,9 @@ const Booking = () => {
             const url = 'http://localhost:5058/booking';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.get(url, headers);
+            console.log('Bookings', response);
             if (response?.status === 200) {
-                const data = response?.data?.obj?.$values.map((booking) => {
+                const data = response?.data?.$values.map((booking) => {
                     booking.statusName =
                         booking.status === 0
                             ? 'Cancel'
@@ -225,8 +225,11 @@ const Booking = () => {
             const url = 'http://localhost:5058/booking/status';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.put(`${url}/${bookingId}`, statusCode, headers);
-            response?.status === 200 && fetchBookings() && hideContext();
             console.log(response);
+            if (response?.status === 200) {
+                fetchBookings();
+                hideContext();
+            }
         } catch (error) {
             showToast(
                 error?.repsonse?.data || error?.repsonse?.message || 'Something went wrong while changing status',
@@ -280,6 +283,8 @@ const Booking = () => {
             selector: (row) => row.actions,
         });
     }
+
+    console.log(menuVisible);
 
     const data = searchedBookings?.map((booking, index) => ({
         id: booking?.id,
@@ -338,7 +343,7 @@ const Booking = () => {
             >
                 <div
                     className={`${booking?.status !== 0 || booking?.status !== 3 ? 'cursor-pointer' : 'pe-none'}`}
-                    onClick={() => booking?.status !== 0 || (booking?.status !== 3 && showContext(booking?.id))}
+                    onClick={() => (booking?.status !== 0 || booking?.status !== 3) && showContext(booking?.id)}
                 >
                     {hasPermissionUpdate && booking?.status !== 0 ? (
                         <p

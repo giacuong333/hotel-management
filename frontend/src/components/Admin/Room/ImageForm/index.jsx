@@ -28,8 +28,7 @@ const ImageForm = ({ isShow, onClose }) => {
             setLoading(true);
             const url = 'http://localhost:5058/gallery';
             const response = await axios.get(`${url}/${isShow}`);
-            response?.status === 200 && setImages(response?.data?.obj?.$values);
-            console.log(response);
+            response?.status === 200 && setImages(response?.data?.$values);
         } catch (error) {
             showToast(
                 error?.repsonse?.data?.message ||
