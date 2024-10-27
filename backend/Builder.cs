@@ -46,11 +46,14 @@ class Builder
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IGenericRepository<RoleModel>, GenericRepository<RoleModel>>();
             builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+            builder.Services.AddScoped<IGenericRepository<RoomModel>, GenericRepository<RoomModel>>();
+            builder.Services.AddScoped<IRoomRepository, RoomRepository>();
 
             // Register Services
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
+            builder.Services.AddScoped<IRoomService, RoomService>();
 
             // CORS
             builder.Services.AddCors(options =>

@@ -3,7 +3,6 @@ using System.Web.Helpers;
 using backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Services.Interfaces;
 
 namespace backend.Controllers

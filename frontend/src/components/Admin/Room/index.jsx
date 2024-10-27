@@ -36,8 +36,6 @@ const Room = () => {
         readGallery: hasPermissionReadGallery,
     } = useCheckPermission();
 
-    console.log(rooms);
-
     // For deleting selected rooms
     useEffect(() => {
         const deleteAllRooms = async () => {
@@ -47,18 +45,18 @@ const Room = () => {
                 const response = await axios.delete('http://localhost:5058/room', { data: payload });
                 console.log(response);
                 if (response?.status === 200) {
-                    const data = response?.data?.obj?.updatedRooms?.$values.map((room) => {
+                    const data = response?.data?.updatedRooms?.$values.map((room) => {
                         room.statusName = room.status === 1 ? 'Empty' : room.status === 2 ? 'Booked' : 'Staying';
                         room.formattedPrice = formatCurrency(room.price);
                         return room;
                     });
-                    showToast(response?.data?.obj?.message || response?.data?.message, 'success');
+                    showToast('Room deleted successfully', 'success');
                     setRooms(data);
                     setSearchedRooms(data);
                 }
             } catch (error) {
                 console.log(error);
-                showToast(error?.response?.data?.message, 'error');
+                showToast(error?.response?.data || error?.response?.data?.message, 'error');
             } finally {
                 reset();
             }
@@ -93,8 +91,9 @@ const Room = () => {
                 const url = 'http://localhost:5058/room';
                 const headers = { headers: { 'Content-Type': 'application/json' } };
                 const response = await axios.get(url, headers);
+                console.log('rooms', response);
                 if (response?.status === 200) {
-                    const data = response?.data?.obj?.map((room) => {
+                    const data = response?.data?.$values?.map((room) => {
                         room.statusName = room.status === 1 ? 'Empty' : room.status === 2 ? 'Booked' : 'Staying';
                         room.formattedPrice = formatCurrency(room.price);
                         return room;
@@ -119,26 +118,20 @@ const Room = () => {
     // Delete a room
     const deleteRoom = async (payload) => {
         try {
-            const response = await axios.delete(`http://localhost:5058/room/${payload}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const url = 'http://localhost:5058/room';
+            const headers = { headers: { 'Content-Type': 'application/json' } };
+            const response = await axios.delete(`${url}/${payload}`, headers);
             if (response?.status === 200) {
-                showToast(response?.data?.obj?.message, 'success');
+                showToast('Room deleted successfully', 'success');
                 setRooms((prev) => prev.filter((room) => room.id !== payload));
                 setSearchInput('');
             }
         } catch (error) {
-            if (error?.response?.status === 403) {
-                showToast(error?.response?.data?.obj?.message, 'error');
-            } else if (error?.response?.status === 401) {
-                showToast('You need to log in', 'error');
-            } else if (error?.response?.status === 409) {
-                showToast(error?.response?.data?.message, 'error');
-            } else {
-                showToast(error?.response?.data?.obj?.message || 'Error deleting room', 'error');
-            }
+            showToast(
+                error?.response?.data || error?.response?.data?.message || 'Error occured while deleting room',
+                'error',
+            );
+            console.log(error);
         } finally {
             reset();
         }
@@ -157,15 +150,15 @@ const Room = () => {
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
         try {
-            const response = await axios.get(`http://localhost:5058/room/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const url = 'http://localhost:5058/room';
+            const headers = {
+                headers: { 'Content-Type': 'application/json' },
+            };
+            const response = await axios.get(`${url}/${id}`, headers);
             console.log('Response', response);
             if (response?.status === 200) {
                 setShowPanel('see');
-                setSelectedRoom(response?.data?.obj);
+                setSelectedRoom(response?.data);
             }
         } catch (error) {
             console.error('Error fetching user details:', error);

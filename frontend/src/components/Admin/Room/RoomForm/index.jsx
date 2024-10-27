@@ -71,22 +71,22 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                     const response = await axios.post(`${apiUrl}`, payload);
                     console.log(response);
                     if (response?.status === 201) {
-                        showToast(response?.data?.obj?.message, 'success');
+                        showToast('Room created successfully', 'success');
                         setTimeout(handleClose, 4000);
-                        onRoomAdded(response?.data?.obj?.room);
+                        onRoomAdded(response?.data?.room);
                     }
                 } else if (type === 'edit') {
                     setPendingSubmit(true);
                     const response = await axios.put(`${apiUrl}/${data?.id}`, payload);
                     console.log(response);
                     if (response?.status === 200) {
-                        showToast(response?.data?.obj?.message, 'success');
+                        showToast('Room updated successfully', 'success');
                         setTimeout(handleClose, 4000);
-                        onRoomUpdated(response?.data?.obj?.room);
+                        onRoomUpdated(response?.data?.room || response?.data?.$values);
                     }
                 }
             } catch (error) {
-                showToast(error?.response?.data?.obj.message, 'error');
+                showToast(error?.response?.data?.message || error?.response?.message, 'error');
             } finally {
                 setPendingSubmit(false);
             }
