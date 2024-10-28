@@ -1,4 +1,5 @@
 using backend.Models;
+using backend.Repositories.Interfaces;
 using Interfaces;
 using Repositories.Implementations;
 using Repositories.Interfaces;
@@ -19,13 +20,15 @@ class RegisterServices
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
             builder.Services.AddScoped<IGenericRepository<GalleryModel>, GenericRepository<GalleryModel>>();
             builder.Services.AddScoped<IGalleryRepository, GalleryRepository>();
+            builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
 
-            // Register Services
-            builder.Services.AddScoped<IAuthService, AuthService>();
+        // Register Services
+        builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
             builder.Services.AddScoped<IBookingService, BookingService>();
             builder.Services.AddScoped<IGalleryService, GalleryService>();
-      }
+        builder.Services.AddScoped<IServiceService, ServiceService>();
+    }
 }
