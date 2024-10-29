@@ -22,7 +22,9 @@ class RegisterServices
             builder.Services.AddScoped<IGalleryRepository, GalleryRepository>();
             builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
         builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
-     
+        builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
+
+
 
 
         // Register Services
@@ -35,5 +37,9 @@ class RegisterServices
         builder.Services.AddScoped<IServiceService, ServiceService>();
         builder.Services.AddScoped<IReviewService, ReviewService>();
         builder.Services.AddScoped<IRoleService, RoleService>();
+        builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
+
+
+
     }
 }

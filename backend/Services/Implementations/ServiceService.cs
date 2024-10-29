@@ -5,14 +5,12 @@ using Repositories.Interfaces;
 public class ServiceService : IServiceService
 {
       private readonly IServiceRepository _serviceRepository;
-      private readonly IConfiguration _configuration;
-      private readonly ILogger<RoomService> _logger;
+   
 
-      public ServiceService(IServiceRepository serviceRepository, IConfiguration configuration, ILogger<RoomService> logger)
+      public ServiceService(IServiceRepository serviceRepository)
       {
         _serviceRepository = serviceRepository;
-            _configuration = configuration;
-            _logger = logger;
+          
       }
 
       public async Task CreateServiceAsync(ServiceModel service)

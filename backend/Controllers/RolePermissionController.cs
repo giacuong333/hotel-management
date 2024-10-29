@@ -19,15 +19,10 @@ namespace backend.Controllers
     [ApiController]
     public class RolePermissionController : ControllerBase
     {
-        private readonly DatabaseContext _context;
-        private readonly ILogger<ReviewController> _logger;
-        private readonly IConfiguration _configuration;
-
-        public RolePermissionController(DatabaseContext context, ILogger<ReviewController> logger, IConfiguration configuration)
+        private readonly IRolePermissionService _rolePermissionService;
+        public RolePermissionController(IRolePermissionService rolePermissionService)
         {
-            _context = context;
-            _logger = logger;
-            _configuration = configuration;
+            _rolePermissionService = rolePermissionService;
         }
         [HttpGet]
         [Produces("application/json")]
@@ -35,7 +30,7 @@ namespace backend.Controllers
         {
             try
             {
-                var rolePermission = await _context.Rolepermission.ToListAsync();
+                var rolePermission = await _rolePermissionService.GetRolePermissionsAsync();
 
                 if (rolePermission == null)
                 {
@@ -46,7 +41,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving rolePermission");
+             
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -63,7 +58,7 @@ namespace backend.Controllers
         {
             try
             {
-                var rolePermission = await _context.Rolepermission.Where(rp => rp.RoleId == id).ToListAsync();
+                var rolePermission = await _rolePermissionService.GetRolePermissionByIdAsync(id);
 
                 if(rolePermission == null)
                 {
@@ -74,7 +69,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving rolePermission");
+             
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -91,21 +86,23 @@ namespace backend.Controllers
             try
             {
 
-                var permissionsToDelete = await _context.Rolepermission
-                          .Where(rp => rp.RoleId == models.First().RoleId)
-                          .ToListAsync();
+
+                var permissionsToDelete = (await _rolePermissionService.GetRolePermissionByIdAsync(models.First().RoleId)).ToList();
+
 
                 // Remove the permissions
-                _context.Rolepermission.RemoveRange(permissionsToDelete);
+                await _rolePermissionService.DeleteRolePermissionsAsync(permissionsToDelete);
+       
                 // Add new permissions
-                await _context.Rolepermission.AddRangeAsync(models);
-                await _context.SaveChangesAsync();
+                await _rolePermissionService.AddRolePermissionsAsync(models);
+           
+                await _rolePermissionService.SaveAsync();
 
                 return CreatedAtAction(null, new { roleId = models.First().RoleId }, models);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error saving role permissions");
+           
                 return StatusCode(500, "Internal server error");
             }
         }
