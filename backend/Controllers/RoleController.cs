@@ -16,13 +16,17 @@ namespace backend.Controllers
         private readonly ILogger<RoleController> _logger;
         private readonly IRoleService _roleService;
         private readonly IUserService _userService;
+        private readonly IRolePermissionService _rolePermissionService;
 
-        public RoleController(DatabaseContext context, ILogger<RoleController> logger,IRoleService roleService, IUserService userService)
+
+
+        public RoleController(DatabaseContext context, ILogger<RoleController> logger,IRoleService roleService, IUserService userService, IRolePermissionService rolePermissionService)
         {
             _context = context;
             _logger = logger;
             _roleService = roleService;
             _userService = userService;
+            _rolePermissionService = rolePermissionService;
         }
 
         // [GET] /role
@@ -145,9 +149,23 @@ namespace backend.Controllers
                 if (users.Any())
                 {
                     return BadRequest(new { message = "Role assigned to one or more users." });
+
+                }
+                var permissionsToDelete = (await _rolePermissionService.GetRolePermissionByIdAsync(id)).ToList();
+
+                if (permissionsToDelete.Any())
+                {
+                    await _rolePermissionService.DeleteRolePermissionsAsync(permissionsToDelete);
+                    await _rolePermissionService.SaveAsync();
                 }
 
-             await   _roleService.DeleteRoleAsync(role.Id);
+
+
+             
+           
+
+
+                await   _roleService.DeleteRoleAsync(role.Id);
 
 
                 await _roleService.SaveAsync();
@@ -189,6 +207,16 @@ namespace backend.Controllers
                 {
                     return BadRequest(new { message = $"Role with ID: {role.Id} is assigned to one or more users and cannot be deleted." });
                 }
+                var permissionsToDelete = (await _rolePermissionService.GetRolePermissionByIdAsync(role.Id)).ToList();
+
+                if (permissionsToDelete.Any())
+                {
+                    await _rolePermissionService.DeleteRolePermissionsAsync(permissionsToDelete);
+                    await _rolePermissionService.SaveAsync();
+                }
+
+
+
 
 
                 await _roleService.DeleteRoleAsync(roleFromDb.Id);
