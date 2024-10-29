@@ -47,9 +47,11 @@ const Service = () => {
     const [services, setServices] = useState([]);
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const [searchInput, setSearchInput] = useState('');
     const [searchedServices, setSearchedServices] = useState([]);
+    const [deleteOne, setDeleteOne] = useState();
 
     const { user } = useUser();
 
@@ -111,8 +113,25 @@ const Service = () => {
 
         fetchServices();
     }, []);
+    const handleTrashClicked = (id) => {
+        setDeleteOne(id);
+        setShowDeleteConfirm(true);
+    };
 
-    const handleTrashClicked = useCallback(async (id) => {
+    // const handleTrashClicked = useCallback(async (id) => {
+    //     try {
+    //         const response = await axios.delete(`http://localhost:5058/service/${id}`);
+    //         if (response.status === 200) {
+    //             showToast(response?.data?.message, 'success');
+    //             setServices((prev) => prev.filter((service) => service.id !== id));
+    //         }
+    //     } catch (error) {
+    //         console.error('Error deleting service:', error);
+    //         showToast(error?.response?.data?.message || 'Error deleting service', 'error');
+    //     }
+    // }, []);
+
+    const deleteService_del = async (id) => {
         try {
             const response = await axios.delete(`http://localhost:5058/service/${id}`);
             if (response.status === 200) {
@@ -122,9 +141,10 @@ const Service = () => {
         } catch (error) {
             console.error('Error deleting service:', error);
             showToast(error?.response?.data?.message || 'Error deleting service', 'error');
+        } finally {
+            reset();
         }
-    }, []);
-
+    };
     const handleEditClicked = (service) => {
         setSelectedService(service);
         setShowPanel('edit');
@@ -165,6 +185,9 @@ const Service = () => {
     const reset = () => {
         setDeleteAll({ count: 0, payload: [], yes: false });
         setShowDeleteAllConfirm(false);
+        setShowDeleteConfirm(false);
+        setDeleteOne();
+        setSearchInput('');
     };
 
     const handleServiceAdded = (newService) => {
@@ -273,6 +296,17 @@ const Service = () => {
                             isShow={showDeleteAllConfirm}
                             onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
                             onClose={() => setShowDeleteAllConfirm(false)}
+                        />
+                    )}
+                    {showDeleteConfirm && (
+                        <ConfirmPopup
+                            header="Are you sure you want to delete the selected Service?"
+                            message="This action cannot be undone."
+                            negativeChoice="Cancel"
+                            positiveChoice="Delete"
+                            isShow={showDeleteConfirm}
+                            onYes={() => deleteService_del(deleteOne)}
+                            onClose={reset}
                         />
                     )}
                 </>

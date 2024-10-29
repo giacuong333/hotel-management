@@ -45,10 +45,10 @@ const columns = [
 
 const Role = () => {
     const [showPermission, setShowPermission] = useState(false);
-
+    const [deleteOne, setDeleteOne] = useState();
     const handleClosePermission = () => setShowPermission(false);
     const handleShowPermission = () => setShowPermission(true);
-
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [showPanel, setShowPanel] = useState('');
     const [selectedRole, setSelectedRole] = useState(null);
     const [roles, setRoles] = useState([]);
@@ -276,9 +276,30 @@ const Role = () => {
         fetchRoles();
     }, []);
 
-    const handleTrashClicked = useCallback(async (id) => {
+    const handleTrashClicked = (id) => {
+        setDeleteOne(id);
+        setShowDeleteConfirm(true);
+    };
+
+    // const handleTrashClicked1 = useCallback(async (id) => {
+    //     try {
+    //         const response = await axios.delete(`http://localhost:5058/role/${id}`);
+    //         if (response.status === 200) {
+    //             showToast(response?.data?.message, 'success');
+    //             setRoles((prev) => prev.filter((role) => role.id !== id));
+    //         }
+    //     } catch (error) {
+    //         console.error('Error deleting role:', error);
+    //         showToast(
+    //             error?.response?.data?.message || 'Unable to delete.This role has been assigned to the user.',
+    //             'error',
+    //         );
+    //     }
+    // }, []);
+
+    const deleteRole_del = async (id) => {
         try {
-            const response = await axios.delete(`http://localhost:5058/role/${id}`);
+            const response = await axios.delete(`http://localhost:5058/role/${id}`); // Thêm await vào đây
             if (response.status === 200) {
                 showToast(response?.data?.message, 'success');
                 setRoles((prev) => prev.filter((role) => role.id !== id));
@@ -286,11 +307,13 @@ const Role = () => {
         } catch (error) {
             console.error('Error deleting role:', error);
             showToast(
-                error?.response?.data?.message || 'Unable to delete.This role has been assigned to the user.',
+                error?.response?.data?.message || 'Unable to delete. This role has been assigned to the user.',
                 'error',
             );
+        } finally {
+            reset();
         }
-    }, []);
+    };
 
     const createPermissionsList = () => {
         const permissionsList = [];
@@ -697,6 +720,9 @@ const Role = () => {
     const reset = () => {
         setDeleteAll({ count: 0, payload: [], yes: false });
         setShowDeleteAllConfirm(false);
+        setShowDeleteConfirm(false);
+        setDeleteOne();
+        setSearchInput('');
     };
 
     const handleRoleAdded = (newRole) => {
@@ -1363,6 +1389,17 @@ const Role = () => {
                             isShow={showDeleteAllConfirm}
                             onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
                             onClose={() => setShowDeleteAllConfirm(false)}
+                        />
+                    )}
+                    {showDeleteConfirm && (
+                        <ConfirmPopup
+                            header="Are you sure you want to delete the selected Role?"
+                            message="This action cannot be undone."
+                            negativeChoice="Cancel"
+                            positiveChoice="Delete"
+                            isShow={showDeleteConfirm}
+                            onYes={() => deleteRole_del(deleteOne)}
+                            onClose={reset}
                         />
                     )}
                 </>

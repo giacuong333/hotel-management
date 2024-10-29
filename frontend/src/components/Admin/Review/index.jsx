@@ -48,9 +48,10 @@ const Review = () => {
     const [reviews, setReviews] = useState([]);
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
-
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchedReviews, setSearchedReviews] = useState([]);
+    const [deleteOne, setDeleteOne] = useState();
 
     const { user } = useUser();
 
@@ -116,7 +117,24 @@ const Review = () => {
         fetchReviews();
     }, []);
 
-    const handleTrashClicked = useCallback(async (id) => {
+    const handleTrashClicked = (id) => {
+        setDeleteOne(id);
+        setShowDeleteConfirm(true);
+    };
+
+    // const handleTrashClicked = useCallback(async (id) => {
+    //     try {
+    //         const response = await axios.delete(`http://localhost:5058/review/${id}`);
+    //         if (response.status === 200) {
+    //             showToast(response?.data?.message, 'success');
+    //             setReviews((prev) => prev.filter((review) => review.id !== id));
+    //         }
+    //     } catch (error) {
+    //         console.error('Error deleting user:', error);
+    //         showToast(error?.response?.data?.message || 'Error deleting user', 'error');
+    //     }
+    // }, []);
+    const deleteReview_del = async (id) => {
         try {
             const response = await axios.delete(`http://localhost:5058/review/${id}`);
             if (response.status === 200) {
@@ -126,8 +144,10 @@ const Review = () => {
         } catch (error) {
             console.error('Error deleting user:', error);
             showToast(error?.response?.data?.message || 'Error deleting user', 'error');
+        } finally {
+            reset();
         }
-    }, []);
+    };
 
     const handleEditClicked = (review) => {
         setSelectedReview(review);
@@ -168,6 +188,9 @@ const Review = () => {
     const reset = () => {
         setDeleteAll({ count: 0, payload: [], yes: false });
         setShowDeleteAllConfirm(false);
+        setShowDeleteConfirm(false);
+        setDeleteOne();
+        setSearchInput('');
     };
 
     const data = searchedReviews?.map((review, index) => ({
@@ -245,6 +268,17 @@ const Review = () => {
                             isShow={showDeleteAllConfirm}
                             onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
                             onClose={() => setShowDeleteAllConfirm(false)}
+                        />
+                    )}
+                    {showDeleteConfirm && (
+                        <ConfirmPopup
+                            header="Are you sure you want to delete the selected Review?"
+                            message="This action cannot be undone."
+                            negativeChoice="Cancel"
+                            positiveChoice="Delete"
+                            isShow={showDeleteConfirm}
+                            onYes={() => deleteReview_del(deleteOne)}
+                            onClose={reset}
                         />
                     )}
                 </>
