@@ -20,15 +20,17 @@ namespace backend.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        private readonly DatabaseContext _context;
+ 
         private readonly ILogger<ReviewController> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IReviewService _reviewService;
 
-        public ReviewController(DatabaseContext context, ILogger<ReviewController> logger, IConfiguration configuration)
+        public ReviewController( ILogger<ReviewController> logger, IConfiguration configuration,IReviewService reviewService)
         {
-            _context = context;
+     
             _logger = logger;
             _configuration = configuration;
+            _reviewService = reviewService;
         }
 
         // [GET] /review
@@ -38,9 +40,7 @@ namespace backend.Controllers
         {
             try
             {
-                var reviews = await _context.Review.Where(r => r.DeletedAt == null)
-                      .Include(r => r.Users).Include(r => r.Rooms)
-                      .ToListAsync();
+                var reviews = await _reviewService.GetReviewsAsync();
 
                 if (reviews == null)
                 {
@@ -51,7 +51,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving reviews");
+            
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -64,7 +64,7 @@ namespace backend.Controllers
         {
             try
             {
-                var review = await _context.Review.Include(r => r.Users).Include(r => r.Rooms).FirstOrDefaultAsync(r => r.Id == id);
+                var review = await _reviewService.GetReviewByIdAsync(id);
 
                 if (review == null)
                 {
@@ -75,11 +75,11 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving review");
+            
                 return StatusCode(500, "Internal server error");
             }
         }
-
+/*
         // [POST] /review
         [HttpPost]
         [Produces("application/json")]
@@ -106,23 +106,23 @@ namespace backend.Controllers
             }
         }
 
-
+*/
         // [DELETE] /review/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult<IEnumerable<ReviewModel>>> DeleteReviewById(int id)
         {
             try
             {
-                var review = await _context.Review.FindAsync(id);
+                var review = await _reviewService.GetReviewByIdAsync(id);
 
                 if (review == null)
                 {
                     return NotFound(new { message = "Review not found." });
                 }
-                review.DeletedAt = DateTime.UtcNow;
+               await  _reviewService.DeleteReviewAsync(review.Id);
 
 
-                await _context.SaveChangesAsync();
+                await _reviewService.SaveAsync();
 
                 return Ok(new { message = "Review deleted successfully" });
             }
@@ -149,7 +149,7 @@ namespace backend.Controllers
             foreach (var review in reviews)
             {
                
-                var reviewFromDb = await _context.Review.FirstOrDefaultAsync(r => r.Id == review.Id);
+                var reviewFromDb = await _reviewService.GetReviewByIdAsync(review.Id);
                 if (reviewFromDb == null)
                 {
                     Console.WriteLine($"User with ID: {review.Id} not found in the database, skipping.");
@@ -159,14 +159,13 @@ namespace backend.Controllers
               
 
 
-                reviewFromDb.DeletedAt = DateTime.UtcNow;
+               await _reviewService.DeleteReviewAsync(reviewFromDb.Id);
             }
 
-            await _context.SaveChangesAsync();
+            await _reviewService.SaveAsync();
 
 
-            var newReviews = await _context.Review.Where(r => r.DeletedAt == null)
-                              .Include(r => r.Users).Include(r => r.Rooms).ToListAsync();
+            var newReviews = await _reviewService.GetReviewsAsync();
 
             return Ok(new { message = "Review deleted successfully.", newReviews });
         }

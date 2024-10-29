@@ -30,5 +30,11 @@ namespace Repositories.Implementations
                         .Include(u => u.Roles)
                         .ToListAsync();
             }
-      }
+        public async Task<IEnumerable<UserModel>> GetUsesByRoleIdAsync(int id)
+        {
+            return await _context.User
+                 .Where(u => u.DeletedAt == null && u.RoleId == id)
+                  .ToListAsync();
+        }
+    }
 }

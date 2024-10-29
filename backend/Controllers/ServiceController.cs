@@ -19,15 +19,10 @@ namespace backend.Controllers
     [ApiController]
     public class ServiceController : ControllerBase
     {
-        private readonly DatabaseContext _context;
-        private readonly ILogger<ServiceController> _logger;
-        private readonly IConfiguration _configuration;
-
-        public ServiceController(DatabaseContext context, ILogger<ServiceController> logger, IConfiguration configuration)
+        private readonly IServiceService _serviceService;
+        public ServiceController(IServiceService serviceService)
         {
-            _context = context;
-            _logger = logger;
-            _configuration = configuration;
+            _serviceService = serviceService;
         }
 
         // [GET] /Service
@@ -37,8 +32,7 @@ namespace backend.Controllers
         {
             try
             {
-                var services = await _context.Service.Where(sv => sv.DeletedAt == null)
-                      .ToListAsync();
+                var services = await _serviceService.GetServicesAsync();
 
                 if (services == null)
                 {
@@ -49,7 +43,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving Services");
+       
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -62,8 +56,7 @@ namespace backend.Controllers
         {
             try
             {
-                var services = await _context.Service.Where(sv => sv.DeletedAt == null && sv.Status != 0)
-                      .ToListAsync();
+                var services = await _serviceService.GetServicesActiveAsync();
 
                 if (services == null)
                 {
@@ -74,7 +67,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving Services");
+
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -86,7 +79,7 @@ namespace backend.Controllers
         {
             try
             {
-                var service = await _context.Service.FirstOrDefaultAsync(sv => sv.Id == id);
+                var service = await _serviceService.GetServiceByIdAsync(id);
 
                 if (service == null)
                 {
@@ -97,7 +90,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving Service");
+        
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -125,8 +118,8 @@ namespace backend.Controllers
 
 
 
-                await _context.Service.AddAsync(newService);
-                await _context.SaveChangesAsync();
+                await _serviceService.CreateServiceAsync(newService);
+                await _serviceService.SaveAsync();
 
                 return StatusCode(201, new { message = "Service added successfully", newService });
             }
@@ -140,39 +133,39 @@ namespace backend.Controllers
 
 
         // [PUT] /service
-        // [HttpPut("{id}")]
-        // [Produces("application/json")]
-        // public async Task<ActionResult<ICollection<ServiceModel>>> EditService([FromBody] ServiceModel payload, int id)
-        // {
-        //     try
-        //     {
-        //         if (!ModelState.IsValid)
-        //         {
-        //             return Util.BadRequestResponse("Missing data");
-        //         }
+         [HttpPut("{id}")]
+         [Produces("application/json")]
+         public async Task<ActionResult<ICollection<ServiceModel>>> EditService([FromBody] ServiceModel payload, int id)
+         {
+             try
+             {
+                if (!ModelState.IsValid) { 
+                    return BadRequest(ModelState);
+            }
 
-        //         var currentService = await _context.Service.FirstAsync(sv => sv.Id == id);
-        //         if (currentService == null)
-        //         {
-        //             return Util.NotFoundResponse("Service not found");
-        //         }
-        //         currentService.Name = payload.Name;
-        //         currentService.Price = payload.Price;
-        //         currentService.Status = payload.Status;
+                 var currentService = await _serviceService.GetServiceByIdAsync(id);
 
-        //         currentService.UpdatedAt = DateTime.UtcNow;
+                if (currentService == null)
+                 {
+                     return NotFound("Service not found");
+                 }
+                 currentService.Name = payload.Name;
+                 currentService.Price = payload.Price;
+                 currentService.Status = payload.Status;
 
-        //         _context.Service.Update(currentService);
-        //         await _context.SaveChangesAsync();
+                 currentService.UpdatedAt = DateTime.UtcNow;
 
-        //         return Util.OkResponse(new { message = "Servuce updated successfully", currentService });
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         Console.WriteLine(e);
-        //         return Util.InternalServerErrorResponse("An unexpected error occured");
-        //     }
-        // }
+                 await  _serviceService.UpdateServiceAsync(currentService);
+                await _serviceService.SaveAsync();
+
+                 return Ok(new { message = "Servuce updated successfully", currentService });
+             }
+             catch (Exception e)
+             {
+                 Console.WriteLine(e);
+                 return StatusCode(500, new { message = "Internal server error" });
+            }
+         }
 
 
         // [DELETE] /Service/{id}
@@ -181,16 +174,16 @@ namespace backend.Controllers
         {
             try
             {
-                var service = await _context.Service.FindAsync(id);
+                var service = await _serviceService.GetServiceByIdAsync(id);
 
                 if (service == null)
                 {
                     return NotFound(new { message = "Service not found." });
                 }
-                service.DeletedAt = DateTime.UtcNow;
+               await  _serviceService.DeleteServiceAsync(service.Id);
 
 
-                await _context.SaveChangesAsync();
+                await _serviceService.SaveAsync();
 
                 return Ok(new { message = "Service deleted successfully" });
             }
@@ -217,24 +210,24 @@ namespace backend.Controllers
             foreach (var Service in services)
             {
 
-                var ServiceFromDb = await _context.Service.FirstOrDefaultAsync(r => r.Id == Service.Id);
+                var ServiceFromDb = await _serviceService.GetServiceByIdAsync(Service.Id);
                 if (ServiceFromDb == null)
                 {
-                    Console.WriteLine($"User with ID: {Service.Id} not found in the database, skipping.");
-                    continue;
+                    return NotFound("Servicc not found");
+                 
                 }
+                await _serviceService.DeleteServiceAsync(Service.Id);
 
 
 
 
-                ServiceFromDb.DeletedAt = DateTime.UtcNow;
+             
             }
 
-            await _context.SaveChangesAsync();
+            await _serviceService.SaveAsync();
 
 
-            var newServices = await _context.Service.Where(r => r.DeletedAt == null)
-                                   .ToListAsync();
+            var newServices = await _serviceService.GetServicesAsync();
 
             return Ok(new { message = "Service deleted successfully.", newServices });
         }

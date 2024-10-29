@@ -31,7 +31,7 @@ const columns = [
     },
     {
         name: 'Status',
-        selector: (row) => (row.status == 1 ? 'Active' : 'InActice'),
+        selector: (row) => (row.status === 1 ? 'Active' : 'InActice'),
     },
     {
         name: 'Actions',
@@ -154,6 +154,7 @@ const User = () => {
             });
             if (response.status === 200) {
                 setSelectedUser(response.data);
+
                 setShowPanel('see');
             }
         } catch (error) {
@@ -182,6 +183,8 @@ const User = () => {
     };
 
     const handleUserUpdated = (currentService) => {
+        console.log(currentService);
+        console.log('Service ID:', currentService.id);
         setUsers((prevUsers) =>
             prevUsers.map((prevUser) => (prevUser.id === currentService.id ? { ...currentService } : prevUser)),
         );
