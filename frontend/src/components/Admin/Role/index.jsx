@@ -43,20 +43,21 @@ const columns = [
     },
 ];
 
-const User = () => {
+const Role = () => {
     const [showPermission, setShowPermission] = useState(false);
 
     const handleClosePermission = () => setShowPermission(false);
     const handleShowPermission = () => setShowPermission(true);
 
     const [showPanel, setShowPanel] = useState('');
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [users, setUsers] = useState([]);
+    const [selectedRole, setSelectedRole] = useState(null);
+    const [roles, setRoles] = useState([]);
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
 
     const [searchInput, setSearchInput] = useState('');
-    const [searchedUsers, setSearchedUsers] = useState([]);
+
+    const [searchedRoles, setSearchedRoles] = useState([]);
     const { user } = useUser();
 
     const { id, fetchPermissions, assigningPermissionsP, createRoleP, updateRoleP, deleteRoleP } = useCheckPermission();
@@ -215,47 +216,47 @@ const User = () => {
 
     // For deleting
     useEffect(() => {
-        const deleteAllUsers = async () => {
+        const deleteAllRoles = async () => {
             try {
                 // Create payload for deletion
-                const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
+                const payload = deleteAll.payload.map((roleDelete) => ({ id: roleDelete.id }));
 
                 const response = await axios.delete('http://localhost:5058/role', { data: payload });
 
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     reset();
-                    setUsers(response?.data?.newRoles?.$values);
-                    setSearchedUsers(response?.data?.newRoles?.$values);
+                    setRoles(response?.data?.newRoles?.$values);
+                    setSearchedRoles(response?.data?.newRoles?.$values);
                 }
             } catch (error) {
                 console.log(error);
                 showToast(
                     error?.response?.data?.message ||
-                        'Unable to delete. A selected role is already assigned to the user.',
+                        'Unable to delete. A selected role is already assigned to the Role.',
                     'error',
                 );
             }
         };
 
-        if (deleteAll.yes) deleteAllUsers();
+        if (deleteAll.yes) deleteAllRoles();
     }, [deleteAll.yes, deleteAll.payload, user.id]); // Include user.id in dependencies
 
     // For searching
     useEffect(() => {
         if (searchInput.trim() === '') {
-            // If search input is empty, show all users
-            setSearchedUsers(users);
+            // If search input is empty, show all Roles
+            setSearchedRoles(roles);
         } else {
-            // Otherwise, filter users based on search input
-            const filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchInput.toLowerCase()));
-            setSearchedUsers(filteredUsers);
+            // Otherwise, filter Roles based on search input
+            const filteredRoles = roles.filter((role) => role.name.toLowerCase().includes(searchInput.toLowerCase()));
+            setSearchedRoles(filteredRoles);
         }
-    }, [searchInput, users]);
+    }, [searchInput, roles]);
 
     // For fetching
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchRoles = async () => {
             try {
                 const response = await axios.get('http://localhost:5058/role', {
                     headers: {
@@ -264,15 +265,15 @@ const User = () => {
                 });
 
                 if (response.status === 200) {
-                    setUsers(response.data.$values || []);
-                    setSearchedUsers(response.data.$values || []);
+                    setRoles(response.data.$values || []);
+                    setSearchedRoles(response.data.$values || []);
                 }
             } catch (error) {
-                console.log('Error fetching users:', error);
+                console.log('Error fetching Roles:', error);
             }
         };
 
-        fetchUsers();
+        fetchRoles();
     }, []);
 
     const handleTrashClicked = useCallback(async (id) => {
@@ -280,7 +281,7 @@ const User = () => {
             const response = await axios.delete(`http://localhost:5058/role/${id}`);
             if (response.status === 200) {
                 showToast(response?.data?.message, 'success');
-                setUsers((prev) => prev.filter((user) => user.id !== id));
+                setRoles((prev) => prev.filter((role) => role.id !== id));
             }
         } catch (error) {
             console.error('Error deleting role:', error);
@@ -657,8 +658,8 @@ const User = () => {
         //     });
     }
 
-    const handleEditClicked = (user) => {
-        setSelectedUser(user);
+    const handleEditClicked = (role) => {
+        setSelectedRole(role);
         setShowPanel('edit');
     };
 
@@ -675,11 +676,11 @@ const User = () => {
                 },
             });
             if (response.status === 200) {
-                setSelectedUser(response.data);
+                setSelectedRole(response.data);
                 setShowPanel('see');
             }
         } catch (error) {
-            console.error('Error fetching user details:', error);
+            console.error('Error fetching Role details:', error);
         }
     }, []);
 
@@ -698,17 +699,17 @@ const User = () => {
         setShowDeleteAllConfirm(false);
     };
 
-    const handleUserAdded = (newRole) => {
-        setUsers((prevUsers) => [...prevUsers, newRole]);
-        setSearchedUsers((prevUsers) => [...prevUsers, newRole]);
+    const handleRoleAdded = (newRole) => {
+        setRoles((prevRoles) => [...prevRoles, newRole]);
+        setSearchedRoles((prevRoles) => [...prevRoles, newRole]);
     };
 
-    const handleUserUpdated = (currentRole) => {
-        setUsers((prevUsers) =>
-            prevUsers.map((prevUser) => (prevUser.id === currentRole.id ? { ...currentRole } : prevUser)),
+    const handleRoleUpdated = (currentRole) => {
+        setRoles((prevRoles) =>
+            prevRoles.map((prevRole) => (prevRole.id === currentRole.id ? { ...currentRole } : prevRole)),
         );
-        setSearchedUsers((prevUsers) =>
-            prevUsers.map((prevUser) => (prevUser.id === currentRole.id ? { ...currentRole } : prevUser)),
+        setSearchedRoles((prevRoles) =>
+            prevRoles.map((prevRole) => (prevRole.id === currentRole.id ? { ...currentRole } : prevRole)),
         );
     };
 
@@ -717,32 +718,36 @@ const User = () => {
         handleRowClickedPermission(id);
     };
 
-    const data = searchedUsers?.map((user, index) => ({
-        id: user.id,
-        no: index + 1,
-        name: user.name,
+    const data = searchedRoles
+        ?.map((role, index) => {
+            if (role.id === 2) return null;
+            if (role.id === 3) return null;
 
-        actions: (
-            <>
-                {assigningPermissionsP === 1 ? (
-                    <FaUserShield size={18} className="cursor-pointer me-3" onClick={() => handelePermison(user.id)} />
-                ) : (
-                    <></>
-                )}
-                {updateRoleP === 1 ? (
-                    <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
-                ) : (
-                    <></>
-                )}
+            return {
+                id: role.id,
+                no: index + 1,
+                name: role.name,
 
-                {deleteRoleP === 1 ? (
-                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
-                ) : (
-                    <></>
-                )}
-            </>
-        ),
-    }));
+                actions: (
+                    <>
+                        {assigningPermissionsP === 1 ? (
+                            <FaUserShield
+                                size={18}
+                                className="cursor-pointer me-3"
+                                onClick={() => handelePermison(role.id)}
+                            />
+                        ) : null}
+                        {updateRoleP === 1 ? (
+                            <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(role)} />
+                        ) : null}
+                        {deleteRoleP === 1 ? (
+                            <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(role.id)} />
+                        ) : null}
+                    </>
+                ),
+            };
+        })
+        .filter(Boolean);
 
     return (
         <div>
@@ -1341,12 +1346,12 @@ const User = () => {
                     </Modal>
                     {showPanel && (
                         <PopupPanel
-                            data={selectedUser}
+                            data={selectedRole}
                             type={showPanel}
                             onClose={() => setShowPanel(false)}
                             isShowed={showPanel}
-                            onUserAdded={handleUserAdded}
-                            onUserUpdated={handleUserUpdated}
+                            onRoleAdded={handleRoleAdded}
+                            onRoleUpdated={handleRoleUpdated}
                         />
                     )}
                     {showDeleteAllConfirm && (
@@ -1366,4 +1371,4 @@ const User = () => {
     );
 };
 
-export default User;
+export default Role;

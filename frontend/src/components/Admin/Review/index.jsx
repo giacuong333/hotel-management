@@ -41,62 +41,62 @@ const columns = [
     },
 ];
 
-const User = () => {
+const Review = () => {
     const { deleteReview } = useCheckPermission();
     const [showPanel, setShowPanel] = useState('');
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [users, setUsers] = useState([]);
+    const [selectedReview, setSelectedReview] = useState(null);
+    const [reviews, setReviews] = useState([]);
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
 
     const [searchInput, setSearchInput] = useState('');
-    const [searchedUsers, setSearchedUsers] = useState([]);
+    const [searchedReviews, setSearchedReviews] = useState([]);
 
     const { user } = useUser();
 
     // For deleting
     useEffect(() => {
-        const deleteAllUsers = async () => {
+        const deleteAllReviews = async () => {
             try {
                 // Create payload for deletion
-                const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
+                const payload = deleteAll.payload.map((reviewDelete) => ({ id: reviewDelete.id }));
 
                 const response = await axios.delete('http://localhost:5058/review', { data: payload });
                 console.log(response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     reset();
-                    setUsers(response?.data?.newReviews?.$values);
-                    setSearchedUsers(response?.data?.newReviews?.$values);
+                    setReviews(response?.data?.newReviews?.$values);
+                    setSearchedReviews(response?.data?.newReviews?.$values);
                 }
             } catch (error) {
                 console.log(error);
             }
         };
 
-        if (deleteAll.yes) deleteAllUsers();
+        if (deleteAll.yes) deleteAllReviews();
     }, [deleteAll.yes, deleteAll.payload, user.id]); // Include user.id in dependencies
 
     // For searching
     useEffect(() => {
         if (searchInput.trim() === '') {
             // If search input is empty, show all users
-            setSearchedUsers(users);
+            setSearchedReviews(reviews);
         } else {
             // Otherwise, filter users based on search input
-            const filteredUsers = users.filter(
-                (user) =>
-                    user.name.toLowerCase().includes(searchInput.toLowerCase()) ||
-                    user.email.toLowerCase().includes(searchInput.toLowerCase()) ||
-                    user.phoneNumber.toLowerCase().includes(searchInput.toLowerCase()),
+            const filteredReviews = reviews.filter(
+                (review) =>
+                    review.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+                    review.email.toLowerCase().includes(searchInput.toLowerCase()) ||
+                    review.phoneNumber.toLowerCase().includes(searchInput.toLowerCase()),
             );
-            setSearchedUsers(filteredUsers);
+            setSearchedReviews(filteredReviews);
         }
-    }, [searchInput, users]);
+    }, [searchInput, reviews]);
 
     // For fetching
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchReviews = async () => {
             try {
                 const response = await axios.get('http://localhost:5058/review', {
                     headers: {
@@ -105,15 +105,15 @@ const User = () => {
                 });
 
                 if (response.status === 200) {
-                    setUsers(response.data.$values || []);
-                    setSearchedUsers(response.data.$values || []);
+                    setReviews(response.data.$values || []);
+                    setSearchedReviews(response.data.$values || []);
                 }
             } catch (error) {
-                console.log('Error fetching users:', error);
+                console.log('Error fetching Reviews:', error);
             }
         };
 
-        fetchUsers();
+        fetchReviews();
     }, []);
 
     const handleTrashClicked = useCallback(async (id) => {
@@ -121,7 +121,7 @@ const User = () => {
             const response = await axios.delete(`http://localhost:5058/review/${id}`);
             if (response.status === 200) {
                 showToast(response?.data?.message, 'success');
-                setUsers((prev) => prev.filter((user) => user.id !== id));
+                setReviews((prev) => prev.filter((review) => review.id !== id));
             }
         } catch (error) {
             console.error('Error deleting user:', error);
@@ -129,8 +129,8 @@ const User = () => {
         }
     }, []);
 
-    const handleEditClicked = (user) => {
-        setSelectedUser(user);
+    const handleEditClicked = (review) => {
+        setSelectedReview(review);
         setShowPanel('edit');
     };
 
@@ -147,11 +147,11 @@ const User = () => {
                 },
             });
             if (response.status === 200) {
-                setSelectedUser(response.data);
+                setSelectedReview(response.data);
                 setShowPanel('see');
             }
         } catch (error) {
-            console.error('Error fetching user details:', error);
+            console.error('Error fetching Review details:', error);
         }
     }, []);
 
@@ -170,18 +170,18 @@ const User = () => {
         setShowDeleteAllConfirm(false);
     };
 
-    const data = searchedUsers?.map((user, index) => ({
-        id: user.id,
+    const data = searchedReviews?.map((review, index) => ({
+        id: review.id,
         no: index + 1,
-        userId: user.userId,
-        roomId: user.roomId,
-        comment: user.comment,
+        userId: review.userId,
+        roomId: review.roomId,
+        comment: review.comment,
 
         actions: (
             <>
                 {/* <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} /> */}
                 {deleteReview === 1 ? (
-                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(review.id)} />
                 ) : (
                     <></>
                 )}
@@ -230,7 +230,7 @@ const User = () => {
                     {ToastContainer}
                     {showPanel && (
                         <PopupPanel
-                            data={selectedUser}
+                            data={selectedReview}
                             type={showPanel}
                             onClose={() => setShowPanel(false)}
                             isShowed={showPanel}
@@ -253,4 +253,4 @@ const User = () => {
     );
 };
 
-export default User;
+export default Review;

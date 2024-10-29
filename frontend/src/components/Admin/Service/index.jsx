@@ -39,70 +39,60 @@ const columns = [
     },
 ];
 
-const User = () => {
+const Service = () => {
     const { createService, updateService, deleteService } = useCheckPermission();
 
     const [showPanel, setShowPanel] = useState('');
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [users, setUsers] = useState([]);
+    const [selectedService, setSelectedService] = useState(null);
+    const [services, setServices] = useState([]);
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
 
     const [searchInput, setSearchInput] = useState('');
-    const [searchedUsers, setSearchedUsers] = useState([]);
-    // const handleUserAdded = (newUser) => {
-    //     setUsers((prevUsers) => [...prevUsers, newUser]);
-    //     setSearchedUsers((prevUsers) => [...prevUsers, newUser]);
-    // };
+    const [searchedServices, setSearchedServices] = useState([]);
 
-    // const handleUserUpdated = (currentUser) => {
-    //     setUsers((prevUsers) =>
-    //         prevUsers.map((prevUser) => (prevUser.id === currentUser.id ? { ...currentUser } : prevUser)),
-    //     );
-    //     setSearchedUsers((prevUsers) =>
-    //         prevUsers.map((prevUser) => (prevUser.id === currentUser.id ? { ...currentUser } : prevUser)),
-    //     );
-    // };
     const { user } = useUser();
 
     // For deleting
     useEffect(() => {
-        const deleteAllUsers = async () => {
+        const deleteAllServices = async () => {
             try {
                 // Create payload for deletion
-                const payload = deleteAll.payload.map((userDelete) => ({ id: userDelete.id }));
+                const payload = deleteAll.payload.map((serviceDelete) => ({ id: serviceDelete.id }));
 
                 const response = await axios.delete('http://localhost:5058/service', { data: payload });
                 console.log(response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     reset();
-                    setUsers(response?.data?.newServices?.$values);
-                    setSearchedUsers(response?.data?.newServices?.$values);
+                    setServices(response?.data?.newServices?.$values);
+                    setSearchedServices(response?.data?.newServices?.$values);
                 }
             } catch (error) {
                 console.log(error);
             }
         };
 
-        if (deleteAll.yes) deleteAllUsers();
+        if (deleteAll.yes) deleteAllServices();
     }, [deleteAll.yes, deleteAll.payload, user.id]); // Include user.id in dependencies
 
     // For searching
     useEffect(() => {
         if (searchInput.trim() === '') {
-            // If search input is empty, show all users
-            setSearchedUsers(users);
+            // If search input is empty, show all Services
+            setSearchedServices(services);
         } else {
-            // Otherwise, filter users based on search input
-            const filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchInput.toLowerCase()));
-            setSearchedUsers(filteredUsers);
+            // Otherwise, filter Services based on search input
+            const filteredServices = services.filter((service) =>
+                service.name.toLowerCase().includes(searchInput.toLowerCase()),
+            );
+            setSearchedServices(filteredServices);
         }
-    }, [searchInput, users]);
+    }, [searchInput, services]);
 
     // For fetching
     useEffect(() => {
-        const fetchUsers = async () => {
+        const fetchServices = async () => {
             try {
                 const response = await axios.get('http://localhost:5058/service', {
                     headers: {
@@ -111,15 +101,15 @@ const User = () => {
                 });
 
                 if (response.status === 200) {
-                    setUsers(response.data.$values || []);
-                    setSearchedUsers(response.data.$values || []);
+                    setServices(response.data.$values || []);
+                    setSearchedServices(response.data.$values || []);
                 }
             } catch (error) {
-                console.log('Error fetching users:', error);
+                console.log('Error fetching Services:', error);
             }
         };
 
-        fetchUsers();
+        fetchServices();
     }, []);
 
     const handleTrashClicked = useCallback(async (id) => {
@@ -127,16 +117,16 @@ const User = () => {
             const response = await axios.delete(`http://localhost:5058/service/${id}`);
             if (response.status === 200) {
                 showToast(response?.data?.message, 'success');
-                setUsers((prev) => prev.filter((user) => user.id !== id));
+                setServices((prev) => prev.filter((service) => service.id !== id));
             }
         } catch (error) {
-            console.error('Error deleting user:', error);
-            showToast(error?.response?.data?.message || 'Error deleting user', 'error');
+            console.error('Error deleting service:', error);
+            showToast(error?.response?.data?.message || 'Error deleting service', 'error');
         }
     }, []);
 
-    const handleEditClicked = (user) => {
-        setSelectedUser(user);
+    const handleEditClicked = (service) => {
+        setSelectedService(service);
         setShowPanel('edit');
     };
 
@@ -153,12 +143,12 @@ const User = () => {
                 },
             });
             if (response.status === 200) {
-                setSelectedUser(response.data);
+                setSelectedService(response.data);
 
                 setShowPanel('see');
             }
         } catch (error) {
-            console.error('Error fetching user details:', error);
+            console.error('Error fetching Service details:', error);
         }
     }, []);
 
@@ -177,37 +167,39 @@ const User = () => {
         setShowDeleteAllConfirm(false);
     };
 
-    const handleUserAdded = (newService) => {
-        setUsers((prevUsers) => [...prevUsers, newService]);
-        setSearchedUsers((prevUsers) => [...prevUsers, newService]);
+    const handleServiceAdded = (newService) => {
+        setServices((prevServices) => [...prevServices, newService]);
+        setSearchedServices((prevServices) => [...prevServices, newService]);
     };
 
-    const handleUserUpdated = (currentService) => {
-        console.log(currentService);
-        console.log('Service ID:', currentService.id);
-        setUsers((prevUsers) =>
-            prevUsers.map((prevUser) => (prevUser.id === currentService.id ? { ...currentService } : prevUser)),
+    const handleServiceUpdated = (currentService) => {
+        setServices((prevServices) =>
+            prevServices.map((prevService) =>
+                prevService.id === currentService.id ? { ...currentService } : prevService,
+            ),
         );
-        setSearchedUsers((prevUsers) =>
-            prevUsers.map((prevUser) => (prevUser.id === currentService.id ? { ...currentService } : prevUser)),
+        setSearchedServices((prevServices) =>
+            prevServices.map((prevService) =>
+                prevService.id === currentService.id ? { ...currentService } : prevService,
+            ),
         );
     };
 
-    const data = searchedUsers?.map((user, index) => ({
-        id: user.id,
+    const data = searchedServices?.map((service, index) => ({
+        id: service.id,
         no: index + 1,
-        name: user.name,
-        price: user.price,
-        status: user.status,
+        name: service.name,
+        price: service.price,
+        status: service.status,
         actions: (
             <>
                 {updateService === 1 ? (
-                    <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
+                    <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(service)} />
                 ) : (
                     <></>
                 )}
                 {deleteService === 1 ? (
-                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(service.id)} />
                 ) : (
                     <></>
                 )}
@@ -264,12 +256,12 @@ const User = () => {
                     {ToastContainer}
                     {showPanel && (
                         <PopupPanel
-                            data={selectedUser}
+                            data={selectedService}
                             type={showPanel}
                             onClose={() => setShowPanel(false)}
                             isShowed={showPanel}
-                            onUserAdded={handleUserAdded}
-                            onUserUpdated={handleUserUpdated}
+                            onServiceAdded={handleServiceAdded}
+                            onServiceUpdated={handleServiceUpdated}
                         />
                     )}
                     {showDeleteAllConfirm && (
@@ -289,4 +281,4 @@ const User = () => {
     );
 };
 
-export default User;
+export default Service;

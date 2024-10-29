@@ -12,7 +12,8 @@ import { FiPhone } from 'react-icons/fi';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import Button from 'react-bootstrap/Button';
 import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
-const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed }) => {
+
+const PopupPanel = ({ data, type, onClose, onRoleAdded, onRoleUpdated, isShowed }) => {
     const [fields, setFields] = useState({
         name: data?.name || '',
     });
@@ -50,7 +51,7 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
                     if (response?.status === 201) {
                         showToast('Role created successfully', 'success');
                         setTimeout(handleClose, 4000);
-                        onUserAdded(response?.data?.newRole);
+                        onRoleAdded(response?.data?.newRole);
                     }
                 } else if (type === 'edit') {
                     const response = await axios.put(`${apiUrl}/${data?.id}`, payload);
@@ -58,7 +59,7 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
                     if (response?.status === 200) {
                         showToast(response?.data?.message, 'success');
                         setTimeout(handleClose, 4000);
-                        onUserUpdated(response?.data?.currentRole);
+                        onRoleUpdated(response?.data?.currentRole);
                     }
                 }
             } catch (error) {
@@ -79,12 +80,6 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
         });
         onClose();
     };
-
-    const handleInputChanged = () => {};
-
-    const handleInputBlured = () => {};
-
-    const handleInputTyped = () => {};
 
     const handleFieldChange = (field, value) => {
         setFields((prevFields) => ({
