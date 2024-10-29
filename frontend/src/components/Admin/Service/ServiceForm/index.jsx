@@ -62,9 +62,9 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
                     const response = await axios.put(`${apiUrl}/${data?.id}`, payload);
                     console.log(response);
                     if (response?.status === 200) {
-                        showToast(response?.data?.obj?.message, 'success');
+                        showToast(response?.data?.message, 'success');
                         setTimeout(handleClose, 4000);
-                        onUserUpdated(response?.data?.obj?.currentService);
+                        onUserUpdated(response?.data?.currentService);
                     }
                 }
             } catch (error) {

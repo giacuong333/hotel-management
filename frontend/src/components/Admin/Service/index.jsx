@@ -182,6 +182,8 @@ const User = () => {
     };
 
     const handleUserUpdated = (currentService) => {
+        console.log(currentService);
+        console.log('Service ID:', currentService.id);
         setUsers((prevUsers) =>
             prevUsers.map((prevUser) => (prevUser.id === currentService.id ? { ...currentService } : prevUser)),
         );
