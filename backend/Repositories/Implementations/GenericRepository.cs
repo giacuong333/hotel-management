@@ -38,14 +38,19 @@ namespace Repositories.Implementations
                   }
             }
 
-            public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            var query = _dbSet.AsQueryable();
+
+            if (typeof(T).GetProperty("DeletedAt") != null)
             {
-                  return await _dbSet.
-                        Where(entity => EF.Property<DateTime?>(entity, "DeletedAt") == null)
-                        .ToListAsync();
+                query = query.Where(entity => EF.Property<DateTime?>(entity, "DeletedAt") == null);
             }
 
-            public async Task<T> GetByIdAsync(object id)
+            return await query.ToListAsync();
+        }
+
+        public async Task<T> GetByIdAsync(object id)
             {
                   var query = _dbSet.AsQueryable();
                   var property = typeof(T).GetProperty("DeletedAt");

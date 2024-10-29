@@ -12,18 +12,43 @@ using Services.Interfaces;
 public class RoleService : IRoleService
 {
       private readonly IRoleRepository _roleRepository;
-      private readonly IConfiguration _configuration;
-      private readonly ILogger<RoleService> _logger;
 
-      public RoleService(IRoleRepository roleRepository, IConfiguration configuration, ILogger<RoleService> logger)
+
+      public RoleService(IRoleRepository roleRepository)
       {
             _roleRepository = roleRepository;
-            _configuration = configuration;
-            _logger = logger;
+       
       }
 
       public async Task<RoleModel> GetRoleByIdAsync(object id)
       {
             return await _roleRepository.GetByIdAsync(id);
       }
+    public async Task CreateRoleAsync(RoleModel role)
+    {
+        await _roleRepository.CreateAsync(role);
+
+    }
+
+    public async Task DeleteRoleAsync(object id)
+    {
+        await _roleRepository.DeleteAsync(id);
+    }
+
+
+
+    public async Task<IEnumerable<RoleModel>> GetRolesAsync()
+    {
+        return await _roleRepository.GetAllAsync();
+    }
+
+    public async Task SaveAsync()
+    {
+        await _roleRepository.SaveAsync();
+    }
+
+    public async Task UpdateRoleAsync(RoleModel role)
+    {
+        await _roleRepository.UpdateAsync(role);
+    }
 }

@@ -17,9 +17,13 @@ namespace backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class ServiceController(IServiceService serviceService) : ControllerBase
+    public class ServiceController : ControllerBase
     {
-        private readonly IServiceService _serviceService = serviceService;
+        private readonly IServiceService _serviceService;
+        public ServiceController(IServiceService serviceService)
+        {
+            _serviceService = serviceService;
+        }
 
         // [GET] /Service
         [HttpGet]
@@ -176,7 +180,7 @@ namespace backend.Controllers
                 {
                     return NotFound(new { message = "Service not found." });
                 }
-                service.DeletedAt = DateTime.UtcNow;
+               await  _serviceService.DeleteServiceAsync(service.Id);
 
 
                 await _serviceService.SaveAsync();

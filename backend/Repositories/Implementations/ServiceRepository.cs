@@ -6,14 +6,14 @@ using Repositories.Interfaces;
 
 namespace Repositories.Implementations
 {
-      public class ServiceRepository : GenericRepository<ServiceModel>, IServiceRepository
-      {
-            public ServiceRepository(DatabaseContext context) : base(context) { }
+    public class ServiceRepository : GenericRepository<ServiceModel>, IServiceRepository
+    {
+        public ServiceRepository(DatabaseContext context) : base(context) { }
 
-            public async Task<IEnumerable<ServiceModel>> GetServicesActiveAsync()
-            {
-                  return await _context.Service.Where(sv => sv.DeletedAt == null && sv.Status != 0)
-                      .ToListAsync();
+        public async Task<IEnumerable<ServiceModel>> GetServicesActiveAsync()
+        {
+            return await _context.Service.Where(sv => sv.DeletedAt == null && sv.Status != 0)
+                .ToListAsync();
         }
-      }
+    }
 }

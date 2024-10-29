@@ -18,7 +18,7 @@ public class ServiceService : IServiceService
       public async Task CreateServiceAsync(ServiceModel service)
       {
             await _serviceRepository.CreateAsync(service);
-            await _serviceRepository.SaveAsync();
+        
       }
 
       public async Task DeleteServiceAsync(object id)

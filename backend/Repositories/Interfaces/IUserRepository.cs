@@ -8,5 +8,8 @@ namespace Repositories.Interfaces
             Task<UserModel> GetUserByEmailAsync(string email);
             Task<UserModel> GetUserByPhoneAsync(string phoneNumber);
             Task<IEnumerable<UserModel>> GetUsersAsync();
-      }
+            Task<IEnumerable<UserModel>> GetUsesByRoleIdAsync(int Roleid);
+   
+
+    }
 }

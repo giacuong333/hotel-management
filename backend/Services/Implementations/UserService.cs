@@ -18,7 +18,11 @@ public class UserService : IUserService
       {
             return await _userRepository.GetUsersAsync();
       }
-
+    public async Task<IEnumerable<UserModel>> GetUsesByRoleIdAsync(int id)
+    {
+        return await _userRepository.GetUsesByRoleIdAsync(id);
+    }
+    
       public async Task<UserModel> GetUserByIdAsync(object id)
       {
             return await _userRepository.GetByIdAsync(id);

@@ -14,11 +14,15 @@ namespace backend.Controllers
     {
         private readonly DatabaseContext _context;
         private readonly ILogger<RoleController> _logger;
+        private readonly IRoleService _roleService;
+        private readonly IUserService _userService;
 
-        public RoleController(DatabaseContext context, ILogger<RoleController> logger)
+        public RoleController(DatabaseContext context, ILogger<RoleController> logger,IRoleService roleService, IUserService userService)
         {
             _context = context;
             _logger = logger;
+            _roleService = roleService;
+            _userService = userService;
         }
 
         // [GET] /role
@@ -28,7 +32,7 @@ namespace backend.Controllers
         {
             try
             {
-                var roles = await _context.Role.ToListAsync();
+                var roles = await _roleService.GetRolesAsync();
 
                 if (roles == null)
                 {
@@ -51,7 +55,7 @@ namespace backend.Controllers
         {
             try
             {
-                var role = await _context.Role.FindAsync(id);
+                var role = await _roleService.GetRoleByIdAsync(id);
                 return Ok(role);
             }
             catch (Exception e)
@@ -78,8 +82,8 @@ namespace backend.Controllers
                 };
 
 
-                await _context.Role.AddAsync(newRole);
-                await _context.SaveChangesAsync();
+                await _roleService.CreateRoleAsync(newRole);
+                await _roleService.SaveAsync();
 
                 return StatusCode(201, new { message = "Role added successfully", newRole });
             }
@@ -92,39 +96,39 @@ namespace backend.Controllers
 
 
         // [PUT] /role
-        // [HttpPut("{id}")]
-        // [Produces("application/json")]
-        // public async Task<ActionResult<ICollection<RoleModel>>> EditRole([FromBody] RoleModel payload, int id)
-        // {
-        //     try
-        //     {
-        //         if (!ModelState.IsValid)
-        //         {
-        //             return Util.BadRequestResponse("Missing data");
-        //         }
+         [HttpPut("{id}")]
+         [Produces("application/json")]
+        public async Task<ActionResult<ICollection<RoleModel>>> EditRole([FromBody] RoleModel payload, int id)
+         {
+            try
+             {
+                 if (!ModelState.IsValid)
+                 {
+                    return BadRequest(ModelState);
+                }
 
-        //         var currentRole = await _context.Role.FirstAsync(r => r.Id == id);
-        //         if (currentRole == null)
-        //         {
-        //             return Util.NotFoundResponse("Role not found");
-        //         }
-
-
-
-        //         currentRole.Name = payload.Name;
+                 var currentRole = await _roleService.GetRoleByIdAsync(id);
+                 if (currentRole == null)
+                 {
+                     return NotFound("Role not found");
+                 }
 
 
-        //         _context.Role.Update(currentRole);
-        //         await _context.SaveChangesAsync();
 
-        //         return Util.OkResponse(new { message = "Role updated successfully", currentRole });
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         Console.WriteLine(e);
-        //         return Util.InternalServerErrorResponse("An unexpected error occured");
-        //     }
-        // }
+                 currentRole.Name = payload.Name;
+
+
+                 await _roleService.UpdateRoleAsync(currentRole);
+                await _roleService.SaveAsync();
+
+                 return Ok(new { message = "Role updated successfully", currentRole });
+             }
+             catch (Exception e)
+             {
+             
+                return StatusCode(500, new { message = "Internal server error" });
+            }
+        }
 
         // [DELETE] /role/{id}
         [HttpDelete("{id}")]
@@ -132,21 +136,21 @@ namespace backend.Controllers
         {
             try
             {
-                var role = await _context.Role.FindAsync(id);
-                var users = await _context.User.Where(u => u.RoleId == id).ToListAsync();
+                var role = await _roleService.GetRoleByIdAsync(id);
+                var users = await _userService.GetUsesByRoleIdAsync(id);
                 if (role == null)
                 {
                     return NotFound(new { message = "Role not found." });
                 }
-                if (users.Count > 0)
+                if (users.Any())
                 {
                     return BadRequest(new { message = "Role assigned to one or more users." });
                 }
 
-                _context.Role.Remove(role);
+             await   _roleService.DeleteRoleAsync(role.Id);
 
 
-                await _context.SaveChangesAsync();
+                await _roleService.SaveAsync();
 
                 return Ok(new { message = "Role deleted successfully" });
             }
@@ -170,7 +174,7 @@ namespace backend.Controllers
             foreach (var role in roles)
             {
 
-                var roleFromDb = await _context.Role.FirstOrDefaultAsync(r => r.Id == role.Id);
+                var roleFromDb = await _roleService.GetRoleByIdAsync(role.Id);
 
                 if (roleFromDb == null)
                 {
@@ -179,21 +183,21 @@ namespace backend.Controllers
                 }
 
 
-                var users = await _context.User.Where(u => u.RoleId == role.Id).ToListAsync();
+                var users = await _userService.GetUsesByRoleIdAsync((int)role.Id);
 
-                if (users.Count > 0)
+                if (users.Any())
                 {
                     return BadRequest(new { message = $"Role with ID: {role.Id} is assigned to one or more users and cannot be deleted." });
                 }
 
 
-                _context.Role.Remove(roleFromDb);
+                await _roleService.DeleteRoleAsync(roleFromDb.Id);
             }
 
 
-            await _context.SaveChangesAsync();
+            await _roleService.SaveAsync();
 
-            var newRoles = await _context.Role.ToListAsync();
+            var newRoles = await _roleService.GetRolesAsync();
 
             return Ok(new { message = "Roles deleted successfully.", newRoles });
         }
