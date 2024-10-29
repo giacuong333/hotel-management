@@ -19,12 +19,9 @@ import Room from './components/Admin/Room';
 import Service from './components/Admin/Service';
 import Statistic from './components/Admin/Statistic';
 import User from './components/Admin/User';
-
 import SignUp from './components/Authentication/SignUp';
 import SignIn from './components/Authentication/SignIn';
-
 import { useUser } from './providers/UserProvider';
-
 import RoomDetail from './components/Customer/Home/RoomDetail';
 import Rooms from './components/Customer/Rooms';
 import RoleProvider from './providers/RoleProvider';

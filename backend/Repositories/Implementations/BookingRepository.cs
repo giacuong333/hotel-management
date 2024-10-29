@@ -62,6 +62,29 @@ namespace Repositories.Implementations
                   }
             }
 
+            public async Task CreateBookingAsync(BookingModel booking)
+            {
+                  var transaction = await _context.Database.BeginTransactionAsync();
+                  try
+                  {
+                        await transaction.CommitAsync();
+                  }
+                  catch
+                  {
+                        await transaction.RollbackAsync();
+                        throw;
+                  }
+            }
+
+            public async Task<IEnumerable<BookingModel>> GetBookedDatesAsync()
+            {
+                  return await _context.Booking
+                                             .Where(b => b.DeletedAt == null && b.CheckIn != null && b.CheckOut != null)
+                                             .Select(b => new BookingModel { CheckIn = b.CheckIn, CheckOut = b.CheckOut })
+                                             .ToListAsync();
+            }
+
+
             public async Task<BookingModel> GetBookingByIdAsync(object id)
             {
                   return await _context.Booking

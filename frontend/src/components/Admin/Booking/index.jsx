@@ -447,7 +447,7 @@ const Booking = () => {
                         type={showPanel}
                         isShowed={showPanel}
                         onClose={() => setShowPanel(false)}
-                        onRoomAdded={handleBookingAdded}
+                        onBookingAdded={handleBookingAdded}
                     />
                 )}
 

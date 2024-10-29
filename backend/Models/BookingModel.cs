@@ -10,9 +10,12 @@ namespace backend.Models
             // Parameterless constructor required by EF Core
             public BookingModel() { }
 
-            public BookingModel(int? id, int? staffCheckInId, int? staffCheckOutId, DateTime? checkIn, DateTime? checkOut, int? customerId, int? status, DateTime createdAt, DateTime? updatedAt, DateTime? deletedAt)
+            public BookingModel(int? id, string? customerName, string? customerEmail, string? customerPhoneNumber, int? staffCheckInId, int? staffCheckOutId, DateTime? checkIn, DateTime? checkOut, int? customerId, int? status, DateTime createdAt, DateTime? updatedAt, DateTime? deletedAt)
             {
                   Id = id;
+                  CustomerName = customerName;
+                  CustomerEmail = customerEmail;
+                  CustomerPhoneNumber = customerPhoneNumber;
                   StaffCheckInId = staffCheckInId;
                   StaffCheckOutId = staffCheckOutId;
                   CheckIn = checkIn;
@@ -26,6 +29,9 @@ namespace backend.Models
 
             [Key]
             public int? Id { get; set; }
+            public string? CustomerName { get; set; }
+            public string? CustomerEmail { get; set; }
+            public string? CustomerPhoneNumber { get; set; }
             public int? StaffCheckInId { get; set; }
             public int? StaffCheckOutId { get; set; }
             public DateTime? CheckIn { get; set; }

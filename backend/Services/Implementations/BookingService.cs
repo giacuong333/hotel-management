@@ -34,6 +34,11 @@ public class BookingService : IBookingService
             await _bookingRepository.DeleteAsync(id);
       }
 
+      public async Task<IEnumerable<BookingModel>> GetBookedDatesAsync()
+      {
+            return await _bookingRepository.GetBookedDatesAsync();
+      }
+
       public async Task<BookingModel> GetBookingByIdAsync(object id)
       {
             return await _bookingRepository.GetBookingByIdAsync(id);

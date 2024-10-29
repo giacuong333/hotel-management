@@ -21,10 +21,9 @@ export const isValidDate = (date) => {
     return date instanceof Date && !isNaN(date);
 };
 
-export const isCheckInLessThanCheckOut = (checkInDate, checkOutDate) => {
-    return checkInDate >= checkOutDate;
+export const isMinimunBookingDay = (checkInDate, checkOutDate) => {
+    const checkIn = new Date(checkInDate).getTime();
+    const checkOut = new Date(checkOutDate).getTime();
+    const differenceDays = (checkOut - checkIn) / (1000 * 60 * 60 * 24);
+    return differenceDays >= 1;
 };
-
-// export const isPeopleLargerThanBed = (people, bed) => {
-//     return Number(people) > Number(bed);
-// };

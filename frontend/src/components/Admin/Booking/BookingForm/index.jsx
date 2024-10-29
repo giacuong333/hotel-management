@@ -8,31 +8,54 @@ import { FaRegUser } from 'react-icons/fa6';
 import { MdOutlineEmail } from 'react-icons/md';
 import { FiPhone } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
-import { isCheckInLessThanCheckOut, isEmail, isEmpty, isPhoneNumber, isValidDate } from '~/utils/formValidation';
+import { isEmail, isEmpty, isMinimunBookingDay, isPhoneNumber, isValidDate } from '~/utils/formValidation';
 import { RotatingLines } from 'react-loader-spinner';
 import { useRoom } from '~/providers/RoomProvider';
 import { useService } from '~/providers/Service';
 import formatCurrency from '~/utils/currencyPipe';
 
-const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed }) => {
+const BookingForm = ({ data, type, onClose, onBookingAdded, isShowed }) => {
     const [fields, setFields] = useState({
         name: '',
         email: '',
         phoneNumber: '',
         checkIn: new Date(),
         checkOut: '',
-        people: '',
         roomId: '',
         serviceId: '',
     });
     const [errors, setErrors] = useState({});
     const [emptyRooms, setEmptyRooms] = useState([]);
     const [activeServices, setActiveServices] = useState([]);
+    const [bookedDateList, setBookedDateList] = useState([]);
+    const [pendingSubmit, setPendingSubmit] = useState(false);
     const { rooms } = useRoom();
     const { services } = useService();
-    const [pendingSubmit, setPendingSubmit] = useState(false);
 
-    console.log('errors', errors);
+    // Fetch booked dates
+    useEffect(() => {
+        const fetchBookedDateList = async () => {
+            const abortController = new AbortController();
+            try {
+                const response = await axios.get('http://localhost:5058/booking/bookedDates');
+                console.log('response', response);
+                if (response?.status === 200) {
+                    // Chỗ này data chưa có giá trị
+                    const data = response?.data?.$values.map((item) => ({
+                        CheckIn: item.CheckIn,
+                        CheckOut: item.CheckOut,
+                    }));
+                    setBookedDateList(data);
+                }
+            } catch (err) {
+                console.error('Failed to fetch booked dates:', err);
+                setBookedDateList(null);
+            }
+            return () => abortController.abort();
+        };
+
+        type === 'add' && fetchBookedDateList();
+    }, [type]);
 
     // Fetch services
     useEffect(() => {
@@ -46,7 +69,7 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
         });
     }, [services]);
 
-    // Fetch rooms
+    // Fetch empty rooms
     useEffect(() => {
         setEmptyRooms(() => {
             const newRooms = rooms
@@ -59,10 +82,10 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
     }, [rooms]);
 
     // Reset form fields whenever `type` or `data` changes
-    // useEffect(() => {
-    //     setFields({});
-    //     setErrors({});
-    // }, [type, data]);
+    useEffect(() => {
+        setFields({});
+        setErrors({});
+    }, [type, data]);
 
     const handleValidation = () => {
         const errors = {};
@@ -74,10 +97,10 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
         else if (!isPhoneNumber(fields.phoneNumber)) errors.phoneNumber = 'Phone number is invalid';
         if (!isValidDate(fields.checkIn)) errors.checkIn = 'Check-in date is invalid';
         if (!isValidDate(fields.checkOut)) errors.checkOut = 'Check-out date is invalid';
-        if (isEmpty(fields.people)) errors.people = 'People is required';
+
         if (isEmpty(fields.roomId)) errors.roomId = 'Room is not selected';
-        if (isCheckInLessThanCheckOut(fields.checkIn, fields.checkOut)) {
-            errors.isCheckInLessThanCheckOut = 'Check-in date can not be larger than check-out date.';
+        if (!isMinimunBookingDay(fields.checkIn, fields.checkOut)) {
+            errors.isCheckInLessThanCheckOut = 'Booking date is at least 1 day.';
             showToast(errors.isCheckInLessThanCheckOut, 'error');
         }
 
@@ -100,7 +123,7 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                 //     if (response?.status === 201) {
                 //         showToast('User created successfully', 'success');
                 //         setTimeout(handleClose, 4000);
-                //         onUserAdded(response?.data?.newUser);
+                //         onBookingAdded(response?.data?.newUser);
                 //     }
                 // } else if (type === 'edit') {
                 //     setPendingSubmit(true);
@@ -113,11 +136,10 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                 //     }
                 // }
             } catch (error) {
-                if (error?.status === 409) {
-                    showToast(error?.response?.data?.obj?.message, 'error');
-                } else {
-                    showToast(error?.message, 'error');
-                }
+                showToast(
+                    error?.response?.data || error?.response?.data?.message || 'Error occured while creating booking',
+                    'error',
+                );
                 console.log(error);
             } finally {
                 setPendingSubmit(false);
@@ -143,6 +165,15 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
             ...prevErrors,
             [field]: '',
         }));
+    };
+    console.log('Booked date list', bookedDateList);
+    const isDateDisabled = ({ activeStartDate, date, view }) => {
+        if (view === 'month') {
+            return bookedDateList.some(
+                (booking) => (date) => new Date(booking.CheckIn) && date <= new Date(booking.Checkout),
+            );
+        }
+        return false;
     };
 
     return (
@@ -236,6 +267,7 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                             error={errors.checkIn}
                             // Icon={icon}
                             value={fields?.checkIn}
+                            isDateDisabled={isDateDisabled}
                             disabled={type === 'see'}
                             customInputStyle="py-2 cursor-pointer"
                             customParentInputStyle="p-1 px-3 rounded-2"
@@ -255,6 +287,7 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                             error={errors.checkOut}
                             // Icon={icon}
                             value={fields?.checkOut}
+                            isDateDisabled={isDateDisabled}
                             disabled={type === 'see'}
                             customInputStyle="py-2 cursor-pointer"
                             customParentInputStyle="p-1 px-3 rounded-2"
@@ -264,21 +297,6 @@ const BookingForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed
                                 handleFieldInput('checkOut');
                             }}
                             // onSelect={() => handleFieldInput('dob')}
-                            // onBlur={handleInputBlured}
-                        />
-                        <FormGroup
-                            label="How many people?"
-                            id="people"
-                            name="people"
-                            type="text"
-                            error={errors.people}
-                            Icon={FiPhone}
-                            value={fields?.people}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onChange={(e) => handleFieldChange('people', e.target.value)}
-                            onInput={() => handleFieldInput('people')}
                             // onBlur={handleInputBlured}
                         />
                         <FormGroup

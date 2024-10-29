@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import DateTimePicker from 'react-datetime-picker';
 
@@ -15,6 +15,7 @@ const FormGroup = ({
     error,
     Icon,
     value,
+    isDateDisabled,
     onChange,
     onInput,
     onBlur,
@@ -25,6 +26,7 @@ const FormGroup = ({
     customParentParentInputStyle,
     options,
 }) => {
+    const [bookedDates, setBookedDates] = useState([]);
     return (
         <div className={`${customParentParentInputStyle}`}>
             {label && (
@@ -64,6 +66,7 @@ const FormGroup = ({
                         name={name}
                         value={value}
                         disabled={disabled}
+                        tileDisabled={isDateDisabled}
                         className={`w-full outline-none primary-bd-color-focus border-0 bg-white ${
                             customInputStyle ? customInputStyle : ''
                         }`}
