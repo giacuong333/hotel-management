@@ -18,6 +18,7 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
         price: data?.price || '',
         status: data?.status || '',
     });
+
     const [errors, setErrors] = useState({});
     // Reset form fields whenever `type` or `data` changes
     useEffect(() => {
@@ -26,6 +27,9 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
             price: data?.price || '',
             status: data?.status || '',
         });
+        console.log('Data Status:', data?.status);
+        console.log('Fields Price:', fields?.price);
+        console.log('Fields Status:', fields?.status);
         setErrors({});
     }, [type, data]);
 
@@ -181,10 +185,10 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
                             value={fields?.status}
                             disabled={type === 'see'}
                             options={[
-                                { label: '----', value: '' },
-                                { label: 'Active', value: 0 },
-                                { label: 'InActive', value: 1 },
+                                { label: 'Active', value: 1 },
+                                { label: 'InActive', value: 2 },
                             ]}
+                            customInputStyle="cursor-pointer"
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
                             onChange={(e) => {
@@ -215,6 +219,7 @@ const PopupPanel = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed 
                         )}
                     </div>
                 </form>
+                {console.log('Status ROle' + fields?.status)}
             </div>
         </>
     );

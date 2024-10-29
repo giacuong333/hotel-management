@@ -34,10 +34,7 @@ const columns = [
         name: 'Comment',
         selector: (row) => row.comment,
     },
-    {
-        name: 'Create time',
-        selector: (row) => row.createdAt,
-    },
+
     {
         name: 'Actions',
         selector: (row) => row.actions,
@@ -180,7 +177,6 @@ const User = () => {
         roomId: user.roomId,
         comment: user.comment,
 
-        createdAt: new Date(user.createdAt).toLocaleString(),
         actions: (
             <>
                 {/* <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} /> */}
