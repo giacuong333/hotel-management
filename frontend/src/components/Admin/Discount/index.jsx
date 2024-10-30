@@ -8,26 +8,33 @@ import { BsTrash } from 'react-icons/bs';
 import { FaSortAlphaDownAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { FiPlus } from 'react-icons/fi';
-
+import DiscountForm from './DiscountForm';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import { useUser } from '~/providers/UserProvider';
 import Button from 'react-bootstrap/Button';
+import { useCheckPermission } from '~/providers/CheckPermissionProvider';
+import { RotatingLines } from 'react-loader-spinner';
 
 const Discount = () => {
     const [showPanel, setShowPanel] = useState('');
     const [selectedDiscount, setSelectedDiscount] = useState(null);
     const [discount, setDiscounts] = useState([]);
-
+    const [clearSelectedRows, setClearSelectedRows] = useState(false);
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
     const [deleteOne, setDeleteOne] = useState({ payload: null });
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [pendingDelete, setPendingDelete] = useState(false);
 
     const [searchInput, setSearchInput] = useState('');
     const [searchedDiscounts, setSearchedDiscounts] = useState([]);
-
+    const {
+        createDiscount: hasPermissionCreate,
+        updateDiscount: hasPermissionUpdate,
+        deleteDiscount: hasPermissionDelete,
+    } = useCheckPermission();
     const columns = [
         {
             name: 'No',
@@ -38,6 +45,10 @@ const Discount = () => {
             selector: (row) => row.name,
         },
         {
+            name: 'Value Discount',
+            selector: (row) => row.value,
+        },
+        {
             name: 'Start At',
             selector: (row) => row.startAt,
         },
@@ -45,29 +56,47 @@ const Discount = () => {
             name: 'End At',
             selector: (row) => row.endAt,
         },
-        {
+    ];
+    if (hasPermissionUpdate || hasPermissionDelete) {
+        columns.push({
             name: 'Actions',
             selector: (row) => row.actions,
-        },
-    ];
-
-    const data = discount?.map((discount, index) => ({
-        id: discount.id,
+        });
+    }
+    const data = searchedDiscounts?.map((discount, index) => ({
+        id: discount?.id,
         no: index + 1,
-        name: discount.name,
-        startAt: discount.startAt,
-        endAt: discount.endAt,
+        name: discount?.name,
+        value: discount?.value,
+        startAt: discount?.startAt,
+        endAt: discount?.endAt,
         actions: (
             <>
-                <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(Discount)} />
-                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(Discount.id)} />
+                {hasPermissionUpdate ? (
+                    <FiEdit
+                        size={18}
+                        className="cursor-pointer me-3"
+                        onClick={() => handleEditClicked(discount)}
+                        style={{ color: '#80CBC4' }}
+                    />
+                ) : (
+                    ''
+                )}
+                {hasPermissionDelete ? (
+                    <BsTrash
+                        size={18}
+                        className="cursor-pointer"
+                        onClick={() => handleTrashClicked(discount.id)}
+                        style={{ color: '#E57373' }}
+                    />
+                ) : (
+                    ''
+                )}
             </>
         ),
     }));
-    const handleTrashClicked = (id) => {
-        setDeleteOne({ payload: id });
-        setShowDeleteConfirm(true);
-    };
+   
+
     const handleEditClicked = (discount) => {
         setSelectedDiscount(discount);
         setShowPanel('edit');
@@ -91,29 +120,29 @@ const Discount = () => {
                 setShowPanel('see');
             }
         } catch (error) {
-            console.error('Error fetching user details:', error);
+            console.error('Error fetching Discount details:', error);
         }
     }, []);
-
-    const handleSelectedRowsChanged = ({ allSelected, selectedCount, selectedRows }) => {
-        setDeleteAll({ count: selectedCount, payload: selectedRows });
-    };
 
     const handleDeleteRowsSelected = () => {
         deleteAll.count !== 0 && setShowDeleteAllConfirm(true);
     };
 
-    const handleUserAdded = (newUser) => {
-        setDiscounts((prevUsers) => [...prevUsers, newUser]);
-        setSearchedDiscounts((prevUsers) => [...prevUsers, newUser]);
+    const handleDiscountAdded = (newDiscount) => {
+        setDiscounts((prevDiscounts) => [...prevDiscounts, newDiscount]);
+        setSearchedDiscounts((prevDiscounts) => [...prevDiscounts, newDiscount]);
     };
 
-    const handleUserUpdated = (currentUser) => {
-        setDiscounts((prevUsers) =>
-            prevUsers.map((prevUser) => (prevUser.id === currentUser.id ? { ...currentUser } : prevUser)),
+    const handleDiscountUpdated = (currentDiscount) => {
+        setDiscounts((prevDiscounts) =>
+            prevDiscounts.map((prevDiscounts) =>
+                prevDiscounts.id === currentDiscount.id ? { ...currentDiscount } : prevDiscounts,
+            ),
         );
-        setSearchedDiscounts((prevUsers) =>
-            prevUsers.map((prevUser) => (prevUser.id === currentUser.id ? { ...currentUser } : prevUser)),
+        setSearchedDiscounts((prevDiscounts) =>
+            prevDiscounts.map((prevDiscounts) =>
+                prevDiscounts.id === currentDiscount.id ? { ...currentDiscount } : prevDiscounts,
+            ),
         );
     };
 
@@ -123,6 +152,21 @@ const Discount = () => {
         setDeleteOne({ payload: null });
         setShowDeleteConfirm(false);
     };
+    //Search  Discount
+    // For searching
+    useEffect(() => {
+        if (searchInput.trim() === '') {
+            setSearchedDiscounts(discount);
+        } else {
+            const filteredDiscount = discount.filter(
+                (discount) =>
+                    discount.name.toLowerCase().includes(searchInput.toLowerCase())||
+                discount.value.toString().toLowerCase().includes(searchInput.toLowerCase()),
+            );
+            setSearchedDiscounts(filteredDiscount);
+        }
+    }, [searchInput, discount]);
+    //Search Discount
     //List Discount
     useEffect(() => {
         const ListDiscounts = async () => {
@@ -137,6 +181,17 @@ const Discount = () => {
     }, []);
     //List Discount
     //Delete Discount
+    const handleTrashClicked = (id) => {
+        setDeleteOne({ payload: id });
+        setShowDeleteConfirm(true);
+    };
+    const handleDeleteConfirm = () => {
+        if (!deleteOne || !deleteOne.payload) {
+            console.error('Invalid deleteOne payload:', deleteOne);
+            return;
+        }
+        deleteDiscount(deleteOne.payload);
+    };
     const deleteDiscount = async (payload) => {
         try {
             const response = await axios.delete(`http://localhost:5058/discount/${payload}`);
@@ -146,28 +201,63 @@ const Discount = () => {
                 setSearchInput('');
             }
         } catch (error) {
-            console.error('Error deleting user:', error);
+            console.error('Error deleting Discount:', error);
             if (error?.response?.status === 403) {
                 showToast(error?.response?.data?.message, 'error');
             } else if (error?.response?.status === 401) {
                 showToast('You need to log in', 'error');
             } else {
-                showToast(error?.response?.data?.message || 'Error deleting user', 'error');
+                showToast(error?.response?.data?.message || 'Error deleting Discount', 'error');
             }
         } finally {
             reset();
         }
     };
+    useEffect(() => {
+        const deleteAllDiscount = async () => {
+            try {
+                setPendingDelete(true);
+                // Create payload for deletion
+                const payload = deleteAll.payload.map((discountDelete) => discountDelete.id);
+                console.log('Delete payload', payload);
+                const url = 'http://localhost:5058/discount';
+                const response = await axios.delete(url, { data: payload });
+                console.log('Delete response', response);
+                if (response?.status === 200) {
+                    showToast(response?.data?.message, 'success');
+                    setDiscounts(response?.data?.newDiscounts?.$values);
+                    setSearchedDiscounts(response?.data?.newDiscounts?.$values);
+                    reset();
+                }
+            } catch (error) {
+                showToast(error?.response?.data?.message || 'Error deleting Discount', 'error');
+            } finally {
+                setPendingDelete(false);
+            }
+        };
+
+        if (deleteAll.yes) {
+            deleteAllDiscount();
+        }
+    }, [deleteAll.yes, deleteAll.payload]);
     //Delete Discount
+    const handleSelectedRowsChanged = ({ allSelected, selectedCount, selectedRows }) => {
+        setDeleteAll({ count: selectedCount, payload: selectedRows });
+        setClearSelectedRows(false);
+    };
     return (
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count === 0 ? (
-                    <FiPlus
-                        size={30}
-                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                        onClick={handleAddClicked}
-                    />
+                    hasPermissionCreate ? (
+                        <FiPlus
+                            size={30}
+                            className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+                            onClick={handleAddClicked}
+                        />
+                    ) : (
+                        ''
+                    )
                 ) : (
                     <BsTrash
                         size={30}
@@ -187,30 +277,65 @@ const Discount = () => {
                     onChange={(e) => setSearchInput(e.target.value)}
                 />
             </div>
-            <DataTable columns={columns} data={data} pagination />
+            <DataTable
+                columns={columns}
+                data={data}
+                selectableRows
+                onRowClicked={handleRowClicked}
+                onSelectedRowsChange={handleSelectedRowsChanged}
+                clearSelectedRows={clearSelectedRows}
+                pagination
+            />
             {/* Show a toast */}
             {ToastContainer}
 
             {/* Show Form */}
-            {/* {showPanel && (
-                <UserForm
-                    data={selectedUser}
+            {showPanel && (
+                <DiscountForm
+                    data={selectedDiscount}
                     type={showPanel}
                     isShowed={showPanel}
                     onClose={() => setShowPanel(false)}
-                    onUserAdded={handleUserAdded}
-                    onUserUpdated={handleUserUpdated}
+                    onUserAdded={handleDiscountAdded}
+                    onUserUpdated={handleDiscountUpdated}
                 />
-            )} */}
+            )}
+            {showDeleteAllConfirm && (
+                <ConfirmPopup
+                    header="Are you sure you want to delete all the selected Discounts?"
+                    message="This action cannot be undone."
+                    negativeChoice="Cancel"
+                    positiveChoice={
+                        pendingDelete ? (
+                            <RotatingLines
+                                visible={true}
+                                height="22"
+                                width="22"
+                                strokeColor="#ffffff"
+                                strokeWidth="5"
+                                animationDuration="0.75"
+                                ariaLabel="rotating-lines-loading"
+                                wrapperStyle={{}}
+                                wrapperClass=""
+                            />
+                        ) : (
+                            'Delete'
+                        )
+                    }
+                    isShow={showDeleteAllConfirm}
+                    onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                    onClose={() => setShowDeleteAllConfirm(false)}
+                />
+            )}
             {/* Show confirmation when clicking on delete a user*/}
             {showDeleteConfirm && (
                 <ConfirmPopup
-                    header="Are you sure you want to delete the selected user?"
+                    header="Are you sure you want to delete the selected Discounts?"
                     message="This action cannot be undone."
                     negativeChoice="Cancel"
                     positiveChoice="Delete"
                     isShow={showDeleteConfirm}
-                    onYes={() => deleteDiscount(discount.payload) }
+                    onYes={handleDeleteConfirm}
                     onClose={reset}
                 />
             )}
