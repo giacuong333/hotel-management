@@ -42,6 +42,28 @@ namespace backend.Controllers
             }
         }
 
+        // GET: /discount/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DiscountModel>> GetDiscount(int id)
+        {
+            try
+            {
+                var discount = await context.Discount.FindAsync(id);
+
+                if (discount == null)
+                {
+                    return NotFound(new { message = "Discount not found." });
+                }
+
+                return Ok(discount);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error retrieving discount");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
         //POST: /discount
         [HttpPost]
         public async Task<ActionResult<DiscountModel>> CreateDiscount(DiscountModel discount)
@@ -121,9 +143,42 @@ namespace backend.Controllers
             }
         }
 
+                [HttpDelete]
+        
+        [HttpDelete("deleteall")]
+        public async Task<IActionResult> DeleteAllDiscounts([FromBody] List<int> discountIds)
+        {
+            if (discountIds == null || !discountIds.Any())
+            {
+                return BadRequest(new { message = "Invalid payload" });
+            }
+
+            try
+            {
+                var discountsToDelete = await context.Discount
+                    .Where(d => discountIds.Contains((int)d.Id))
+                    .ToListAsync();
+
+                if (!discountsToDelete.Any())
+                {
+                    return NotFound(new { message = "No discounts found to delete" });
+                }
+
+                context.Discount.RemoveRange(discountsToDelete);
+                await context.SaveChangesAsync();
+
+                return Ok(new { message = "Discounts deleted successfully", newDiscounts = context.Discount.ToList() });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error deleting discounts");
+                return StatusCode(500, "Internal server error");
+            }
+        }
         public IActionResult Index()
         {
             return View();
         }
+        
     }
 }

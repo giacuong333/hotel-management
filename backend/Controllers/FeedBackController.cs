@@ -20,12 +20,29 @@ namespace backend.Controllers
         }
 
         // GET: /feedback
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<FeedBackModel>>> GetListFeedBacks()
+               [HttpGet]
+        public async Task<ActionResult<IEnumerable<object>>> GetListFeedBacks()
         {
             try
             {
-                var feedbacks = await context.Feedback.ToListAsync();
+                var feedbacks = await context.Feedback
+                    .Join(context.User,
+                        feedback => feedback.UserId,
+                        user => user.Id,
+                        (feedback, user) => new { feedback, user })
+                    .Join(context.Room,
+                        feedbackUser => feedbackUser.feedback.RoomId,
+                        room => room.Id,
+                        (feedbackUser, room) => new
+                        {
+                            feedbackUser.feedback.Id,
+                            feedbackUser.feedback.Description,
+                            feedbackUser.feedback.CreatedAt,
+                            UserName = feedbackUser.user.Name,
+                            RoomName = room.Name
+                        })
+                    .ToListAsync();
+        
                 return Ok(feedbacks);
             }
             catch (Exception e)

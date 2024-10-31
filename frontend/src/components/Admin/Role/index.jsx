@@ -747,7 +747,11 @@ const Role = () => {
     const data = searchedRoles
         ?.map((role, index) => {
             if (role.id === 2) return null;
-            if (role.id === 3) return null;
+            if (role.id === 4) return null;
+
+            if (user?.roleId !== 2 && user?.roleId !== 1) {
+                if (role.id === 1) return null;
+            }
 
             return {
                 id: role.id,

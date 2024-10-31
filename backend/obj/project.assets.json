@@ -2679,11 +2679,16 @@
     ]
   },
   "packageFolders": {
+<<<<<<< HEAD
     "C:\\Users\\Cuong\\.nuget\\packages\\": {}
+=======
+    "C:\\Users\\dinhv\\.nuget\\packages\\": {}
+>>>>>>> 61d70bbbf7c83281abc33c2b4a27302724b0b86c
   },
   "project": {
     "version": "1.0.0",
     "restore": {
+<<<<<<< HEAD
       "projectUniqueName": "D:\\ReactJS\\Projects\\ReactJS-.NET\\hotel-management\\backend\\backend.csproj",
       "projectName": "backend",
       "projectPath": "D:\\ReactJS\\Projects\\ReactJS-.NET\\hotel-management\\backend\\backend.csproj",
@@ -2692,11 +2697,27 @@
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Cuong\\AppData\\Roaming\\NuGet\\NuGet.Config"
+=======
+      "projectUniqueName": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj",
+      "projectName": "backend",
+      "projectPath": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj",
+      "packagesPath": "C:\\Users\\dinhv\\.nuget\\packages\\",
+      "outputPath": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\dinhv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+>>>>>>> 61d70bbbf7c83281abc33c2b4a27302724b0b86c
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+<<<<<<< HEAD
+=======
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
+>>>>>>> 61d70bbbf7c83281abc33c2b4a27302724b0b86c
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2770,7 +2791,11 @@
             "privateAssets": "all"
           }
         },
+<<<<<<< HEAD
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+=======
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+>>>>>>> 61d70bbbf7c83281abc33c2b4a27302724b0b86c
       }
     }
   },
