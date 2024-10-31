@@ -1,8 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { getAuthHeader } from '../../utils/getAuthHeader';
 import { showToast } from '../../utils/showToast';
-import { useNavigate } from 'react-router';
 
 // Create the UserContext
 const userContext = createContext();
@@ -36,7 +35,7 @@ const UserProvider = ({ children }) => {
         fetchUser();
     }, []);
 
-    const fetchUser = async () => {
+    const fetchUser = useCallback(async () => {
         const token = localStorage.getItem('jwtToken');
         if (!token) return;
 
@@ -54,7 +53,7 @@ const UserProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
+    });
 
     // User Sign In function
     const signIn = async (payload) => {

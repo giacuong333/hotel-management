@@ -52,7 +52,6 @@ namespace Repositories.Implementations
                                     _context.BookingDetail.Remove(bookingDetail);
 
                         await UpdateAsync(booking);
-                        await SaveAsync();
                         await transaction.CommitAsync();
                   }
                   catch

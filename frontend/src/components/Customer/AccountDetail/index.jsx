@@ -84,16 +84,13 @@ const AccountDetail = () => {
                 const url = 'http://localhost:5058/user';
                 const response = await axios.put(`${url}/${user?.id}`, fields);
                 if (response?.status === 200) {
-                    showToast(response?.data?.obj?.message, 'success');
+                    showToast('User changed successfully', 'success');
                     await fetchUser();
                     handleReset();
                 }
             } catch (error) {
                 showToast(
-                    error?.response?.obj ||
-                        error?.response?.obj?.message ||
-                        error?.response?.obj?.data?.message ||
-                        'Something went wrong while changing',
+                    error?.response?.data || error?.response?.data?.message || 'Something went wrong while changing',
                     'error',
                 );
             } finally {

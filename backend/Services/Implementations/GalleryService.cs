@@ -1,41 +1,32 @@
 using backend.Models;
 using Repositories.Interfaces;
 
-public class GalleryService : IGalleryService
+public class GalleryService(IUnitOfWork unitOfWork) : IGalleryService
 {
-      private readonly IGalleryRepository _galleryRepository;
-      private readonly IConfiguration _configuration;
-      private readonly ILogger<GalleryService> _logger;
-
-      public GalleryService(IGalleryRepository galleryRepository, IConfiguration configuration, ILogger<GalleryService> logger)
-      {
-            _galleryRepository = galleryRepository;
-            _configuration = configuration;
-            _logger = logger;
-      }
+      private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
       public async Task AddImageAsync(IFormFile file, int roomId)
       {
-            await _galleryRepository.AddImageAsync(file, roomId);
+            await _unitOfWork.Gallery.AddImageAsync(file, roomId);
       }
 
       public async Task DeleteImageAsync(int id)
       {
-            await _galleryRepository.DeleteAsync(id);
+            await _unitOfWork.Gallery.DeleteAsync(id);
       }
 
       public async Task<GalleryModel> GetImageByIdAsync(int id)
       {
-            return await _galleryRepository.GetByIdAsync(id);
+            return await _unitOfWork.Gallery.GetByIdAsync(id);
       }
 
       public async Task<IEnumerable<GalleryModel>> GetImagesByRoomIdAsync(int roomId)
       {
-            return await _galleryRepository.GetImagesByRoomIdAsync(roomId);
+            return await _unitOfWork.Gallery.GetImagesByRoomIdAsync(roomId);
       }
 
-      public async Task SaveAsync()
+      public async Task<int> SaveAsync()
       {
-            await _galleryRepository.SaveAsync();
+            return await _unitOfWork.CompleteAsync();
       }
 }

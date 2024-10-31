@@ -7,6 +7,5 @@ namespace Interfaces
             Task CreateAsync(T entity);
             Task UpdateAsync(T entity);
             Task DeleteAsync(object id);
-            Task SaveAsync();
       }
 }

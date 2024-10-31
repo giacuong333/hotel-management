@@ -1,63 +1,50 @@
 using backend.Models;
-using Repositories.Interfaces;
 
-public class UserService : IUserService
+public class UserService(IUnitOfWork unitOfWork) : IUserService
 {
-      private readonly IUserRepository _userRepository;
-      private readonly IConfiguration _configuration;
-      private readonly ILogger<UserService> _logger;
-
-      public UserService(IUserRepository userRepository, IConfiguration configuration, ILogger<UserService> logger)
-      {
-            _userRepository = userRepository;
-            _configuration = configuration;
-            _logger = logger;
-      }
+      private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
       public async Task<IEnumerable<UserModel>> GetUsersAsync()
       {
-            return await _userRepository.GetUsersAsync();
+            return await _unitOfWork.Users.GetUsersAsync();
       }
-    public async Task<IEnumerable<UserModel>> GetUsesByRoleIdAsync(int id)
-    {
-        return await _userRepository.GetUsesByRoleIdAsync(id);
-    }
-    
-      public async Task<UserModel> GetUserByIdAsync(object id)
+      public async Task<IEnumerable<UserModel>> GetUsesByRoleIdAsync(int id)
       {
-            return await _userRepository.GetByIdAsync(id);
+            return await _unitOfWork.Users.GetUsesByRoleIdAsync(id);
+      }
+
+      public async Task<UserModel> GetUserByIdAsync(int id)
+      {
+            return await _unitOfWork.Users.GetUserByIdAsync(id);
       }
 
       public async Task<UserModel> GetUserByEmailAsync(string email)
       {
-            return await _userRepository.GetUserByEmailAsync(email);
+            return await _unitOfWork.Users.GetUserByEmailAsync(email);
       }
 
       public async Task CreateUserAsync(UserModel user)
       {
-            await _userRepository.CreateAsync(user);
-            await _userRepository.SaveAsync();
+            await _unitOfWork.Users.CreateAsync(user);
       }
 
       public async Task<UserModel> GetUserByPhoneAsync(string phoneNumber)
       {
-            return await _userRepository.GetUserByPhoneAsync(phoneNumber);
+            return await _unitOfWork.Users.GetUserByPhoneAsync(phoneNumber);
       }
 
       public async Task DeleteUserAsync(object id)
       {
-            await _userRepository.DeleteAsync(id);
+            await _unitOfWork.Users.DeleteAsync(id);
       }
 
       public async Task UpdateUserAsync(UserModel user)
       {
-            await _userRepository.UpdateAsync(user);
+            await _unitOfWork.Users.UpdateAsync(user);
       }
 
-      public async Task SaveAsync()
+      public async Task<int> SaveAsync()
       {
-            await _userRepository.SaveAsync();
+            return await _unitOfWork.CompleteAsync();
       }
-
-
 }

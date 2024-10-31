@@ -14,6 +14,8 @@ const Header = () => {
     const { user, signOut } = useUser();
     const navigate = useNavigate();
 
+    console.log('logged user', user);
+
     const show = () => setVisible(true);
     const hide = () => setVisible(false);
 
