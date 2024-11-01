@@ -66,6 +66,16 @@ h4 {
     }
 }
 
+.social-medias-hover {
+    color: white !important;
+    background: #000 !important;
+    transform: scale(0.8);
+    &:hover {
+        color: var(--fourth-color) !important;
+        transform: scale(1);
+    }
+}
+
 .secondary-bg-color-hover {
     transition: all 0.4s ease-in-out;
     &:hover {
