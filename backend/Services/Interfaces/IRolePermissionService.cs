@@ -8,5 +8,5 @@ public interface IRolePermissionService
     Task DeleteRolePermissionsAsync(List<RolepermissionModel> models);
     Task AddRolePermissionsAsync(List<RolepermissionModel> models);
 
-    Task SaveAsync();
+
 }

@@ -1,3 +1,4 @@
+using backend.Repositories.Interfaces;
 using Repositories.Interfaces;
 
 public interface IUnitOfWork : IDisposable
@@ -6,5 +7,9 @@ public interface IUnitOfWork : IDisposable
     IBookingRepository Bookings { get; }
     IRoomRepository Rooms { get; }
     IGalleryRepository Gallery { get; }
+    IServiceRepository Services { get; }
+    IReviewRepository Reviews { get; }
+     IRoleRepository Roles { get; }
+    IRolePermissionRepository RolePermissions { get; }
     Task<int> CompleteAsync();
 }

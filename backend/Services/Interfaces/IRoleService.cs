@@ -9,5 +9,5 @@ public interface IRoleService
     Task CreateRoleAsync(RoleModel role);
     Task UpdateRoleAsync(RoleModel role);
     Task DeleteRoleAsync(object id);
-    Task SaveAsync();
+
 }

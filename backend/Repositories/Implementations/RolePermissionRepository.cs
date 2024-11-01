@@ -39,10 +39,7 @@ namespace Repositories.Implementations
             return await _dbSet.Where(rp => rp.RoleId == (int)id).ToListAsync();
         }
 
-        public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+      
 
     }
 }

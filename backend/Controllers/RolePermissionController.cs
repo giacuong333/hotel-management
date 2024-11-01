@@ -96,7 +96,7 @@ namespace backend.Controllers
                 // Add new permissions
                 await _rolePermissionService.AddRolePermissionsAsync(models);
            
-                await _rolePermissionService.SaveAsync();
+             
 
                 return CreatedAtAction(null, new { roleId = models.First().RoleId }, models);
             }

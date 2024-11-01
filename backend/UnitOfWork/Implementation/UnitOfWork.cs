@@ -1,4 +1,5 @@
 using backend.Database;
+using backend.Repositories.Interfaces;
 using Repositories.Interfaces;
 
 public class UnitOfWork(DatabaseContext dbContext) : IUnitOfWork
@@ -12,6 +13,13 @@ public class UnitOfWork(DatabaseContext dbContext) : IUnitOfWork
     public IRoomRepository Rooms { get; }
 
     public IGalleryRepository Gallery { get; }
+    public IReviewRepository Reviews { get; }
+    public IRoleRepository Roles { get; }
+    public IRolePermissionRepository RolePermissions { get; }
+    public IServiceRepository Services { get; }
+
+
+
 
     public async Task<int> CompleteAsync()
     {

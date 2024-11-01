@@ -20,16 +20,14 @@ namespace backend.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
- 
-        private readonly ILogger<ReviewController> _logger;
-        private readonly IConfiguration _configuration;
+
+
         private readonly IReviewService _reviewService;
 
-        public ReviewController( ILogger<ReviewController> logger, IConfiguration configuration,IReviewService reviewService)
+        public ReviewController(IReviewService reviewService)
         {
-     
-            _logger = logger;
-            _configuration = configuration;
+
+
             _reviewService = reviewService;
         }
 
@@ -51,7 +49,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-            
+
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -75,38 +73,38 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-            
+
                 return StatusCode(500, "Internal server error");
             }
         }
-/*
-        // [POST] /review
-        [HttpPost]
-        [Produces("application/json")]
-        public async Task<ActionResult<IEnumerable<ReviewModel>>> CreateReview([FromBody] ReviewModel review)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
+        /*
+                // [POST] /review
+                [HttpPost]
+                [Produces("application/json")]
+                public async Task<ActionResult<IEnumerable<ReviewModel>>> CreateReview([FromBody] ReviewModel review)
                 {
-                    return BadRequest(ModelState);
+                    try
+                    {
+                        if (!ModelState.IsValid)
+                        {
+                            return BadRequest(ModelState);
+                        }
+
+
+
+                        await _context.Review.AddAsync(review);
+                        await _context.SaveChangesAsync();
+
+                        return StatusCode(201, new { message = "Review added successfully" });
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        return StatusCode(500, new { message = "Internal server error" });
+                    }
                 }
 
-
-
-                await _context.Review.AddAsync(review);
-                await _context.SaveChangesAsync();
-
-                return StatusCode(201, new { message = "Review added successfully" });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return StatusCode(500, new { message = "Internal server error" });
-            }
-        }
-
-*/
+        */
         // [DELETE] /review/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult<IEnumerable<ReviewModel>>> DeleteReviewById(int id)
@@ -119,10 +117,10 @@ namespace backend.Controllers
                 {
                     return NotFound(new { message = "Review not found." });
                 }
-               await  _reviewService.DeleteReviewAsync(review.Id);
+                await _reviewService.DeleteReviewAsync(review.Id);
 
 
-                await _reviewService.SaveAsync();
+
 
                 return Ok(new { message = "Review deleted successfully" });
             }
@@ -148,7 +146,7 @@ namespace backend.Controllers
 
             foreach (var review in reviews)
             {
-               
+
                 var reviewFromDb = await _reviewService.GetReviewByIdAsync(review.Id);
                 if (reviewFromDb == null)
                 {
@@ -156,13 +154,13 @@ namespace backend.Controllers
                     continue;
                 }
 
-              
 
 
-               await _reviewService.DeleteReviewAsync(reviewFromDb.Id);
+
+                await _reviewService.DeleteReviewAsync(reviewFromDb.Id);
             }
 
-            await _reviewService.SaveAsync();
+
 
 
             var newReviews = await _reviewService.GetReviewsAsync();
