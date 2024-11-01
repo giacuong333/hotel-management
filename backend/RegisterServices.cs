@@ -35,6 +35,7 @@ class RegisterServices
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
+
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
       }
 }
