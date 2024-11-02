@@ -2,21 +2,32 @@ using backend.Database;
 using backend.Repositories.Interfaces;
 using Repositories.Interfaces;
 
-public class UnitOfWork(DatabaseContext dbContext) : IUnitOfWork
+public class UnitOfWork(
+    DatabaseContext dbContext,
+    IUserRepository users,
+    IBookingRepository bookings,
+    IRoomRepository rooms,
+    IGalleryRepository gallery,
+    IReviewRepository reviews,
+    IRoleRepository roles,
+    IRolePermissionRepository rolePermissions,
+    IServiceRepository services
+    ) : IUnitOfWork
 {
     private readonly DatabaseContext _dbContext = dbContext;
 
-    public IUserRepository Users { get; }
 
-    public IBookingRepository Bookings { get; }
+    public IUserRepository? Users { get; } = users;
 
-    public IRoomRepository Rooms { get; }
+    public IBookingRepository? Bookings { get; } = bookings;
 
-    public IGalleryRepository Gallery { get; }
-    public IReviewRepository Reviews { get; }
-    public IRoleRepository Roles { get; }
-    public IRolePermissionRepository RolePermissions { get; }
-    public IServiceRepository Services { get; }
+    public IRoomRepository? Rooms { get; } = rooms;
+
+    public IGalleryRepository? Gallery { get; } = gallery;
+    public IReviewRepository? Reviews { get; } = reviews;
+    public IRoleRepository? Roles { get; } = roles;
+    public IRolePermissionRepository? RolePermissions { get; } = rolePermissions;
+    public IServiceRepository? Services { get; } = services;
 
 
 

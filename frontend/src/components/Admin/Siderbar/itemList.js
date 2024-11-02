@@ -15,7 +15,7 @@ export const items = [
         id: 1,
         Icon: PiSquaresFour,
         title: 'Dashboard',
-        path: '/admin',
+        path: '/admin/dashboard',
         permissionKey: 'readDashboard',
     },
     {

@@ -71,7 +71,7 @@ function App() {
                 !isCustomer && (
                     // Admin
                     <Route path="/admin/" element={<AdminLayout />}>
-                        <Route index element={<AdminHome />} />
+                        <Route path="dashboard" element={<AdminHome />} />
                         <Route
                             path="booking"
                             element={

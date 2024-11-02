@@ -40,7 +40,7 @@ const SignIn = () => {
                     setTimeout(() => {
                         const roleId = response?.data?.roleId;
                         roleId === 4 && navigate('/');
-                        roleId !== 4 && navigate('/admin');
+                        roleId !== 4 && navigate('/admin/dashboard');
                     }, 1000);
                 }
             } catch (err) {

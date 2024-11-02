@@ -416,7 +416,7 @@ h4 {
 .sidebar {
     background-color: var(--customer-primary-color);
     width: 100%;
-    height: 100vh;
+    height: 100%;
 
     ul {
         li {
@@ -536,4 +536,12 @@ input.form-check-input:checked {
     max-height: 0;
     overflow: hidden;
     opacity: 0;
+}
+
+.view-details-hover {
+    border-top: 1px solid var(--fourth-color);
+    &:hover {
+        color: var(--fourth-color) !important;
+        background-color: #f7f7f7 !important;
+    }
 }

@@ -33,11 +33,7 @@ const Booking = () => {
         { label: 'Check-out', value: 3 },
         { label: 'Cancel', value: 0 },
     ]);
-    const {
-        createBooking: hasPermissionCreate,
-        updateBooking: hasPermissionUpdate,
-        deleteBooking: hasPermissionDelete,
-    } = useCheckPermission();
+    const { updateBooking: hasPermissionUpdate, deleteBooking: hasPermissionDelete } = useCheckPermission();
 
     console.log('Selected Booking', selectedBookings);
 
