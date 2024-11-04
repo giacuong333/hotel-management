@@ -51,6 +51,26 @@ namespace backend.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<FeedBackModel>> GetFeedBack(int id)
+        {
+            try
+            {
+                var feedback = await context.Feedback.FindAsync(id);
+
+                if (feedback == null)
+                {
+                    return NotFound(new { message = "FeedBack not found." });
+                }
+
+                return Ok(feedback);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error retrieving discount");
+                return StatusCode(500, "Internal server error");
+            }
+        }
         // DELETE: /feedback/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult<FeedBackModel>> DeleteFeedBack(int id)
@@ -69,6 +89,37 @@ namespace backend.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error deleting feedback");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+      
+ [HttpDelete("deleteAll")]
+        public async Task<IActionResult> DeleteAllDiscounts([FromBody] List<int> feedbackIds)
+        {
+            if (feedbackIds == null || !feedbackIds.Any())
+            {
+                return BadRequest(new { message = "Invalid payload" });
+            }
+
+            try
+            {
+                var feedBacksToDelete = await context.Feedback
+                    .Where(d => feedbackIds.Contains((int)d.Id))
+                    .ToListAsync();
+
+                if (!feedBacksToDelete.Any())
+                {
+                    return NotFound(new { message = "No discounts found to delete" });
+                }
+
+                context.Feedback.RemoveRange(feedBacksToDelete);
+                await context.SaveChangesAsync();
+
+                return Ok(new { message = "Discounts deleted successfully", newFeedback = context.Feedback.ToList() });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error deleting discounts");
                 return StatusCode(500, "Internal server error");
             }
         }
