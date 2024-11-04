@@ -43,7 +43,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-       
+
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -90,7 +90,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-        
+
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -119,7 +119,7 @@ namespace backend.Controllers
 
 
                 await _serviceService.CreateServiceAsync(newService);
-                await _serviceService.SaveAsync();
+
 
                 return StatusCode(201, new { message = "Service added successfully", newService });
             }
@@ -133,39 +133,40 @@ namespace backend.Controllers
 
 
         // [PUT] /service
-         [HttpPut("{id}")]
-         [Produces("application/json")]
-         public async Task<ActionResult<ICollection<ServiceModel>>> EditService([FromBody] ServiceModel payload, int id)
-         {
-             try
-             {
-                if (!ModelState.IsValid) { 
+        [HttpPut("{id}")]
+        [Produces("application/json")]
+        public async Task<ActionResult<ICollection<ServiceModel>>> EditService([FromBody] ServiceModel payload, int id)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
-            }
+                }
 
-                 var currentService = await _serviceService.GetServiceByIdAsync(id);
+                var currentService = await _serviceService.GetServiceByIdAsync(id);
 
                 if (currentService == null)
-                 {
-                     return NotFound("Service not found");
-                 }
-                 currentService.Name = payload.Name;
-                 currentService.Price = payload.Price;
-                 currentService.Status = payload.Status;
+                {
+                    return NotFound("Service not found");
+                }
+                currentService.Name = payload.Name;
+                currentService.Price = payload.Price;
+                currentService.Status = payload.Status;
 
-                 currentService.UpdatedAt = DateTime.UtcNow;
+                currentService.UpdatedAt = DateTime.UtcNow;
 
-                 await  _serviceService.UpdateServiceAsync(currentService);
-                await _serviceService.SaveAsync();
+                await _serviceService.UpdateServiceAsync(currentService);
 
-                 return Ok(new { message = "Servuce updated successfully", currentService });
-             }
-             catch (Exception e)
-             {
-                 Console.WriteLine(e);
-                 return StatusCode(500, new { message = "Internal server error" });
+
+                return Ok(new { message = "Servuce updated successfully", currentService });
             }
-         }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return StatusCode(500, new { message = "Internal server error" });
+            }
+        }
 
 
         // [DELETE] /Service/{id}
@@ -180,10 +181,10 @@ namespace backend.Controllers
                 {
                     return NotFound(new { message = "Service not found." });
                 }
-               await  _serviceService.DeleteServiceAsync(service.Id);
+                await _serviceService.DeleteServiceAsync(service.Id);
 
 
-                await _serviceService.SaveAsync();
+
 
                 return Ok(new { message = "Service deleted successfully" });
             }
@@ -214,17 +215,17 @@ namespace backend.Controllers
                 if (ServiceFromDb == null)
                 {
                     return NotFound("Servicc not found");
-                 
+
                 }
                 await _serviceService.DeleteServiceAsync(Service.Id);
 
 
 
 
-             
+
             }
 
-            await _serviceService.SaveAsync();
+
 
 
             var newServices = await _serviceService.GetServicesAsync();

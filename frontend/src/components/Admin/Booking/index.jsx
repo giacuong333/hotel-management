@@ -33,11 +33,9 @@ const Booking = () => {
         { label: 'Check-out', value: 3 },
         { label: 'Cancel', value: 0 },
     ]);
-    const {
-        createBooking: hasPermissionCreate,
-        updateBooking: hasPermissionUpdate,
-        deleteBooking: hasPermissionDelete,
-    } = useCheckPermission();
+    const { updateBooking: hasPermissionUpdate, deleteBooking: hasPermissionDelete } = useCheckPermission();
+
+    console.log('Selected Booking', selectedBookings);
 
     // For deleting selected bookings
     useEffect(() => {
@@ -46,7 +44,6 @@ const Booking = () => {
                 // Create payload for deletion (id list)
                 const payload = deleteAll.payload.map((bookingDelete) => ({ id: bookingDelete.id }));
                 const response = await axios.delete('http://localhost:5058/booking', { data: payload });
-                console.log(response);
                 if (response?.status === 200) {
                     const data = response?.data?.updatedBookings?.$values.map((booking) => {
                         booking.statusName =
@@ -113,7 +110,6 @@ const Booking = () => {
             const url = 'http://localhost:5058/booking';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.get(url, headers);
-            console.log('Bookings', response);
             if (response?.status === 200) {
                 const data = response?.data?.$values.map((booking) => {
                     booking.statusName =
@@ -152,7 +148,6 @@ const Booking = () => {
         try {
             const url = 'http://localhost:5058/booking';
             const response = await axios.delete(`${url}/${payload}`);
-            console.log(response);
             if (response?.status === 200) {
                 showToast(response?.data?.obj?.message || response?.data?.message, 'success');
                 setBookings((prev) => prev.filter((booking) => booking.id !== payload));
@@ -173,21 +168,15 @@ const Booking = () => {
         }
     };
 
-    const handleAddClicked = () => {
-        setShowPanel('add');
-        setSelectedBooking(null);
-    };
-
     const handleRowClicked = useCallback(async (event) => {
         const { id } = event;
         try {
             const url = 'http://localhost:5058/booking';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.get(`${url}/${id}`, headers);
-            console.log(response);
             if (response?.status === 200) {
                 setShowPanel('see');
-                setSelectedBooking(response?.data?.obj);
+                setSelectedBooking(response?.data);
             }
         } catch (error) {
             console.error('Error fetching user details:', error);
@@ -220,12 +209,10 @@ const Booking = () => {
     };
 
     const handleStatusChange = async (bookingId, statusCode) => {
-        console.log('Payload: ', bookingId, statusCode);
         try {
             const url = 'http://localhost:5058/booking/status';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.put(`${url}/${bookingId}`, statusCode, headers);
-            console.log(response);
             if (response?.status === 200) {
                 fetchBookings();
                 hideContext();
@@ -283,8 +270,6 @@ const Booking = () => {
             selector: (row) => row.actions,
         });
     }
-
-    console.log(menuVisible);
 
     const data = searchedBookings?.map((booking, index) => ({
         id: booking?.id,
@@ -381,17 +366,7 @@ const Booking = () => {
             {ToastContainer}
 
             <div className="d-flex align-items-center justify-content-between w-full py-4">
-                {deleteAll.count === 0 ? (
-                    hasPermissionCreate ? (
-                        <FiPlus
-                            size={30}
-                            className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                            onClick={handleAddClicked}
-                        />
-                    ) : (
-                        <></>
-                    )
-                ) : hasPermissionDelete ? (
+                {deleteAll.count !== 0 && hasPermissionDelete ? (
                     <BsTrash
                         size={30}
                         className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"

@@ -10,7 +10,7 @@ namespace backend.Repositories.Interfaces
         Task DeleteListAsync(List<RolepermissionModel> models);
         Task AddRolePermissionsAsync(List<RolepermissionModel> models);
 
-        Task SaveAsync();
+      
 
     }
 }

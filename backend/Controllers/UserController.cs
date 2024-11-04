@@ -23,16 +23,17 @@ namespace backend.Controllers
                   try
                   {
                         if (!ModelState.IsValid)
-                        {
                               return BadRequest(ModelState);
-                        }
 
                         var response = await _authService.LoginAsync(request);
                         return Ok(response);
                   }
                   catch (NotFoundException ex)
                   {
-                        return NotFound(new { message = ex.Message });
+                        return NotFound(new
+                        {
+                              message = ex.Message
+                        });
                   }
                   catch (UnauthorizedException ex)
                   {
@@ -95,6 +96,8 @@ namespace backend.Controllers
                   try
                   {
                         var users = await _userService.GetUsersAsync();
+                        if (!users.Any())
+                              return NotFound("Users not found");
                         return Ok(users);
                   }
                   catch (NotFoundException ex)
@@ -119,6 +122,8 @@ namespace backend.Controllers
                   try
                   {
                         var user = await _userService.GetUserByIdAsync(id);
+                        if (user == null)
+                              return NotFound("User not found");
                         return Ok(user);
                   }
                   catch (NotFoundException ex)
@@ -155,9 +160,7 @@ namespace backend.Controllers
 
                               var passwordMatches = Crypto.VerifyHashedPassword(user.Password, currentPassword);
                               if (!passwordMatches)
-                              {
                                     return BadRequest("Current password is incorrect");
-                              }
 
                               var passwordHashed = Crypto.HashPassword(newPassword);
                               user.Password = passwordHashed;
@@ -194,23 +197,17 @@ namespace backend.Controllers
                   try
                   {
                         if (!ModelState.IsValid)
-                        {
                               return BadRequest(ModelState);
-                        }
 
                         // Check if the email already exists
                         var emailExists = await _userService.GetUserByEmailAsync(request.Email);
                         if (emailExists != null)
-                        {
                               return Conflict(new { message = "Email already exists" });
-                        }
 
                         // Check if the phone number already exists
                         var phoneExists = await _userService.GetUserByPhoneAsync(request.PhoneNumber);
                         if (phoneExists != null)
-                        {
                               return Conflict(new { message = "Phone number already exists" }); // 409 Conflict
-                        }
 
                         // Check if the role exists
                         int defaultRoleId = 4;
@@ -241,6 +238,7 @@ namespace backend.Controllers
                         };
 
                         await _userService.CreateUserAsync(newUser);
+                        await _userService.SaveAsync();
 
                         return StatusCode(201, new { message = "Sign up successfully", newUser });
                   }
@@ -372,9 +370,7 @@ namespace backend.Controllers
             public async Task<ActionResult> DeleteUsers([FromBody] List<UserModel> users)
             {
                   if (users == null || users.Count == 0)
-                  {
                         return BadRequest("No users provided for deletion.");
-                  }
 
                   var claimsIdentity = User.Identity as ClaimsIdentity;
                   if (claimsIdentity == null)
@@ -444,14 +440,12 @@ namespace backend.Controllers
 
                         var currentUser = await _userService.GetUserByIdAsync(id);
                         if (currentUser == null)
-                        {
                               return NotFound("User not found");
-                        }
 
                         // Check if the email already exists
                         if (currentUser.Email != request.Email)
                         {
-                              var emailExists = await _userService.GetUserByEmailAsync(currentUser.Email);
+                              var emailExists = await _userService.GetUserByEmailAsync(request.Email);
                               if (emailExists != null)
                                     return Conflict("Email already exists");
                         }
@@ -459,7 +453,7 @@ namespace backend.Controllers
                         // Check if the phone number already exists
                         if (currentUser.PhoneNumber != request.PhoneNumber)
                         {
-                              var phoneExists = await _userService.GetUserByPhoneAsync(currentUser.PhoneNumber);
+                              var phoneExists = await _userService.GetUserByPhoneAsync(request.PhoneNumber);
                               if (phoneExists != null)
                                     return Conflict("Phone number already exists");
                         }
@@ -521,9 +515,7 @@ namespace backend.Controllers
                   try
                   {
                         if (!ModelState.IsValid)
-                        {
                               return BadRequest("Missing data");
-                        }
 
                         var user = await _userService.GetUserByIdAsync(userId);
                         if (user == null)

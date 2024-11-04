@@ -20,8 +20,7 @@ const Siderbar = ({ showSidebar, setShowSidebar }) => {
         readRole,
         readStatistic,
     } = useCheckPermission();
-    const [selectedItemId, setSelectedItemId] = useState(null);
-    const currentPath = useLocation();
+    const currentPath = useLocation().pathname;
 
     const permissions = {
         readDashboard,
@@ -73,9 +72,8 @@ const Siderbar = ({ showSidebar, setShowSidebar }) => {
                         <li
                             key={item.id}
                             className={`cursor-pointer ${showSidebar ? 'm-3' : 'mx-4 my-3'} rounded-2 ${
-                                selectedItemId === item.id || currentPath.pathname === item.path ? 'selectedItem' : ''
+                                currentPath === item.path ? 'selectedItem' : ''
                             }`}
-                            onClick={() => setSelectedItemId(item.id)}
                         >
                             <Link className="text-white p-2 d-flex align-items-center gap-2" to={item?.path}>
                                 <item.Icon

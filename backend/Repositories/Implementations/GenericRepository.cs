@@ -4,16 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Repositories.Implementations
 {
-      public class GenericRepository<T> : IGenericRepository<T> where T : class
+      public class GenericRepository<T>(DatabaseContext context) : IGenericRepository<T> where T : class
       {
-            protected readonly DatabaseContext _context;
-            private readonly DbSet<T> _dbSet;
-
-            public GenericRepository(DatabaseContext context)
-            {
-                  _context = context;
-                  _dbSet = context.Set<T>();
-            }
+            protected readonly DatabaseContext _context = context;
+            private readonly DbSet<T> _dbSet = context.Set<T>();
 
             public async Task CreateAsync(T entity)
             {
@@ -32,25 +26,21 @@ namespace Repositories.Implementations
                               _context.Entry(entity).State = EntityState.Modified;
                         }
                         else
-                        {
                               _context.Remove(entity);
-                        }
                   }
             }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
-            var query = _dbSet.AsQueryable();
-
-            if (typeof(T).GetProperty("DeletedAt") != null)
+            public async Task<IEnumerable<T>> GetAllAsync()
             {
-                query = query.Where(entity => EF.Property<DateTime?>(entity, "DeletedAt") == null);
+                  var query = _dbSet.AsQueryable();
+
+                  if (typeof(T).GetProperty("DeletedAt") != null)
+                        query = query.Where(entity => EF.Property<DateTime?>(entity, "DeletedAt") == null);
+
+                  return await query.ToListAsync();
             }
 
-            return await query.ToListAsync();
-        }
-
-        public async Task<T> GetByIdAsync(object id)
+            public async Task<T> GetByIdAsync(object id)
             {
                   var query = _dbSet.AsQueryable();
                   var property = typeof(T).GetProperty("DeletedAt");
@@ -62,11 +52,6 @@ namespace Repositories.Implementations
                   return await query
                         .Where(entity => EF.Property<int>(entity, "Id") == (int)id)
                         .FirstOrDefaultAsync();
-            }
-
-            public async Task SaveAsync()
-            {
-                  await _context.SaveChangesAsync();
             }
 
             public async Task UpdateAsync(T entity)

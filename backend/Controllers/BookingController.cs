@@ -190,6 +190,7 @@ namespace backend.Controllers
                               return NotFound("Booking not found");
 
                         await _bookingService.ChangeStatusAsync(booking, statusCode);
+                        await _bookingService.SaveAsync();
 
                         return Ok("Status changed successfully");
                   }
@@ -209,29 +210,5 @@ namespace backend.Controllers
                         return StatusCode(500, new { message = "Internal server error", error = ex.Message });
                   }
             }
-
-            // [POST] /booking
-            // [HttpPost]
-            // public async Task<ActionResult<IEnumerable<BookingModel>>> CreateBooking([FromBody] BookingModel payload)
-            // {
-            //       using var transaction = await _context.Database.BeginTransactionAsync();
-            //       try
-            //       {
-            //             if (!ModelState.IsValid)
-            //             {
-            //                   return Util.BadRequestResponse("Data missing");
-            //             }
-
-            //             const booking = await _context.Booking.FirstAsync(b => b.PhoneNumber == payload.PhoneNumber);
-
-            //             await transaction.CommitAsync();
-            //       }
-            //       catch (Exception e)
-            //       {
-            //             await transaction.RollbackAsync();
-            //             _logger.LogError(e, "Error while adding new booking");
-            //             return Util.InternalServerErrorResponse("Intternal server error");
-            //       }
-            // }
       }
 }

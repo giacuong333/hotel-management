@@ -7,5 +7,5 @@ public interface IGalleryService
       Task<GalleryModel> GetImageByIdAsync(int id);
       Task AddImageAsync(IFormFile file, int roomId);
       Task DeleteImageAsync(int id);
-      Task SaveAsync();
+      Task<int> SaveAsync();
 }

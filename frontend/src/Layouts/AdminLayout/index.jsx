@@ -8,7 +8,7 @@ const AdminLayout = () => {
     const [showSidebar, setShowSidebar] = useState(true);
 
     return (
-        <div className="row admin-bg-color">
+        <div className="row admin-bg-color" style={{ height: '100vh' }}>
             {/* Adjust column size based on sidebar state */}
             <div
                 className={`animation-effect ${

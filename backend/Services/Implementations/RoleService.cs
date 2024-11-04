@@ -11,44 +11,43 @@ using Services.Interfaces;
 
 public class RoleService : IRoleService
 {
-      private readonly IRoleRepository _roleRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
 
-      public RoleService(IRoleRepository roleRepository)
-      {
-            _roleRepository = roleRepository;
-       
-      }
+    public RoleService(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
 
-      public async Task<RoleModel> GetRoleByIdAsync(object id)
-      {
-            return await _roleRepository.GetByIdAsync(id);
-      }
+    }
+
+    public async Task<RoleModel> GetRoleByIdAsync(object id)
+    {
+        return await _unitOfWork.Roles.GetByIdAsync(id);
+    }
     public async Task CreateRoleAsync(RoleModel role)
     {
-        await _roleRepository.CreateAsync(role);
+        await _unitOfWork.Roles.CreateAsync(role);
+        await _unitOfWork.CompleteAsync();
 
     }
 
     public async Task DeleteRoleAsync(object id)
     {
-        await _roleRepository.DeleteAsync(id);
+        await _unitOfWork.Roles.DeleteAsync(id);
+        await _unitOfWork.CompleteAsync();
     }
 
 
 
     public async Task<IEnumerable<RoleModel>> GetRolesAsync()
     {
-        return await _roleRepository.GetAllAsync();
+        return await _unitOfWork.Roles.GetAllAsync();
     }
 
-    public async Task SaveAsync()
-    {
-        await _roleRepository.SaveAsync();
-    }
 
     public async Task UpdateRoleAsync(RoleModel role)
     {
-        await _roleRepository.UpdateAsync(role);
+        await _unitOfWork.Roles.UpdateAsync(role);
+        await _unitOfWork.CompleteAsync();
     }
 }

@@ -16,7 +16,14 @@ namespace Repositories.Implementations
                         .FirstOrDefaultAsync(u => u.Email == email && u.DeletedAt == null);
             }
 
-            public async Task<UserModel> GetUserByPhoneAsync(string phoneNumber)
+        public async Task<UserModel> GetUserByIdAsync(int id)
+        {
+            return await _context.User
+                        .Include(u => u.Roles)
+                        .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
+        }
+
+        public async Task<UserModel> GetUserByPhoneAsync(string phoneNumber)
             {
                   return await _context.User
                         .Include(u => u.Roles)

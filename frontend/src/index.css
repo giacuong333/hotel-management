@@ -66,6 +66,16 @@ h4 {
     }
 }
 
+.social-medias-hover {
+    color: white !important;
+    background: #000 !important;
+    transform: scale(0.8);
+    &:hover {
+        color: var(--fourth-color) !important;
+        transform: scale(1);
+    }
+}
+
 .secondary-bg-color-hover {
     transition: all 0.4s ease-in-out;
     &:hover {
@@ -526,4 +536,12 @@ input.form-check-input:checked {
     max-height: 0;
     overflow: hidden;
     opacity: 0;
+}
+
+.view-details-hover {
+    border-top: 1px solid var(--fourth-color);
+    &:hover {
+        color: var(--fourth-color) !important;
+        background-color: #f7f7f7 !important;
+    }
 }

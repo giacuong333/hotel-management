@@ -1,17 +1,13 @@
-﻿using backend.Database;
-using backend.Models;
+﻿using backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers
 {
       [Route("[controller]")]
       [ApiController]
-      public class GalleryController(IGalleryService galleryService, ILogger<DiscountController> logger, IConfiguration configuration) : Controller
+      public class GalleryController(IGalleryService galleryService) : Controller
       {
             private readonly IGalleryService _galleryService = galleryService;
-            private readonly ILogger<DiscountController> _logger = logger;
-            private readonly IConfiguration configuration = configuration;
 
             // [GET] /gallery/{roomId}
             [HttpGet("{roomId}")]
@@ -62,7 +58,10 @@ namespace backend.Controllers
                               return BadRequest("Missing data");
 
                         if (file == null || file.Length > 0)
+                        {
                               await _galleryService.AddImageAsync(file, roomId);
+                              await _galleryService.SaveAsync();
+                        }
 
                         return StatusCode(201, new { message = "Image added successfully" });
                   }

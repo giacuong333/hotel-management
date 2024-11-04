@@ -47,10 +47,7 @@ namespace Repositories.Implementations
           return  await  _dbSet.Include(r => r.Users).Include(r => r.Rooms).FirstOrDefaultAsync(r => r.Id ==(int) id);
         }
 
-        public async Task SaveAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
+       
 
     }
 }

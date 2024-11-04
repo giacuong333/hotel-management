@@ -23,10 +23,9 @@ public class AuthService : IAuthService
 
       public async Task<UserModel> GetProfile(int id)
       {
-            var user = await _userRepository.GetByIdAsync(id) ?? throw new UnauthorizedAccessException("User not found");
+            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new UnauthorizedAccessException("User not found");
             return user;
       }
-
 
       public async Task<AuthResponse> LoginAsync(LoginRequest request)
       {

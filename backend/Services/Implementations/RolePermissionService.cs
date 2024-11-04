@@ -4,44 +4,44 @@ using Repositories.Interfaces;
 
 public class RolePermissionService : IRolePermissionService
 {
-      private readonly IRolePermissionRepository _rolePermissionRepository;
+      private readonly IUnitOfWork _unitOfWork ;
 
 
-      public RolePermissionService(IRolePermissionRepository rolePermissionRepository, IConfiguration configuration, ILogger<RoomService> logger)
+      public RolePermissionService(IUnitOfWork unitOfWork)
       {
-        _rolePermissionRepository = rolePermissionRepository;
+        _unitOfWork = unitOfWork;
+      
     
       }
 
     public async Task AddRolePermissionsAsync(List<RolepermissionModel> models)
     {
-        await _rolePermissionRepository.AddRolePermissionsAsync(models);
+        await _unitOfWork.RolePermissions.AddRolePermissionsAsync(models);
+        await _unitOfWork.CompleteAsync();
     }
 
     public async Task DeleteRolePermissionsAsync(List<RolepermissionModel> models)
     {
-        await _rolePermissionRepository.DeleteListAsync(models);
+        await _unitOfWork.RolePermissions.DeleteListAsync(models);
+        await _unitOfWork.CompleteAsync();
     }
 
 
 
     public async Task<IEnumerable<RolepermissionModel>> GetRolePermissionsAsync()
     {
-        return await _rolePermissionRepository.GetAllAsync();
+        return await _unitOfWork.RolePermissions.GetAllAsync();
     }
 
     public async Task<IEnumerable<RolepermissionModel>> GetRolePermissionByIdAsync(object id)
     {
-       return await _rolePermissionRepository.GetByIdAsync(id);
+       return await _unitOfWork.RolePermissions.GetByIdAsync(id);
     }
 
   
 
 
-    public async Task SaveAsync()
-      {
-            await _rolePermissionRepository.SaveAsync();
-      }
+
 
    
 

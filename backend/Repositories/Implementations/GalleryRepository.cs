@@ -22,7 +22,6 @@ namespace Repositories.Implementations
                   };
 
                   await CreateAsync(newGallery);
-                  await SaveAsync();
             }
 
             public async Task<IEnumerable<GalleryModel>> GetImagesByRoomIdAsync(int roomId)

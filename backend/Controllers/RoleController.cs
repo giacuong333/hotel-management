@@ -87,7 +87,7 @@ namespace backend.Controllers
 
 
                 await _roleService.CreateRoleAsync(newRole);
-                await _roleService.SaveAsync();
+                
 
                 return StatusCode(201, new { message = "Role added successfully", newRole });
             }
@@ -123,7 +123,7 @@ namespace backend.Controllers
 
 
                  await _roleService.UpdateRoleAsync(currentRole);
-                await _roleService.SaveAsync();
+             
 
                  return Ok(new { message = "Role updated successfully", currentRole });
              }
@@ -156,7 +156,7 @@ namespace backend.Controllers
                 if (permissionsToDelete.Any())
                 {
                     await _rolePermissionService.DeleteRolePermissionsAsync(permissionsToDelete);
-                    await _rolePermissionService.SaveAsync();
+                    
                 }
 
 
@@ -168,7 +168,7 @@ namespace backend.Controllers
                 await   _roleService.DeleteRoleAsync(role.Id);
 
 
-                await _roleService.SaveAsync();
+              
 
                 return Ok(new { message = "Role deleted successfully" });
             }
@@ -212,7 +212,7 @@ namespace backend.Controllers
                 if (permissionsToDelete.Any())
                 {
                     await _rolePermissionService.DeleteRolePermissionsAsync(permissionsToDelete);
-                    await _rolePermissionService.SaveAsync();
+                    
                 }
 
 
@@ -223,7 +223,7 @@ namespace backend.Controllers
             }
 
 
-            await _roleService.SaveAsync();
+         
 
             var newRoles = await _roleService.GetRolesAsync();
 

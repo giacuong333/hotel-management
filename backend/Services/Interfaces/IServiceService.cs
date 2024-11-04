@@ -9,5 +9,5 @@ public interface IServiceService
       Task CreateServiceAsync(ServiceModel service);
       Task UpdateServiceAsync(ServiceModel service);
       Task DeleteServiceAsync(object id);
-      Task SaveAsync();
+   
 }

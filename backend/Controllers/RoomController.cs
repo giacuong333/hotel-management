@@ -39,38 +39,6 @@ namespace backend.Controllers
                   }
             }
 
-            // Use for booking
-            // [GET] /room/empty
-            [HttpGet("empty")]
-            [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<RoomModel>>> GetEmptyRooms()
-            {
-                  try
-                  {
-                        // Get empty rooms
-                        var rooms = await _roomService.GetEmptyRoomsAsync();
-                        if (rooms == null)
-                              return NotFound("Empty rooms not found");
-
-                        return Ok(rooms);
-                  }
-                  catch (UnauthorizedException ex)
-                  {
-                        return Unauthorized(new { message = ex.Message });
-                  }
-                  catch (NotFoundException ex)
-                  {
-                        return NotFound(new { message = ex.Message });
-                  }
-                  catch (Exception ex)
-                  {
-                        // Log the exception
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                  }
-            }
-
             // [GET] /room/{id}
             [HttpGet("{id}")]
             [Produces("application/json")]
@@ -124,6 +92,7 @@ namespace backend.Controllers
                         };
 
                         await _roomService.CreateRoomAsync(room);
+                        await _roomService.SaveAsync();
 
                         if (!room.Id.HasValue)
                               return StatusCode(500, new { message = "Room ID not generated" });
