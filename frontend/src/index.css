@@ -412,6 +412,10 @@ h4 {
     }
 }
 
+.solid-shadow {
+    box-shadow: 0 0 8px 0 var(--fourth-color);
+}
+
 /* Admin */
 .sidebar {
     background-color: var(--customer-primary-color);
