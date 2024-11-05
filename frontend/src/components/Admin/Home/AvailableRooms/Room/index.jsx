@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Room = ({ room }) => {
+const Room = ({ id, name, price }) => {
     return (
         <li className="p-2 shadow-sm bg-white cursor-pointer flex-grow-1">
             <div style={{ width: '100%', height: '120px', overflow: 'hidden' }}>
@@ -13,10 +13,10 @@ const Room = ({ room }) => {
             </div>
             <div className="d-flex align-items-center justify-content-between mt-2">
                 <span className="d-flex flex-column">
-                    <small className="fw-semibold"># No.301</small>
-                    <small>A/c King</small>
+                    <small className="fw-semibold"># No.{id}</small>
+                    <small>{name}</small>
                 </span>
-                <small className="p-1 rounded-1 secondary-bg-color text-white">300k đ/day</small>
+                <small className="p-1 rounded-1 secondary-bg-color text-white">{price}k đ/day</small>
             </div>
         </li>
     );
