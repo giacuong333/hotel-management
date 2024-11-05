@@ -75,6 +75,39 @@ namespace backend.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+
+        // [GET] /dashboard/bookingsbymonth
+        [HttpGet("bookingsbymonth")]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingsByMonthAsync()
+        {
+            try
+            {
+                List<int> listBooking= new List<int>();
+                for (int month = 1; month <= 12; month++)
+                {
+                    var bookingDetails = await _dashboardService.GetBookingsByMonthAsync(month.ToString());
+
+                    if (!bookingDetails.Any())
+                    {
+                        listBooking.Add(0);
+                     
+                    }
+                    else
+                    {
+                        var quanlity = bookingDetails.Count();
+                        listBooking.Add(quanlity);
+                    }
+                }
+
+                return Ok(listBooking);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An error occurred.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
         // [GET] /dashboard/cancellations
         [HttpGet("cancellations")]
         [Produces("application/json")]

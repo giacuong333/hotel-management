@@ -33,11 +33,25 @@ namespace Repositories.Implementations
         public async Task<IEnumerable<BookingModel>> GetBookingDetailsAsync()
         {
             var today = DateTime.Today;
-            return await _dbSetBooking.Where(bk => bk.DeletedAt == null  && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1)).OrderByDescending(bk => bk.CheckIn == null)
+            return await _dbSetBooking.Where(bk => bk.DeletedAt == null  && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1))
                      .ToListAsync();
         }
+        public async Task<IEnumerable<BookingModel>> GetBookingsByMonthAsync(string month)
+        {
 
-  
+            int currentYear = DateTime.Now.Year;
+            int selectedMonth = int.Parse(month);
+            DateTime startOfMonth = new DateTime(currentYear, selectedMonth, 1);
+            DateTime startOfNextMonth = startOfMonth.AddMonths(1);
+            return await _dbSetBooking
+                .Where(bk => bk.DeletedAt == null &&
+                             bk.CreatedAt >= startOfMonth &&
+                             bk.CreatedAt < startOfNextMonth)
+                .OrderByDescending(bk => bk.CheckIn == null)
+                .ToListAsync();
+        }
+
+
 
         public async Task<IEnumerable<BookingModel>> GetCancellationsAsync()
         {

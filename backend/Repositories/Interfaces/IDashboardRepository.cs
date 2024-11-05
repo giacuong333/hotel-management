@@ -10,6 +10,8 @@ namespace backend.Repositories.Interfaces
         Task<IEnumerable<BookingModel>> GetCancellationsAsync();
         Task<IEnumerable<BookingModel>> GetPendingPaymentsAsync();
         Task<IEnumerable<BookingModel>> GetBookingDetailsAsync();
+        Task<IEnumerable<BookingModel>> GetBookingsByMonthAsync(string month);
+
 
 
 

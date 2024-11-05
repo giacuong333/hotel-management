@@ -25,7 +25,10 @@ public class DashboardService : IDashboardService
     {
         return await _unitOfWork.Dashboards.GetBookingDetailsAsync();
     }
-
+    public async Task<IEnumerable<BookingModel>> GetBookingsByMonthAsync(string month)
+    {
+        return await _unitOfWork.Dashboards.GetBookingsByMonthAsync(month);
+    }
     public async Task<IEnumerable<BookingModel>> GetCancellationsAsync()
     { 
         return await _unitOfWork.Dashboards.GetCancellationsAsync();
