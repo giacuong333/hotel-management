@@ -23,9 +23,10 @@ class RegisterServices
             builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();
+        builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
-            // Register Services
-            builder.Services.AddScoped<IAuthService, AuthService>();
+        // Register Services
+        builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IRoomService, RoomService>();
@@ -35,7 +36,8 @@ class RegisterServices
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
+        builder.Services.AddScoped<IDashboardService, DashboardService>();
 
-            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
       }
 }

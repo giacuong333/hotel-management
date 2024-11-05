@@ -11,7 +11,9 @@ public class UnitOfWork(
     IReviewRepository reviews,
     IRoleRepository roles,
     IRolePermissionRepository rolePermissions,
-    IServiceRepository services
+    IServiceRepository services,
+    IDashboardRepository dashboards
+
     ) : IUnitOfWork
 {
     private readonly DatabaseContext _dbContext = dbContext;
@@ -28,6 +30,7 @@ public class UnitOfWork(
     public IRoleRepository? Roles { get; } = roles;
     public IRolePermissionRepository? RolePermissions { get; } = rolePermissions;
     public IServiceRepository? Services { get; } = services;
+    public IDashboardRepository? Dashboards { get; } = dashboards;
 
 
 
