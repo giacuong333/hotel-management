@@ -28,84 +28,6 @@ const columns = [
         selector: (row) => row.payment,
     },
 ];
-
-// const data = [
-//     {
-//         id: 1,
-//         createdAt: '2024-09-03',
-//         customer: 'Gia Cường',
-//         phoneNumber: '0948800917',
-//         checkIn: '2021-09-07',
-//         checkOut: '2021-09-11',
-//         payment: (
-//             <p style={{ backgroundColor: '#80CBC4', fontSize: '10px' }} className="rounded-pill text-white py-1 px-3">
-//                 Received
-//             </p>
-//         ),
-//     },
-//     {
-//         id: 2,
-//         createdAt: '2024-09-03',
-//         customer: 'Minh Cảnh',
-//         phoneNumber: '0948867580',
-//         checkIn: '2021-09-07',
-//         checkOut: '2021-09-11',
-//         payment: (
-//             <p
-//                 style={{ backgroundColor: '#ffd5e1', color: '#b74c4c', fontSize: '10px' }}
-//                 className="rounded-pill py-1 px-3"
-//             >
-//                 Pending
-//             </p>
-//         ),
-//     },
-//     {
-//         id: 3,
-//         createdAt: '2024-09-03',
-//         customer: 'Kim Bạc',
-//         phoneNumber: '0918372900',
-//         checkIn: '2021-09-07',
-//         checkOut: '2021-09-11',
-//         payment: (
-//             <p
-//                 style={{ backgroundColor: '#ffd5e1', color: '#b74c4c', fontSize: '10px' }}
-//                 className="rounded-pill py-1 px-3"
-//             >
-//                 Pending
-//             </p>
-//         ),
-//     },
-//     {
-//         id: 4,
-//         createdAt: '2024-09-03',
-//         customer: 'Như Quỳnh',
-//         phoneNumber: '9685599039',
-//         checkIn: '2021-09-07',
-//         checkOut: '2021-09-11',
-//         payment: (
-//             <p style={{ backgroundColor: '#80CBC4', fontSize: '10px' }} className="rounded-pill text-white py-1 px-3">
-//                 Received
-//             </p>
-//         ),
-//     },
-//     {
-//         id: 5,
-//         createdAt: '2024-09-03',
-//         customer: 'Nhung Vy',
-//         phoneNumber: '8895049102',
-//         checkIn: '2021-09-07',
-//         checkOut: '2021-09-11',
-//         payment: (
-//             <p
-//                 style={{ backgroundColor: '#ffd5e1', color: '#b74c4c', fontSize: '10px' }}
-//                 className="rounded-pill py-1 px-3"
-//             >
-//                 Pending
-//             </p>
-//         ),
-//     },
-// ];
-
 const customStyles = {
     headCells: {
         style: {
@@ -131,40 +53,48 @@ const BookingDetails = () => {
     const [bookings, setBookings] = useState([]);
 
     useEffect(() => {
-        const fetchData = async (url, setter) => {
+        const fetchBookings = async () => {
             try {
-                const response = await axios.get(url, { headers: { 'Content-Type': 'application/json' } });
+                const response = await axios.get('http://localhost:5058/dashboard/bookingdetails', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
                 if (response.status === 200) {
-                    setter(response.data?.$values);
+                    setBookings(response.data.$values || []);
                 }
             } catch (error) {
-                console.log('Error fetching:', error);
+                console.log('Error fetching :', error);
             }
         };
 
-        fetchData('http://localhost:5058/dashboard/availablerooms', setBookings);
+        fetchBookings();
     }, []);
 
-    const data = bookings?.map((booking) => ({
-        id: booking.id,
-        createdAt: booking.createdAt,
-        customer: booking.customer,
-        phoneNumber: booking.phoneNumber,
-        checkIn: booking.checkIn || '',
-        checkOut: booking.checkOut || '',
-        payment: (
-            <p
-                style={{
-                    backgroundColor: booking.status === 2 ? '#80CBC4' : '#ffd5e1',
-                    color: booking.status === 2 ? 'white' : '#b74c4c',
-                    fontSize: '10px',
-                }}
-                className="rounded-pill py-1 px-3"
-            >
-                {booking.status === 2 ? 'Received' : 'Pending'}
-            </p>
-        ),
-    }));
+    const data = bookings
+        ?.filter((booking) => booking.status !== null)
+        .sort((a, b) => (a.status === 2 ? 1 : 0) - (b.status === 2 ? 1 : 0))
+        .map((booking) => ({
+            id: booking.id,
+            createdAt: booking.createdAt,
+            customer: booking.customerName,
+            phoneNumber: booking.customerPhoneNumber,
+            checkIn: booking.checkIn || '',
+            checkOut: booking.checkOut || '',
+            payment: (
+                <p
+                    style={{
+                        backgroundColor: booking.status === 2 ? '#80CBC4' : '#ffd5e1',
+                        color: booking.status === 2 ? 'white' : '#b74c4c',
+                        fontSize: '10px',
+                    }}
+                    className="rounded-pill py-1 px-3"
+                >
+                    {booking.status === 2 ? 'Received' : 'Pending'}
+                </p>
+            ),
+        }));
     return (
         <div>
             <p className="text-capitalize fs-5 fw-semibold mb-2">Booking Details</p>
