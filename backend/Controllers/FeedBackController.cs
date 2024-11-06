@@ -93,36 +93,31 @@ namespace backend.Controllers
             }
         }
       
- [HttpDelete("deleteAll")]
-        public async Task<IActionResult> DeleteAllDiscounts([FromBody] List<int> feedbackIds)
+ [HttpDelete]
+public async Task<IActionResult> DeleteAllFeedbacks([FromBody] List<int> feedbackIds)
+{
+    try
+    {
+        var feedbacksToDelete = await context.Feedback
+            .Where(f => feedbackIds.Contains((int)f.Id))
+            .ToListAsync();
+
+        if (!feedbacksToDelete.Any())
         {
-            if (feedbackIds == null || !feedbackIds.Any())
-            {
-                return BadRequest(new { message = "Invalid payload" });
-            }
-
-            try
-            {
-                var feedBacksToDelete = await context.Feedback
-                    .Where(d => feedbackIds.Contains((int)d.Id))
-                    .ToListAsync();
-
-                if (!feedBacksToDelete.Any())
-                {
-                    return NotFound(new { message = "No discounts found to delete" });
-                }
-
-                context.Feedback.RemoveRange(feedBacksToDelete);
-                await context.SaveChangesAsync();
-
-                return Ok(new { message = "Discounts deleted successfully", newFeedback = context.Feedback.ToList() });
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error deleting discounts");
-                return StatusCode(500, "Internal server error");
-            }
+            return NotFound(new { message = "No feedbacks found to delete" });
         }
+
+        context.Feedback.RemoveRange(feedbacksToDelete);
+        await context.SaveChangesAsync();
+
+        return Ok(new { message = "Feedbacks deleted successfully", newFeedback = context.Feedback.ToList() });
+    }
+    catch (Exception e)
+    {
+        _logger.LogError(e, "Error deleting feedbacks");
+        return StatusCode(500, "Internal server error");
+    }
+}
         public IActionResult Index()
         {
             return View();
