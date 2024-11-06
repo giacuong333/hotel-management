@@ -416,7 +416,7 @@ const Booking = () => {
                 />
 
                 {/* Show Form */}
-                {showPanel && (
+                {showPanel && selectedBookings.status !== 0 && selectedBookings.status !== 3 && (
                     <BookingForm
                         data={selectedBookings}
                         type={showPanel}
