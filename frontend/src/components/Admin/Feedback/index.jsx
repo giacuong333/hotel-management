@@ -25,7 +25,11 @@ const Feedback = () => {
     const [clearSelectedRows, setClearSelectedRows] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchedFeedBack, setSearchedFeedBack] = useState([]);
-    const { deleteDiscount: hasPermissionDelete } = useCheckPermission();
+    const {
+        deleteFeedBack: hasPermissionDelete,
+        createFeedBack: hasPermissionCreate,
+        updateFeedBack: hasPermissionUpdate,
+    } = useCheckPermission();
     const columns = [
         {
             name: 'No',
@@ -82,7 +86,6 @@ const Feedback = () => {
             });
             if (response.status === 200) {
                 setSelectedFeedBacks(response.data);
-                
             }
         } catch (error) {
             console.error('Error fetching Discount details:', error);
@@ -119,7 +122,7 @@ const Feedback = () => {
     //Delete Feedback
     const handleDeleteRowsSelected = () => {
         console.log('deleteAll.count:', deleteAll.count);
-    console.log('deleteAll.payload:', deleteAll.payload);
+        console.log('deleteAll.payload:', deleteAll.payload);
         deleteAll.count !== 0 && setShowDeleteAllConfirm(true);
     };
     const handleTrashClicked = (id) => {
@@ -189,12 +192,12 @@ const Feedback = () => {
     return (
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
-            {deleteAll.count === 0 ? (
+                {deleteAll.count === 0 ? (
                     hasPermissionCreate ? (
                         <FiPlus
                             size={30}
                             className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                            onClick={handleAddClicked}
+                            // onClick={handleAddClicked}
                         />
                     ) : (
                         ''
@@ -218,14 +221,15 @@ const Feedback = () => {
                     onChange={(e) => setSearchInput(e.target.value)}
                 />
             </div>
-            <DataTable 
-            columns={columns} 
-            data={data} 
-            onRowClicked={handleRowClicked}
-            onSelectedRowsChange={handleSelectedRowsChanged}
-            clearSelectedRows={clearSelectedRows}
-            selectableRows 
-            pagination />
+            <DataTable
+                columns={columns}
+                data={data}
+                onRowClicked={handleRowClicked}
+                onSelectedRowsChange={handleSelectedRowsChanged}
+                clearSelectedRows={clearSelectedRows}
+                selectableRows
+                pagination
+            />
             {showDeleteAllConfirm && (
                 <ConfirmPopup
                     header="Are you sure you want to delete all the selected Discounts?"

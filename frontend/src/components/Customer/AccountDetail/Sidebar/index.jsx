@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import { useUser } from '~/providers/UserProvider';
 import axios from 'axios';
@@ -29,10 +29,10 @@ const menu = [
 ];
 
 const Sidebar = () => {
-    const [selectedItemId, setSelectedItemId] = useState(null);
     const [avatar, setAvatar] = useState(null);
     const avatarRef = useRef();
     const { user } = useUser();
+    const currentPath = useLocation().pathname;
 
     useEffect(() => {
         return () => avatar && URL.revokeObjectURL(avatar.preview);
@@ -92,9 +92,8 @@ const Sidebar = () => {
                                 <Link
                                     to={item.path}
                                     className={`animation-effect ${
-                                        selectedItemId === item.id ? 'secondary-color' : 'text-black'
+                                        currentPath.includes(item.path) ? 'secondary-color' : 'text-black'
                                     }`}
-                                    onClick={() => setSelectedItemId(item.id)}
                                 >
                                     {item.title}
                                 </Link>

@@ -226,6 +226,14 @@ h4 {
     transform: rotate(0);
 }
 
+.svg-rotate-half-circle .icon {
+    transition: transform 0.3s linear;
+}
+
+.svg-rotate-half-circle:hover .icon {
+    transform: rotate(180deg);
+}
+
 .secondary-button-hover {
     position: relative;
     display: inline-block;

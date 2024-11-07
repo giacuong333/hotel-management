@@ -31,6 +31,8 @@ import Payments from './components/Customer/AccountDetail/Payments';
 import BookingHistory from './components/Customer/AccountDetail/BookingHistory';
 import Password from './components/Customer/AccountDetail/Password';
 import RoomProvider from './providers/RoomProvider';
+import BookingDetails from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/BookingDetails';
+import Invoice from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/Invoice';
 
 function App() {
     const { user } = useUser();
@@ -47,12 +49,14 @@ function App() {
                 </>
             )}
 
-            {/* If user logged in, the user can see he/him account information */}
+            {/* If user logged in, the user can see account information */}
             {isAuthenticated && isCustomer && (
                 <Route path="/account/" element={<AccountDetailLayout />}>
                     <Route path="personal" element={<AccountDetail />}></Route>
                     <Route path="payments" element={<Payments />}></Route>
                     <Route path="bookinghistory" element={<BookingHistory />}></Route>
+                    <Route path="bookinghistory/invoice/:id" element={<Invoice />}></Route>
+                    <Route path="bookinghistory/bookingdetails/:id" element={<BookingDetails />}></Route>
                     <Route path="password" element={<Password />}></Route>
                 </Route>
             )}
