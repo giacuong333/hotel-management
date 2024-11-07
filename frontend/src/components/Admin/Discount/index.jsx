@@ -12,7 +12,7 @@ import DiscountForm from './DiscountForm';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
-import { useUser } from '~/providers/UserProvider';
+
 import Button from 'react-bootstrap/Button';
 import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 import { RotatingLines } from 'react-loader-spinner';
@@ -129,19 +129,21 @@ const Discount = () => {
     };
 
     const handleDiscountAdded = (newDiscount) => {
+        
         setDiscounts((prevDiscounts) => [...prevDiscounts, newDiscount]);
         setSearchedDiscounts((prevDiscounts) => [...prevDiscounts, newDiscount]);
     };
-
+    
     const handleDiscountUpdated = (currentDiscount) => {
+       
         setDiscounts((prevDiscounts) =>
-            prevDiscounts.map((prevDiscounts) =>
-                prevDiscounts.id === currentDiscount.id ? { ...currentDiscount } : prevDiscounts,
+            prevDiscounts.map((prevDiscount) =>
+                prevDiscount.id === currentDiscount.id ? { ...currentDiscount } : prevDiscount,
             ),
         );
         setSearchedDiscounts((prevDiscounts) =>
-            prevDiscounts.map((prevDiscounts) =>
-                prevDiscounts.id === currentDiscount.id ? { ...currentDiscount } : prevDiscounts,
+            prevDiscounts.map((prevDiscount) =>
+                prevDiscount.id === currentDiscount.id ? { ...currentDiscount } : prevDiscount,
             ),
         );
     };
@@ -296,8 +298,8 @@ const Discount = () => {
                     type={showPanel}
                     isShowed={showPanel}
                     onClose={() => setShowPanel(false)}
-                    onUserAdded={handleDiscountAdded}
-                    onUserUpdated={handleDiscountUpdated}
+                    onDiscountAdded={handleDiscountAdded}
+                    onDiscountUpdated={handleDiscountUpdated}
                 />
             )}
             {showDeleteAllConfirm && (

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
+import axios from 'axios';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -15,12 +16,34 @@ import {
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, LineController, Title, Tooltip, Legend);
 
 const BookingStatus = () => {
+    const [bookings, setBookings] = useState([]);
+
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const response = await axios.get('http://localhost:5058/dashboard/bookingsbymonth', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.status === 200) {
+                    setBookings(response.data.$values || []);
+                }
+            } catch (error) {
+                console.log('Error fetching :', error);
+            }
+        };
+
+        fetchBookings();
+    }, []);
+
     const data = {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [
             {
                 label: 'Bookings',
-                data: [65, 59, 80, 81, 56, 55, 40, 50, 60, 70, 62, 50],
+                data: bookings,
                 fill: true,
                 tension: 0.3,
                 backgroundColor: 'rgba(75,192,192,0.2)',

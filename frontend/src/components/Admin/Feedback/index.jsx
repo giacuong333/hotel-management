@@ -8,27 +8,38 @@ import { BsTrash } from 'react-icons/bs';
 import { FaSortAlphaDownAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { FiPlus } from 'react-icons/fi';
+
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
+import { useUser } from '~/providers/UserProvider';
 import Button from 'react-bootstrap/Button';
 import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 import { RotatingLines } from 'react-loader-spinner';
+
 const Feedback = () => {
+    const [showPanel, setShowPanel] = useState('');
+    const [selectedFeedback, setSelectedFeedback] = useState(null);
     const [feedbacks, setFeedbacks] = useState([]);
+    const [clearSelectedRows, setClearSelectedRows] = useState(false);
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
     const [deleteOne, setDeleteOne] = useState({ payload: null });
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [pendingDelete, setPendingDelete] = useState(false);
-    const [selectedFeedBacks, setSelectedFeedBacks] = useState(null);
-    const [clearSelectedRows, setClearSelectedRows] = useState(false);
+
     const [searchInput, setSearchInput] = useState('');
+<<<<<<< HEAD
     const [searchedFeedBack, setSearchedFeedBack] = useState([]);
     const {
         deleteFeedBack: hasPermissionDelete,
         createFeedBack: hasPermissionCreate,
         updateFeedBack: hasPermissionUpdate,
+=======
+    const [searchedFeedbacks, setSearchedFeedbacks] = useState([]);
+    const {
+        deleteFeedback: hasPermissionDelete,
+>>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
     } = useCheckPermission();
     const columns = [
         {
@@ -45,37 +56,55 @@ const Feedback = () => {
         },
         {
             name: 'Description',
-            selector: (row) => row.Description,
+            selector: (row) => row.description,
         },
         {
             name: 'Create At',
-            selector: (row) => row.CreateAt,
-        },
-        {
-            name: 'Actions',
-            selector: (row) => row.actions,
+            selector: (row) => row.createAt,
         },
     ];
-    const data = searchedFeedBack?.map((feedbacks, index) => ({
-        id: feedbacks.id,
+   
+    const data = searchedFeedbacks?.map((feedback, index) => ({
+        id: feedback?.id,
         no: index + 1,
-        nameUser: feedbacks.userName,
-        nameRoom: feedbacks.roomName,
-        Description: feedbacks.description,
-        CreateAt: feedbacks.createdAt,
-        actions: { hasPermissionDelete } && (
+        nameUser: feedback?.userName,
+        nameRoom: feedback?.roomName,
+        description: feedback?.description,
+        createAt: feedback?.createdAt,
+        actions: (
             <>
-                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(feedbacks.id)} />
+                
+                    <FiEdit
+                        size={18}
+                        className="cursor-pointer me-3"
+                        onClick={() => handleEditClicked(feedback)}
+                        style={{ color: '#80CBC4' }}
+                    />
+                
+                {hasPermissionDelete ? (
+                    <BsTrash
+                        size={18}
+                        className="cursor-pointer"
+                        onClick={() => handleTrashClicked(feedback.id)}
+                        style={{ color: '#E57373' }}
+                    />
+                ) : (
+                    ''
+                )}
             </>
         ),
     }));
 
-    const reset = () => {
-        setDeleteAll({ count: 0, payload: [], yes: false });
-        setShowDeleteAllConfirm(false);
-        setDeleteOne({ payload: null });
-        setShowDeleteConfirm(false);
+    const handleEditClicked = (feedback) => {
+        setSelectedFeedback(feedback);
+        setShowPanel('edit');
     };
+
+    const handleAddClicked = () => {
+        setShowPanel('add');
+        setSelectedFeedback(null);
+    };
+
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
         try {
@@ -85,39 +114,75 @@ const Feedback = () => {
                 },
             });
             if (response.status === 200) {
+<<<<<<< HEAD
                 setSelectedFeedBacks(response.data);
+=======
+                setSelectedFeedback(response.data);
+                setShowPanel('see');
+>>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
             }
         } catch (error) {
-            console.error('Error fetching Discount details:', error);
+            console.error('Error fetching Feedback details:', error);
         }
     }, []);
-    //search Feedback
+
+    const handleDeleteRowsSelected = () => {
+        deleteAll.count !== 0 && setShowDeleteAllConfirm(true);
+    };
+
+    const handleFeedbackAdded = (newFeedback) => {
+        setFeedbacks((prevFeedbacks) => [...prevFeedbacks, newFeedback]);
+        setSearchedFeedbacks((prevFeedbacks) => [...prevFeedbacks, newFeedback]);
+    };
+
+    const handleFeedbackUpdated = (currentFeedback) => {
+        setFeedbacks((prevFeedbacks) =>
+            prevFeedbacks.map((prevFeedbacks) =>
+                prevFeedbacks.id === currentFeedback.id ? { ...currentFeedback } : prevFeedbacks,
+            ),
+        );
+        setSearchedFeedbacks((prevFeedbacks) =>
+            prevFeedbacks.map((prevFeedbacks) =>
+                prevFeedbacks.id === currentFeedback.id ? { ...currentFeedback } : prevFeedbacks,
+            ),
+        );
+    };
+
+    const reset = () => {
+        setDeleteAll({ count: 0, payload: [], yes: false });
+        setShowDeleteAllConfirm(false);
+        setDeleteOne({ payload: null });
+        setShowDeleteConfirm(false);
+    };
+
+    // Search Feedback
     useEffect(() => {
         if (searchInput.trim() === '') {
-            setSearchedFeedBack(feedbacks);
+            setSearchedFeedbacks(feedbacks);
         } else {
-            const filteredFeedBack = feedbacks.filter(
+            const filteredFeedback = feedbacks.filter(
                 (feedback) =>
                     feedback.userName.toLowerCase().includes(searchInput.toLowerCase()) ||
                     feedback.description.toLowerCase().includes(searchInput.toLowerCase()) ||
                     feedback.roomName.toLowerCase().includes(searchInput.toLowerCase()),
             );
-            setSearchedFeedBack(filteredFeedBack);
+            setSearchedFeedbacks(filteredFeedback);
         }
     }, [searchInput, feedbacks]);
-    //search Feedback
-    //List Feedback
+
+    // List Feedback
     useEffect(() => {
-        const ListFeedBacks = async () => {
+        const ListFeedbacks = async () => {
             try {
-                const response = await axios.get('http://localhost:5058/feedBack');
+                const response = await axios.get('http://localhost:5058/feedback');
                 setFeedbacks(response?.data?.$values);
             } catch (error) {
                 console.error(error);
             }
         };
-        ListFeedBacks();
+        ListFeedbacks();
     }, []);
+<<<<<<< HEAD
     //List Feedback
     //Delete Feedback
     const handleDeleteRowsSelected = () => {
@@ -125,40 +190,48 @@ const Feedback = () => {
         console.log('deleteAll.payload:', deleteAll.payload);
         deleteAll.count !== 0 && setShowDeleteAllConfirm(true);
     };
+=======
+
+    // Delete Feedback
+>>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
     const handleTrashClicked = (id) => {
         setDeleteOne({ payload: id });
         setShowDeleteConfirm(true);
     };
+
     const handleDeleteConfirm = () => {
         if (!deleteOne || !deleteOne.payload) {
             console.error('Invalid deleteOne payload:', deleteOne);
             return;
         }
-        deleteFeedBack(deleteOne.payload);
+        deleteFeedback(deleteOne.payload);
     };
-    const deleteFeedBack = async (payload) => {
+
+    const deleteFeedback = async (payload) => {
         try {
             const response = await axios.delete(`http://localhost:5058/feedback/${payload}`);
             if (response.status === 200) {
                 showToast(response?.data?.message, 'success');
-                setFeedbacks((prev) => prev.filter((discount) => discount.id !== payload));
+                setFeedbacks((prev) => prev.filter((feedback) => feedback.id !== payload));
+                setSearchedFeedbacks((prev) => prev.filter((feedback) => feedback.id !== payload));
                 setSearchInput('');
             }
         } catch (error) {
-            console.error('Error deleting Discount:', error);
+            console.error('Error deleting Feedback:', error);
             if (error?.response?.status === 403) {
                 showToast(error?.response?.data?.message, 'error');
             } else if (error?.response?.status === 401) {
                 showToast('You need to log in', 'error');
             } else {
-                showToast(error?.response?.data?.message || 'Error deleting Discount', 'error');
+                showToast(error?.response?.data?.message || 'Error deleting Feedback', 'error');
             }
         } finally {
             reset();
         }
     };
+
     useEffect(() => {
-        const deleteAllFeedBack = async () => {
+        const deleteAllFeedback = async () => {
             try {
                 setPendingDelete(true);
                 // Create payload for deletion
@@ -169,29 +242,32 @@ const Feedback = () => {
                 console.log('Delete response', response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
-                    setFeedbacks(response?.data?.newDiscounts?.$values);
-                    setSearchedFeedBack(response?.data?.newDiscounts?.$values);
+                    setFeedbacks((prev) => prev.filter((feedback) => !payload.includes(feedback.id)));
+                    setSearchedFeedbacks((prev) => prev.filter((feedback) => !payload.includes(feedback.id)));
                     reset();
                 }
             } catch (error) {
-                showToast(error?.response?.data?.message || 'Error deleting FeedBack', 'error');
+                showToast(error?.response?.data?.message || 'Error deleting Feedback', 'error');
             } finally {
                 setPendingDelete(false);
             }
         };
+
         console.log('deleteAll.yes:', deleteAll.yes);
         if (deleteAll.yes) {
-            deleteAllFeedBack();
+            deleteAllFeedback();
         }
     }, [deleteAll.yes, deleteAll.payload]);
+
     const handleSelectedRowsChanged = ({ allSelected, selectedCount, selectedRows }) => {
         setDeleteAll({ count: selectedCount, payload: selectedRows });
         setClearSelectedRows(false);
     };
-    //Delete Feedback
+
     return (
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
+<<<<<<< HEAD
                 {deleteAll.count === 0 ? (
                     hasPermissionCreate ? (
                         <FiPlus
@@ -204,11 +280,13 @@ const Feedback = () => {
                     )
                 ) : (
                     <BsTrash
+=======
+                     <BsTrash
+>>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
                         size={30}
                         className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
                         onClick={handleDeleteRowsSelected}
                     />
-                )}
 
                 <FormGroup
                     id="search"
@@ -224,15 +302,28 @@ const Feedback = () => {
             <DataTable
                 columns={columns}
                 data={data}
+<<<<<<< HEAD
                 onRowClicked={handleRowClicked}
                 onSelectedRowsChange={handleSelectedRowsChanged}
                 clearSelectedRows={clearSelectedRows}
                 selectableRows
                 pagination
             />
+=======
+                selectableRows
+                onRowClicked={handleRowClicked}
+                onSelectedRowsChange={handleSelectedRowsChanged}
+                clearSelectedRows={clearSelectedRows}
+                pagination
+            />
+            {/* Show a toast */}
+            {ToastContainer}
+
+           
+>>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
             {showDeleteAllConfirm && (
                 <ConfirmPopup
-                    header="Are you sure you want to delete all the selected Discounts?"
+                    header="Are you sure you want to delete all the selected Feedbacks?"
                     message="This action cannot be undone."
                     negativeChoice="Cancel"
                     positiveChoice={
@@ -260,7 +351,7 @@ const Feedback = () => {
             {/* Show confirmation when clicking on delete a user*/}
             {showDeleteConfirm && (
                 <ConfirmPopup
-                    header="Are you sure you want to delete the selected Discounts?"
+                    header="Are you sure you want to delete the selected Feedback?"
                     message="This action cannot be undone."
                     negativeChoice="Cancel"
                     positiveChoice="Delete"
