@@ -270,7 +270,7 @@ const Booking = () => {
             selector: (row) => row.actions,
         });
     }
-
+    console.log(searchedBookings);
     const data = searchedBookings?.map((booking, index) => ({
         id: booking?.id,
         no: index + 1,

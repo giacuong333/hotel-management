@@ -71,6 +71,7 @@ const BookingDetails = () => {
 
         fetchBookings();
     }, []);
+    console.log(bookings);
 
     const data = bookings
         ?.filter((booking) => booking.status !== null)
@@ -78,8 +79,8 @@ const BookingDetails = () => {
         .map((booking) => ({
             id: booking.id,
             createdAt: booking.createdAt,
-            customer: booking.customerName,
-            phoneNumber: booking.customerPhoneNumber,
+            customer: booking.customer.name,
+            phoneNumber: booking.customerPhoneNumber ?? booking.customer?.phoneNumber,
             checkIn: booking.checkIn || '',
             checkOut: booking.checkOut || '',
             payment: (
