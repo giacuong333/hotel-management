@@ -6,16 +6,16 @@ namespace backend.Models
     public class ServiceModel
     {
         public ServiceModel() { }
-        public ServiceModel(int? id, string? name,float? price,byte? status,DateTime? createdAt,DateTime? updatedAt, DateTime? deletedAt)
+        public ServiceModel(int? id, string? name, float? price, byte? status, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt)
         {
             this.Id = id;
             this.Name = name;
             this.Price = price;
             this.Status = status;
-      
+
             this.DeletedAt = deletedAt;
             this.UpdatedAt = updatedAt;
-       
+
             this.CreatedAt = createdAt;
         }
         [Key]
@@ -24,7 +24,9 @@ namespace backend.Models
         public string? Name { get; set; }
         public float? Price { get; set; }
         public byte? Status { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime? CreatedAt { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime? UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
 

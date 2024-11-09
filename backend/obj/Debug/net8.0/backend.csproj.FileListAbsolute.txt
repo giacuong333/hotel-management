@@ -365,7 +365,13 @@ D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Micro
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
+D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll

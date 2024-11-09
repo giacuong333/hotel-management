@@ -94,7 +94,7 @@ namespace backend.Controllers
                         await _roomService.CreateRoomAsync(room);
                         await _roomService.SaveAsync();
 
-                        if (!room.Id.HasValue)
+                        if (room.Id != 0)
                               return StatusCode(500, new { message = "Room ID not generated" });
 
                         var addedRoom = await _roomService.GetRoomByIdAsync((int)room.Id);

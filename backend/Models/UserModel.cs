@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,7 +8,7 @@ namespace backend.Models
             // Parameterless constructor required by EF Core
             public UserModel() { }
 
-            public UserModel(int? id, string? name, string? email, byte[]? avatar, string? password, string? phoneNumber, string? gender, DateTime? dob, int? roleId, bool? firstBook, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt)
+            public UserModel(int id, string name, string email, byte[]? avatar, string password, string phoneNumber, string gender, DateTime? dob, int? roleId, bool? firstBook, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt)
             {
                   Id = id;
                   Name = name;
@@ -27,24 +26,32 @@ namespace backend.Models
             }
 
             [Key]
-            public int? Id { get; set; }
-            public string? Name { get; set; }
-            public string? Email { get; set; }
+            public int Id { get; set; }
+
+            public string Name { get; set; }
+            public string Email { get; set; }
             public byte[]? Avatar { get; set; }
-            public string? Password { get; set; }
+
+            [Required]  // Assuming password is required
+            public string Password { get; set; }
+
             public string? PhoneNumber { get; set; }
             public string? Gender { get; set; }
+
             [ForeignKey("Roles")]
             public int? RoleId { get; set; }
+
             public bool? FirstBook { get; set; }
             public DateTime? Dob { get; set; }
 
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
             public DateTime? CreatedAt { get; set; }
+
             [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
             public DateTime? UpdatedAt { get; set; }
+
             public DateTime? DeletedAt { get; set; }
 
-            public virtual RoleModel? Roles { get; set; }
+            public virtual RoleModel? Roles { get; set; } // Navigation property for RoleModel
       }
 }

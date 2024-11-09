@@ -17,9 +17,6 @@ namespace backend.Models
             RoleId = roleId;
             PermissionId = permissionID;
             Resource = resource;
-
-
-
         }
 
 
@@ -33,7 +30,8 @@ namespace backend.Models
 
         public string? Resource { get; set; }
 
+        public RoleModel Role { get; set; }
 
-
+        public PermissionModel Permission { get; set; }
     }
 }

@@ -3,7 +3,7 @@
     public class DiscountModel
     {
         public DiscountModel() { }
-        public DiscountModel(int? id, string? name, float? value, bool? status, DateTime? startAt, DateTime? endAt)
+        public DiscountModel(int id, string name, decimal value, bool status, DateTime? startAt, DateTime? endAt)
         {
             this.Id = id;
             this.Name = name;
@@ -13,14 +13,12 @@
             this.EndAt = endAt;
         }
 
-        public int? Id { get; set; }
-        public string? Name { get; set; }
-        public float? Value { get; set; }
+        public int Id { get; set; } // Non-nullable Id
+        public string Name { get; set; }
+        public decimal Value { get; set; } // Use decimal for financial data
 
-        public bool? Status { get; set; }
-
+        public bool Status { get; set; } // Nullable bool may be avoided
         public DateTime? StartAt { get; set; }
-        public DateTime? EndAt{ get; set;}
+        public DateTime? EndAt { get; set; }
     }
 }
-

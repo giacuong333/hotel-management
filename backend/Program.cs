@@ -1,10 +1,17 @@
-
+using backend.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
 Builder.Build(builder);
 
 var app = builder.Build();
+
+// Ensure the database is initialized with seed data
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    await Seed.Initialize(context); // Initialize with seed data
+}
 
 app.UseCors("AllowReactApp"); // Apply the CORS policy
 

@@ -29,17 +29,11 @@ const Feedback = () => {
     const [pendingDelete, setPendingDelete] = useState(false);
 
     const [searchInput, setSearchInput] = useState('');
-<<<<<<< HEAD
-    const [searchedFeedBack, setSearchedFeedBack] = useState([]);
+    const [searchedFeedBacks, setSearchedFeedBacks] = useState([]);
     const {
         deleteFeedBack: hasPermissionDelete,
         createFeedBack: hasPermissionCreate,
         updateFeedBack: hasPermissionUpdate,
-=======
-    const [searchedFeedbacks, setSearchedFeedbacks] = useState([]);
-    const {
-        deleteFeedback: hasPermissionDelete,
->>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
     } = useCheckPermission();
     const columns = [
         {
@@ -63,8 +57,8 @@ const Feedback = () => {
             selector: (row) => row.createAt,
         },
     ];
-   
-    const data = searchedFeedbacks?.map((feedback, index) => ({
+
+    const data = searchedFeedBacks?.map((feedback, index) => ({
         id: feedback?.id,
         no: index + 1,
         nameUser: feedback?.userName,
@@ -73,14 +67,13 @@ const Feedback = () => {
         createAt: feedback?.createdAt,
         actions: (
             <>
-                
-                    <FiEdit
-                        size={18}
-                        className="cursor-pointer me-3"
-                        onClick={() => handleEditClicked(feedback)}
-                        style={{ color: '#80CBC4' }}
-                    />
-                
+                <FiEdit
+                    size={18}
+                    className="cursor-pointer me-3"
+                    onClick={() => handleEditClicked(feedback)}
+                    style={{ color: '#80CBC4' }}
+                />
+
                 {hasPermissionDelete ? (
                     <BsTrash
                         size={18}
@@ -114,12 +107,8 @@ const Feedback = () => {
                 },
             });
             if (response.status === 200) {
-<<<<<<< HEAD
-                setSelectedFeedBacks(response.data);
-=======
                 setSelectedFeedback(response.data);
                 setShowPanel('see');
->>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
             }
         } catch (error) {
             console.error('Error fetching Feedback details:', error);
@@ -132,7 +121,7 @@ const Feedback = () => {
 
     const handleFeedbackAdded = (newFeedback) => {
         setFeedbacks((prevFeedbacks) => [...prevFeedbacks, newFeedback]);
-        setSearchedFeedbacks((prevFeedbacks) => [...prevFeedbacks, newFeedback]);
+        setSearchedFeedBacks((prevFeedbacks) => [...prevFeedbacks, newFeedback]);
     };
 
     const handleFeedbackUpdated = (currentFeedback) => {
@@ -141,7 +130,7 @@ const Feedback = () => {
                 prevFeedbacks.id === currentFeedback.id ? { ...currentFeedback } : prevFeedbacks,
             ),
         );
-        setSearchedFeedbacks((prevFeedbacks) =>
+        setSearchedFeedBacks((prevFeedbacks) =>
             prevFeedbacks.map((prevFeedbacks) =>
                 prevFeedbacks.id === currentFeedback.id ? { ...currentFeedback } : prevFeedbacks,
             ),
@@ -158,7 +147,7 @@ const Feedback = () => {
     // Search Feedback
     useEffect(() => {
         if (searchInput.trim() === '') {
-            setSearchedFeedbacks(feedbacks);
+            setSearchedFeedBacks(feedbacks);
         } else {
             const filteredFeedback = feedbacks.filter(
                 (feedback) =>
@@ -166,7 +155,7 @@ const Feedback = () => {
                     feedback.description.toLowerCase().includes(searchInput.toLowerCase()) ||
                     feedback.roomName.toLowerCase().includes(searchInput.toLowerCase()),
             );
-            setSearchedFeedbacks(filteredFeedback);
+            setSearchedFeedBacks(filteredFeedback);
         }
     }, [searchInput, feedbacks]);
 
@@ -182,18 +171,8 @@ const Feedback = () => {
         };
         ListFeedbacks();
     }, []);
-<<<<<<< HEAD
-    //List Feedback
-    //Delete Feedback
-    const handleDeleteRowsSelected = () => {
-        console.log('deleteAll.count:', deleteAll.count);
-        console.log('deleteAll.payload:', deleteAll.payload);
-        deleteAll.count !== 0 && setShowDeleteAllConfirm(true);
-    };
-=======
 
     // Delete Feedback
->>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
     const handleTrashClicked = (id) => {
         setDeleteOne({ payload: id });
         setShowDeleteConfirm(true);
@@ -213,7 +192,7 @@ const Feedback = () => {
             if (response.status === 200) {
                 showToast(response?.data?.message, 'success');
                 setFeedbacks((prev) => prev.filter((feedback) => feedback.id !== payload));
-                setSearchedFeedbacks((prev) => prev.filter((feedback) => feedback.id !== payload));
+                setSearchedFeedBacks((prev) => prev.filter((feedback) => feedback.id !== payload));
                 setSearchInput('');
             }
         } catch (error) {
@@ -243,7 +222,7 @@ const Feedback = () => {
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     setFeedbacks((prev) => prev.filter((feedback) => !payload.includes(feedback.id)));
-                    setSearchedFeedbacks((prev) => prev.filter((feedback) => !payload.includes(feedback.id)));
+                    setSearchedFeedBacks((prev) => prev.filter((feedback) => !payload.includes(feedback.id)));
                     reset();
                 }
             } catch (error) {
@@ -267,7 +246,6 @@ const Feedback = () => {
     return (
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
-<<<<<<< HEAD
                 {deleteAll.count === 0 ? (
                     hasPermissionCreate ? (
                         <FiPlus
@@ -279,37 +257,21 @@ const Feedback = () => {
                         ''
                     )
                 ) : (
-                    <BsTrash
-=======
-                     <BsTrash
->>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
-                        size={30}
-                        className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                        onClick={handleDeleteRowsSelected}
+                    <FormGroup
+                        id="search"
+                        name="search"
+                        value={searchInput}
+                        type="text"
+                        placeHolder="Search..."
+                        Icon={IoSearchOutline}
+                        customParentInputStyle="pe-2 rounded-1"
+                        onChange={(e) => setSearchInput(e.target.value)}
                     />
-
-                <FormGroup
-                    id="search"
-                    name="search"
-                    value={searchInput}
-                    type="text"
-                    placeHolder="Search..."
-                    Icon={IoSearchOutline}
-                    customParentInputStyle="pe-2 rounded-1"
-                    onChange={(e) => setSearchInput(e.target.value)}
-                />
+                )}
             </div>
             <DataTable
                 columns={columns}
                 data={data}
-<<<<<<< HEAD
-                onRowClicked={handleRowClicked}
-                onSelectedRowsChange={handleSelectedRowsChanged}
-                clearSelectedRows={clearSelectedRows}
-                selectableRows
-                pagination
-            />
-=======
                 selectableRows
                 onRowClicked={handleRowClicked}
                 onSelectedRowsChange={handleSelectedRowsChanged}
@@ -319,8 +281,6 @@ const Feedback = () => {
             {/* Show a toast */}
             {ToastContainer}
 
-           
->>>>>>> ce0f9b6717b62e9036376aad177438ac924671dc
             {showDeleteAllConfirm && (
                 <ConfirmPopup
                     header="Are you sure you want to delete all the selected Feedbacks?"

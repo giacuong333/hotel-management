@@ -3,7 +3,8 @@
     public class FeedBackModel
     {
         public FeedBackModel() { }
-        public FeedBackModel(int? id,int userId,int roomId, string? description,DateTime createdAt)
+
+        public FeedBackModel(int id, int userId, int roomId, string description, DateTime createdAt)
         {
             this.Id = id;
             this.UserId = userId;
@@ -11,10 +12,13 @@
             this.Description = description;
             this.CreatedAt = createdAt;
         }
-        public int? Id { get; set; }
+
+        public int Id { get; set; } // Non-nullable Id
         public int UserId { get; set; }
         public int RoomId { get; set; }
-        public string? Description { get; set; }
+        public string Description { get; set; } // Made Description non-nullable
         public DateTime CreatedAt { get; set; }
+
+        public UserModel User { get; set; }
     }
 }
