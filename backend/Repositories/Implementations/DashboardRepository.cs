@@ -33,7 +33,7 @@ namespace Repositories.Implementations
         public async Task<IEnumerable<BookingModel>> GetBookingDetailsAsync()
         {
             var today = DateTime.Today;
-            return await _dbSetBooking.Where(bk => bk.DeletedAt == null  && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1))
+            return await _dbSetBooking.Where(bk => bk.DeletedAt == null  && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1)).Include(b => b.Customer)
                      .ToListAsync();
         }
         public async Task<IEnumerable<BookingModel>> GetBookingsByMonthAsync(string month)
