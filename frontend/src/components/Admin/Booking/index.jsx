@@ -43,12 +43,13 @@ const Booking = () => {
             try {
                 // Create payload for deletion (id list)
                 const payload = deleteAll.payload.map((bookingDelete) => ({ id: bookingDelete.id }));
+                console.log('Payload', payload);
                 const response = await axios.delete('http://localhost:5058/booking', { data: payload });
                 if (response?.status === 200) {
                     const data = response?.data?.updatedBookings?.$values.map((booking) => {
                         booking.statusName =
                             booking.status === 0
-                                ? 'Cancle'
+                                ? 'Canceled'
                                 : booking.status === 1
                                 ? 'Confirmed'
                                 : booking.status === 2

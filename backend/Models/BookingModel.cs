@@ -7,7 +7,6 @@ namespace backend.Models
 {
       public class BookingModel
       {
-            // Parameterless constructor required by EF Core
             public BookingModel() { }
 
             public BookingModel(int id, string? customerName, string? customerEmail, string? customerPhoneNumber, int? staffCheckInId, int? staffCheckOutId, DateTime? checkIn, DateTime? checkOut, int customerId, int? status, DateTime createdAt, DateTime? updatedAt, DateTime? deletedAt)

@@ -38,36 +38,6 @@ namespace backend.Controllers
                   }
             }
 
-            // [GET] /booking/bookedDates
-            [HttpGet("bookedDates")]
-            [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<(DateTime? CheckIn, DateTime? CheckOut)>>> GetBookedDates()
-            {
-                  try
-                  {
-                        var bookedDates = await _bookingService.GetBookedDatesAsync();
-                        if (bookedDates == null || !bookedDates.Any())
-                              return NotFound("Booking date list is empty");
-
-                        return Ok(bookedDates);
-                  }
-                  catch (UnauthorizedException ex)
-                  {
-                        return Unauthorized(new { message = ex.Message });
-                  }
-                  catch (NotFoundException ex)
-                  {
-                        return NotFound(new { message = ex.Message });
-                  }
-                  catch (Exception ex)
-                  {
-                        // Log the exception
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                  }
-            }
-
             // [GET] /booking/{id}
             [HttpGet("{id}")]
             public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingById(int id)
@@ -149,7 +119,10 @@ namespace backend.Controllers
                               if (bookingFromDb == null)
                                     return NotFound("Booking not found");
 
-                              if (bookingFromDb.Status != 0 || bookingFromDb.Status != 3)
+                              Console.WriteLine("Booking Status", bookingFromDb.Status);
+
+                              // Canceled or Checked-out 
+                              if (bookingFromDb.Status != 0 && bookingFromDb.Status != 3)
                                     return StatusCode(403, new { message = "You only can delete bookings that is canceled or checked-out" });
 
                               await _bookingService.DeleteBookingAsync(booking.Id);

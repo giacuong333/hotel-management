@@ -22,9 +22,9 @@ namespace backend.Models
 
             // Navigation properties
             [ForeignKey("BookingId")]
-            public virtual BookingModel Booking { get; set; }
+            public virtual BookingModel? Booking { get; set; }
 
             [ForeignKey("RoomId")]
-            public virtual RoomModel Room { get; set; }
+            public virtual RoomModel? Room { get; set; }
       }
 }

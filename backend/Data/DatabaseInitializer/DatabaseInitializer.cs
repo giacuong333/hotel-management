@@ -10,7 +10,7 @@ public static class Seed
         // Ensure the database is created
         await context.Database.MigrateAsync();
 
-        // Check if there are any roles already in the database
+        // Seed Roles
         if (!context.Role.Any())
         {
             // Insert roles
@@ -23,7 +23,7 @@ public static class Seed
             await context.SaveChangesAsync();
         }
 
-        // Check if there are any permissions already in the database
+        // Seed Permissions
         if (!context.Permission.Any())
         {
             // Insert permissions
@@ -80,7 +80,7 @@ public static class Seed
             await context.SaveChangesAsync();
         }
 
-        // Check if the rolepermissions table is empty
+        // Seed RolePermissions
         if (!context.Rolepermission.Any())
         {
             // Insert rolepermissions
@@ -137,6 +137,7 @@ public static class Seed
             await context.SaveChangesAsync();
         }
 
+        // Seed Users
         if (!context.User.Any())
         {
             context.User.AddRange(
@@ -233,11 +234,12 @@ public static class Seed
         }
 
         // Seed Room Data
-        if (!context.Room.Any()) // Check if rooms already exist
+        if (!context.Room.Any())
         {
             context.Room.AddRange(
                 new RoomModel
                 {
+                    Id = 1,
                     Name = "Presidential Suite",
                     Type = "VIP",
                     Description = "The Presidential Suite is the pinnacle of luxury and sophistication, offering an unparalleled level of comfort and style. This suite includes a spacious living area, a king-size bed, a private balcony with stunning views, and a dedicated butler service.",
@@ -248,6 +250,7 @@ public static class Seed
                 },
                 new RoomModel
                 {
+                    Id = 2,
                     Name = "Poolside Room",
                     Type = "VIP",
                     Description = "Relax in our stylish Poolside Room, designed to offer the ultimate blend of comfort and luxury. Step out onto your private patio and enjoy the serene view of the pool, surrounded by lush tropical landscaping.",
@@ -258,6 +261,7 @@ public static class Seed
                 },
                 new RoomModel
                 {
+                    Id = 3,
                     Name = "Ocean View Room",
                     Type = "VIP",
                     Description = "Experience the ultimate in coastal luxury with our Ocean View Room. Situated on the upper floors, these rooms offer panoramic views of the ocean, along with plush furnishings and premium amenities for the perfect stay.",
@@ -268,6 +272,7 @@ public static class Seed
                 },
                 new RoomModel
                 {
+                    Id = 4,
                     Name = "Mountain View Room",
                     Type = "VIP",
                     Description = "Experience ultimate tranquility in our Mountain View Deluxe Room, offering breathtaking panoramic views of the surrounding mountains. Designed with relaxation in mind, this room features a spacious layout and modern amenities.",
@@ -278,6 +283,7 @@ public static class Seed
                 },
                 new RoomModel
                 {
+                    Id = 5,
                     Name = "Luxury Suite",
                     Type = "VIP",
                     Description = "A luxury suite room is typically a premium, upscale accommodation in a hotel or resort, offering a high level of comfort, exquisite decor, and upscale amenities. This suite is perfect for guests seeking exclusivity and elegance.",
@@ -288,6 +294,7 @@ public static class Seed
                 },
                 new RoomModel
                 {
+                    Id = 6,
                     Name = "Junior Suite",
                     Type = "VIP",
                     Description = "A Junior Suite Room typically refers to a type of hotel room that offers more space and amenities compared to a standard room. This suite is perfect for guests who need extra space, a cozy sitting area, and enhanced comfort.",
@@ -311,9 +318,9 @@ public static class Seed
             await context.SaveChangesAsync();
         }
 
+        // Seed Bookings
         if (!context.Booking.Any())
         {
-
             context.Booking.AddRange(
                 new()
                 {
@@ -346,6 +353,7 @@ public static class Seed
             await context.SaveChangesAsync();
         }
 
+        // Seed BookingDetails
         if (!context.BookingDetail.Any())
         {
             context.BookingDetail.AddRange(
@@ -353,6 +361,17 @@ public static class Seed
                 new() { BookingId = 1, RoomId = 2 },
                 new() { BookingId = 2, RoomId = 3 },
                 new() { BookingId = 3, RoomId = 6 }
+            );
+            await context.SaveChangesAsync();
+        }
+
+        // Seed Discounts
+        if (!context.Discount.Any())
+        {
+            context.Discount.AddRange(
+                new() { Id = 1, Name = "Black Friday Sale", Value = 20, Status = true, StartAt = new DateTime(2024, 11, 24), EndAt = new DateTime(2024, 11, 26) },
+                new() { Id = 2, Name = "New Year Discount", Value = 15, Status = true, StartAt = new DateTime(2024, 12, 31), EndAt = new DateTime(2025, 1, 2) },
+                new() { Id = 3, Name = "Holiday Season Offer", Value = 10, Status = true, StartAt = new DateTime(2024, 12, 1), EndAt = new DateTime(2024, 12, 15) }
             );
             await context.SaveChangesAsync();
         }
