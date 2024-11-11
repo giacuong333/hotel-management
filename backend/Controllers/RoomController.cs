@@ -42,7 +42,7 @@ namespace backend.Controllers
             // [GET] /room/{id}
             [HttpGet("{id}")]
             [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<RoomModel>>> GetRoomById(int id)
+            public async Task<ActionResult<RoomModel>> GetRoomById(int id)
             {
                   try
                   {

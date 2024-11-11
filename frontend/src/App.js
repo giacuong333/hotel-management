@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import CustomerLayout from './Layouts/CustomerLayout';
@@ -33,11 +33,17 @@ import Password from './components/Customer/AccountDetail/Password';
 import RoomProvider from './providers/RoomProvider';
 import BookingDetails from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/BookingDetails';
 import Invoice from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/Invoice';
+import ProceedPayment from './components/Customer/Home/ProceedPayment'
 
 function App() {
     const { user } = useUser();
     const isAuthenticated = user !== null;
     const isCustomer = user?.roleId === 4;
+
+    useEffect(()=> {
+        console.log(isAuthenticated, isCustomer);
+        
+    }, [])
 
     return (
         <Routes>
@@ -61,6 +67,17 @@ function App() {
                 </Route>
             )}
 
+            {isAuthenticated && isCustomer && (
+                <Route path="/account/" element={<AccountDetailLayout />}>
+                    <Route path="personal" element={<AccountDetail />}></Route>
+                    <Route path="payments" element={<Payments />}></Route>
+                    <Route path="bookinghistory" element={<BookingHistory />}></Route>
+                    <Route path="bookinghistory/invoice/:id" element={<Invoice />}></Route>
+                    <Route path="bookinghistory/bookingdetails/:id" element={<BookingDetails />}></Route>
+                    <Route path="password" element={<Password />}></Route>
+                </Route>
+            )}
+
             {/* If customer logged in with roleId = 2 or default customer does not log in, move on to the customer page. */}
             {(isAuthenticated && isCustomer) || !isAuthenticated ? (
                 // Customer
@@ -68,6 +85,9 @@ function App() {
                     <Route index element={<CustomerHome />} />
                     <Route path="/rooms" element={<Rooms />} />
                     <Route path="/room/:id" element={<RoomDetail />} />
+                    {isAuthenticated && isCustomer && (
+                        <Route path="/proceed-payment" element={<Payments />} />
+                    )}
                 </Route>
             ) : (
                 // If roleId != 4, move on to the admin page

@@ -1,15 +1,24 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { FaDollarSign } from "react-icons/fa6";
 import { BiArea } from "react-icons/bi";
-import { LuUsers2 } from "react-icons/lu";
 import { IoBedOutline } from "react-icons/io5";
 
-const Room = ({ image, price, name, area, guest, bed }) => {
+const Room = ({ image, price, name, area, bed, id}) => {
+      const navigate = useNavigate();
+
+      const handleRoomClick = () => {
+            if (id) {
+                  navigate(`/room/${id}`, { state: { id } }); 
+            } else {
+                  console.error("Room ID is undefined.");
+            }
+      };
+
       return (
             <div className="w-full px-4">
-                  <Link
+                  <div
                         style={{
                               background: `url(${image})`,
                               backgroundPosition: "bottom",
@@ -19,13 +28,16 @@ const Room = ({ image, price, name, area, guest, bed }) => {
                               height: "400px",
                               padding: "1.4rem",
                               display: "block",
-                        }}>
-                        <div className="d-flex flex-column align-items-start justify-content-end w-full h-full gap-3">
+                        }}
+                        onClick = {handleRoomClick}
+                        >
+                        <div className="d-flex flex-column align-items-start justify-content-end w-full h-full gap-3 cursor-pointer">
                               <div className="bg-white d-inline-flex align-items-center gap-2 px-3 py-2">
                                     <span className="text-uppercase">From </span>
                                     <span className="d-flex align-items-center">
-                                          <FaDollarSign />
-                                          <p className="font-weight-bold">{price}</p>
+                                          <p className="font-weight-bold">
+                                                {price.toLocaleString('en-US')} VND
+                                          </p>
                                     </span>
                               </div>
                               <div
@@ -45,16 +57,12 @@ const Room = ({ image, price, name, area, guest, bed }) => {
                                           {area}m2
                                     </span>
                                     <span className="d-flex flex-nowrap align-items-center gap-2">
-                                          <LuUsers2 />
-                                          {guest} Guests
-                                    </span>
-                                    <span className="d-flex flex-nowrap align-items-center gap-2">
                                           <IoBedOutline />
                                           {bed} Bed
                                     </span>
                               </div>
                         </div>
-                  </Link>
+                  </div>
             </div>
       );
 };

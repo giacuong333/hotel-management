@@ -1,0 +1,859 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\roomcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\roomcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\data\\databaseinitializer\\databaseinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\data\\databaseinitializer\\databaseinitializer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\registerservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\registerservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\implementations\\rolepermissionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\implementations\\rolepermissionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\interfaces\\irolepermissionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\interfaces\\irolepermissionservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\implementations\\serviceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\implementations\\serviceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\implementations\\roomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\implementations\\roomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\implementations\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\implementations\\roleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\interfaces\\iroomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\interfaces\\iroomservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\interfaces\\iserviceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\interfaces\\iserviceservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\interfaces\\irolepermissionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\interfaces\\irolepermissionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\implementations\\reviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\implementations\\reviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\interfaces\\iroleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\interfaces\\iroleservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\interfaces\\igalleryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\interfaces\\igalleryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\interfaces\\ibookingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\interfaces\\ibookingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\bookingstatusupdater.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\bookingstatusupdater.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\builder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\builder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\implementations\\rolepermissionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\implementations\\rolepermissionrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\implementations\\servicerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\implementations\\servicerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\implementations\\galleryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\implementations\\galleryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\implementations\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\implementations\\genericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\implementations\\reviewrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\implementations\\reviewrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\rolepermissioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\rolepermissioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\rolecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\reviewcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\reviewcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\servicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\servicecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\implementations\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\implementations\\rolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\implementations\\roomrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\implementations\\roomrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\interfaces\\iservicerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\interfaces\\iservicerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\implementations\\galleryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\implementations\\galleryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\implementations\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\implementations\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\interfaces\\ireviewrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\interfaces\\ireviewrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\interfaces\\irolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\interfaces\\irolerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\interfaces\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\interfaces\\iroomrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\interfaces\\iroomrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\implementations\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\implementations\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\interfaces\\igenericrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\interfaces\\igalleryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\interfaces\\igalleryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\gallerycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\gallerycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\discountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\discountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\controllers\\feedbackcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\controllers\\feedbackcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\interfaces\\ibookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\interfaces\\ibookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\repositories\\implementations\\bookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\repositories\\implementations\\bookingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\interfaces\\ireviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\interfaces\\ireviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|c:\\hk1_2024-2025\\coding projects\\dotnet-labs\\hotel-management\\backend\\services\\implementations\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{94B54BD3-0794-4CC7-A9FA-EADBD9629CBE}|backend\\backend.csproj|solutionrelative:backend\\services\\implementations\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\HocReact\\hotel-management\\backend\\Repositories\\Interfaces\\IGenericService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DatabaseInitializer.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Data\\DatabaseInitializer\\DatabaseInitializer.cs",
+              "RelativeDocumentMoniker": "backend\\Data\\DatabaseInitializer\\DatabaseInitializer.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Data\\DatabaseInitializer\\DatabaseInitializer.cs",
+              "RelativeToolTip": "backend\\Data\\DatabaseInitializer\\DatabaseInitializer.cs",
+              "ViewState": "AgIAADUBAAAAAAAAAAAwwDkBAABOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T15:52:10.869Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "RolePermissionService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\RolePermissionService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Implementations\\RolePermissionService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\RolePermissionService.cs",
+              "RelativeToolTip": "backend\\Services\\Implementations\\RolePermissionService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAABPAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.194Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "RoleService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\RoleService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Implementations\\RoleService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\RoleService.cs",
+              "RelativeToolTip": "backend\\Services\\Implementations\\RoleService.cs",
+              "ViewState": "AQIAABYAAAAAAAAAAIBFwCkAAAAwAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.197Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "RoomService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\RoomService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Implementations\\RoomService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\RoomService.cs",
+              "RelativeToolTip": "backend\\Services\\Implementations\\RoomService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.2Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ServiceService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\ServiceService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Implementations\\ServiceService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\ServiceService.cs",
+              "RelativeToolTip": "backend\\Services\\Implementations\\ServiceService.cs",
+              "ViewState": "AQIAAAoAAAAAAAAAAAA8wAsAAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.202Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RoomController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\RoomController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\RoomController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\RoomController.cs",
+              "RelativeToolTip": "backend\\Controllers\\RoomController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAACwAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.294Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\UserController.cs",
+              "RelativeToolTip": "backend\\Controllers\\UserController.cs",
+              "ViewState": "AgIAALsAAAAAAAAAAAAwwBAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.327Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "backend\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Properties\\launchSettings.json",
+              "RelativeToolTip": "backend\\Properties\\launchSettings.json",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAABYAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-11-11T01:32:37.648Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "IRolePermissionService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IRolePermissionService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Interfaces\\IRolePermissionService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IRolePermissionService.cs",
+              "RelativeToolTip": "backend\\Services\\Interfaces\\IRolePermissionService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAuwAMAAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.137Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\appsettings.json",
+              "RelativeDocumentMoniker": "backend\\appsettings.json",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\appsettings.json",
+              "RelativeToolTip": "backend\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-11-11T01:29:44.781Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RegisterServices.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\RegisterServices.cs",
+              "RelativeDocumentMoniker": "backend\\RegisterServices.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\RegisterServices.cs",
+              "RelativeToolTip": "backend\\RegisterServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.205Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "IUserService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IUserService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Interfaces\\IUserService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IUserService.cs",
+              "RelativeToolTip": "backend\\Services\\Interfaces\\IUserService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAuwA8AAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.21Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "IRoomService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IRoomService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Interfaces\\IRoomService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IRoomService.cs",
+              "RelativeToolTip": "backend\\Services\\Interfaces\\IRoomService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.213Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "IServiceService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IServiceService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Interfaces\\IServiceService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IServiceService.cs",
+              "RelativeToolTip": "backend\\Services\\Interfaces\\IServiceService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.217Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "IRolePermissionRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IRolePermissionRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Interfaces\\IRolePermissionRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IRolePermissionRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Interfaces\\IRolePermissionRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAuwAUAAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.22Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ReviewService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\ReviewService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Implementations\\ReviewService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\ReviewService.cs",
+              "RelativeToolTip": "backend\\Services\\Implementations\\ReviewService.cs",
+              "ViewState": "AQIAAAoAAAAAAAAAAAA8wAQAAAArAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.226Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "IRoleService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IRoleService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Interfaces\\IRoleService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IRoleService.cs",
+              "RelativeToolTip": "backend\\Services\\Interfaces\\IRoleService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAuwAoAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.231Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "IGalleryService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IGalleryService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Interfaces\\IGalleryService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IGalleryService.cs",
+              "RelativeToolTip": "backend\\Services\\Interfaces\\IGalleryService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.235Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "IBookingService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IBookingService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Interfaces\\IBookingService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IBookingService.cs",
+              "RelativeToolTip": "backend\\Services\\Interfaces\\IBookingService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.243Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "BookingStatusUpdater.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\BookingStatusUpdater.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\BookingStatusUpdater.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\BookingStatusUpdater.cs",
+              "RelativeToolTip": "backend\\Services\\BookingStatusUpdater.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.247Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Builder.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Builder.cs",
+              "RelativeDocumentMoniker": "backend\\Builder.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Builder.cs",
+              "RelativeToolTip": "backend\\Builder.cs",
+              "ViewState": "AQIAABoAAAAAAAAAAAA0wDQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.251Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Program.cs",
+              "RelativeDocumentMoniker": "backend\\Program.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Program.cs",
+              "RelativeToolTip": "backend\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.255Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "RolePermissionRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\RolePermissionRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Implementations\\RolePermissionRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\RolePermissionRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Implementations\\RolePermissionRepository.cs",
+              "ViewState": "AQIAABkAAAAAAAAAAAAqwCEAAAAuAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.261Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "ServiceRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\ServiceRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Implementations\\ServiceRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\ServiceRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Implementations\\ServiceRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.265Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "GalleryRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\GalleryRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Implementations\\GalleryRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\GalleryRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Implementations\\GalleryRepository.cs",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.269Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "GenericRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\GenericRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Implementations\\GenericRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\GenericRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Implementations\\GenericRepository.cs",
+              "ViewState": "AQIAAB4AAAAAAAAAAAA7wCUAAAATAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.272Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "ReviewRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\ReviewRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Implementations\\ReviewRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\ReviewRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Implementations\\ReviewRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAB0AAAARAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.276Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "RolePermissionController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\RolePermissionController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\RolePermissionController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\RolePermissionController.cs",
+              "RelativeToolTip": "backend\\Controllers\\RolePermissionController.cs",
+              "ViewState": "AQIAAA8AAAAAAAAAAAAAACAAAABZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.281Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "RoleController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\RoleController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\RoleController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\RoleController.cs",
+              "RelativeToolTip": "backend\\Controllers\\RoleController.cs",
+              "ViewState": "AQIAAKcAAAAAAAAAAAAwwMIAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.284Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "ReviewController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\ReviewController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\ReviewController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\ReviewController.cs",
+              "RelativeToolTip": "backend\\Controllers\\ReviewController.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAAKcAAABEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.287Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "ServiceController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\ServiceController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\ServiceController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\ServiceController.cs",
+              "RelativeToolTip": "backend\\Controllers\\ServiceController.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAABUAAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.29Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "RoleRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\RoleRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Implementations\\RoleRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\RoleRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Implementations\\RoleRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.296Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "RoomRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\RoomRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Implementations\\RoomRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\RoomRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Implementations\\RoomRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.299Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "IServiceRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IServiceRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Interfaces\\IServiceRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IServiceRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Interfaces\\IServiceRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAuwAcAAAA0AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.301Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "GalleryService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\GalleryService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Implementations\\GalleryService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\GalleryService.cs",
+              "RelativeToolTip": "backend\\Services\\Implementations\\GalleryService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.304Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\UserService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Implementations\\UserService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\UserService.cs",
+              "RelativeToolTip": "backend\\Services\\Implementations\\UserService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAABCAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.306Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "IReviewRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IReviewRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Interfaces\\IReviewRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IReviewRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Interfaces\\IReviewRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAxAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.31Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "IRoleRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IRoleRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Interfaces\\IRoleRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IRoleRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Interfaces\\IRoleRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.313Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Interfaces\\IUserRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IUserRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Interfaces\\IUserRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.316Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "IRoomRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IRoomRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Interfaces\\IRoomRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IRoomRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Interfaces\\IRoomRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAA7AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.319Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\UserRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Implementations\\UserRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\UserRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Implementations\\UserRepository.cs",
+              "ViewState": "AQIAAAYAAAAAAAAAAAAAABIAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.322Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "IGenericRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IGenericRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Interfaces\\IGenericRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IGenericRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Interfaces\\IGenericRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAuwAkAAAAdAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.33Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "IGenericService.cs",
+              "DocumentMoniker": "C:\\HocReact\\hotel-management\\backend\\Repositories\\Interfaces\\IGenericService.cs",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\HocReact\\hotel-management\\backend\\Repositories\\Interfaces\\IGenericService.cs",
+              "ToolTip": "C:\\HocReact\\hotel-management\\backend\\Repositories\\Interfaces\\IGenericService.cs",
+              "RelativeToolTip": "..\\..\\..\\..\\HocReact\\hotel-management\\backend\\Repositories\\Interfaces\\IGenericService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.499Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "IGalleryRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IGalleryRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Interfaces\\IGalleryRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IGalleryRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Interfaces\\IGalleryRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\HomeController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "backend\\Controllers\\HomeController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.51Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "GalleryController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\GalleryController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\GalleryController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\GalleryController.cs",
+              "RelativeToolTip": "backend\\Controllers\\GalleryController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.514Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "DiscountController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\DiscountController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\DiscountController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\DiscountController.cs",
+              "RelativeToolTip": "backend\\Controllers\\DiscountController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.518Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "FeedBackController.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\FeedBackController.cs",
+              "RelativeDocumentMoniker": "backend\\Controllers\\FeedBackController.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Controllers\\FeedBackController.cs",
+              "RelativeToolTip": "backend\\Controllers\\FeedBackController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.526Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "IBookingRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IBookingRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Interfaces\\IBookingRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Interfaces\\IBookingRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Interfaces\\IBookingRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.53Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "BookingRepository.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\BookingRepository.cs",
+              "RelativeDocumentMoniker": "backend\\Repositories\\Implementations\\BookingRepository.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Repositories\\Implementations\\BookingRepository.cs",
+              "RelativeToolTip": "backend\\Repositories\\Implementations\\BookingRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAKAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.535Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "IReviewService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IReviewService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Interfaces\\IReviewService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Interfaces\\IReviewService.cs",
+              "RelativeToolTip": "backend\\Services\\Interfaces\\IReviewService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.54Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\AuthService.cs",
+              "RelativeDocumentMoniker": "backend\\Services\\Implementations\\AuthService.cs",
+              "ToolTip": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\Services\\Implementations\\AuthService.cs",
+              "RelativeToolTip": "backend\\Services\\Implementations\\AuthService.cs",
+              "ViewState": "AQIAACoAAAAAAAAAAAA7wAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-11T01:28:26.545Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
