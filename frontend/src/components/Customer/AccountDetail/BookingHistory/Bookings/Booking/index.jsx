@@ -1,8 +1,9 @@
 import React from 'react';
 import { TfiReload } from 'react-icons/tfi';
 import { useNavigate } from 'react-router';
+import { formatDate } from '~/utils/formatDate';
 
-const Booking = () => {
+const Booking = ({ booking }) => {
     const navigate = useNavigate();
 
     return (
@@ -11,7 +12,7 @@ const Booking = () => {
                 <div className="d-flex flex-wrap align-items-center gap-lg-5 gap-3">
                     <span className="d-flex flex-column gap-1">
                         <small className="text-secondary">Booking placed</small>
-                        <p className="fw-semibold">June 2, 2023</p>
+                        <p className="fw-semibold">{formatDate(booking.createdAt)}</p>
                     </span>
                     <span className="d-flex flex-column gap-1">
                         <small className="text-secondary">Total</small>
@@ -19,16 +20,16 @@ const Booking = () => {
                     </span>
                     <span className="d-flex flex-column gap-1">
                         <small className="text-secondary">Check-in</small>
-                        <p className="fw-semibold">June 4, 2024</p>
+                        <p className="fw-semibold">{formatDate(booking.checkIn)}</p>
                     </span>
                 </div>
                 <div className="d-flex flex-column align-items-lg-end align-items-start gap-1">
-                    <p className="fw-semibold">Booking #112-99802-567382</p>
+                    <p className="fw-semibold">Booking #{booking.id}</p>
                     <span className="d-flex align-items-center gap-3">
                         <p
                             className="fw-semibold text-decoration-underline cursor-pointer"
                             style={{ color: '#35776d' }}
-                            onClick={() => navigate('/account/bookinghistory/bookingdetails/:id')}
+                            onClick={() => navigate(`/account/bookinghistory/bookingdetails/${booking.id}`)}
                         >
                             View booking details
                         </p>
@@ -36,22 +37,24 @@ const Booking = () => {
                         <p
                             className="fw-semibold text-decoration-underline cursor-pointer"
                             style={{ color: '#35776d' }}
-                            onClick={() => navigate('/account/bookinghistory/invoice/:id')}
+                            onClick={() => navigate(`/account/bookinghistory/invoice/:id`)}
                         >
                             View invoice
                         </p>
                     </span>
                 </div>
             </div>
-            <div>
-                <button
-                    className="text-white p-2 px-3 rounded-3 border d-flex align-items-center gap-2 svg-rotate-half-circle"
-                    style={{ backgroundColor: '#35776d' }}
-                >
-                    <TfiReload size={14} className="icon" />
-                    <span>Book it again</span>
-                </button>
-            </div>
+            {(booking.status === 3 || booking.status === 0) && (
+                <div>
+                    <button
+                        className="text-white p-2 px-3 rounded-3 border d-flex align-items-center gap-2 svg-rotate-half-circle"
+                        style={{ backgroundColor: '#35776d' }}
+                    >
+                        <TfiReload size={14} className="icon" />
+                        <span>Book it again</span>
+                    </button>
+                </div>
+            )}
         </li>
     );
 };

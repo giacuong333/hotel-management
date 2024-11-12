@@ -150,7 +150,7 @@ const Booking = () => {
             const url = 'http://localhost:5058/booking';
             const response = await axios.delete(`${url}/${payload}`);
             if (response?.status === 200) {
-                showToast(response?.data?.obj?.message || response?.data?.message, 'success');
+                showToast('Booking deleted successfully', 'success');
                 setBookings((prev) => prev.filter((booking) => booking.id !== payload));
             }
         } catch (error) {

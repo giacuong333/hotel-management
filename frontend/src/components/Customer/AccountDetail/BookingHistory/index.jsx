@@ -73,7 +73,7 @@ const BookingHistory = () => {
 
                 {/* data & pagination*/}
                 <div>
-                    <Bookings />
+                    <Bookings type={type} />
                     <div className="mt-4 d-flex align-items-center justify-content-end gap-2">
                         <button className="p-2 px-3 rounded-2 cursor-pointer shadow-sm border">
                             <MdOutlineKeyboardArrowLeft />

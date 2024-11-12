@@ -9,7 +9,7 @@ public interface IUnitOfWork : IDisposable
     IGalleryRepository Gallery { get; }
     IServiceRepository Services { get; }
     IReviewRepository Reviews { get; }
-     IRoleRepository Roles { get; }
+    IRoleRepository Roles { get; }
     IRolePermissionRepository RolePermissions { get; }
     IDashboardRepository Dashboards { get; }
 

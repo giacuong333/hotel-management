@@ -75,13 +75,20 @@ namespace Repositories.Implementations
                   }
             }
 
-            public async Task<IEnumerable<BookingModel>> GetBookedDatesAsync()
-            {
-                  return await _context.Booking
-                                             .Where(b => b.DeletedAt == null && b.CheckIn != null && b.CheckOut != null)
-                                             .Select(b => new BookingModel { CheckIn = b.CheckIn, CheckOut = b.CheckOut })
-                                             .ToListAsync();
-            }
+            // public async Task DeleteBookingAsync(int id)
+            // {
+            //       using var transaction = _context.Database.BeginTransactionAsync();
+            //       try
+            //       {
+            //             await _context.SaveChangesAsync();
+            //             await transaction.CommitAsync();
+            //       }
+            //       catch (Exception e)
+            //       {
+            //             await transaction.RollbackAsync();
+            //             throw;
+            //       }
+            // }
 
 
             public async Task<BookingModel> GetBookingByIdAsync(object id)
@@ -101,11 +108,41 @@ namespace Repositories.Implementations
                   return await _context.Booking
                                     .Include(b => b.BookingDetails)
                                           .ThenInclude(bd => bd!.Room)
+                                    .Include(b => b.ServiceUsage)
+                                          .ThenInclude(su => su.Service)
                                     .Include(b => b.Customer)
                                     .Include(b => b.StaffCheckIn)
                                     .Include(b => b.StaffCheckOut)
                                     .Where(b => b.DeletedAt == null)
                                     .ToListAsync();
+            }
+
+            public async Task<IEnumerable<BookingModel>> GetBookingsAuthorizedAsync(int id)
+            {
+                  return await _context.Booking
+                                          .Include(b => b.BookingDetails)
+                                                .ThenInclude(bd => bd!.Room)
+                                          .Include(b => b.ServiceUsage)
+                                                .ThenInclude(su => su.Service)
+                                          .Include(b => b.Customer)
+                                          .Include(b => b.StaffCheckIn)
+                                          .Include(b => b.StaffCheckOut)
+                                          .Where(b => b.CustomerId == id && b.Status != 0)
+                                          .ToListAsync();
+            }
+
+            public async Task<IEnumerable<BookingModel>> GetAuthorizedCancelledBookingsAsync(int id)
+            {
+                  return await _context.Booking
+                                   .Include(b => b.BookingDetails)
+                                         .ThenInclude(bd => bd!.Room)
+                                   .Include(b => b.ServiceUsage)
+                                         .ThenInclude(su => su.Service)
+                                   .Include(b => b.Customer)
+                                   .Include(b => b.StaffCheckIn)
+                                   .Include(b => b.StaffCheckOut)
+                                   .Where(b => b.Status == 0 && b.CustomerId == id)
+                                   .ToListAsync();
             }
       }
 }

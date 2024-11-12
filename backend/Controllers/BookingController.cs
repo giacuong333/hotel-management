@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
@@ -20,6 +22,77 @@ namespace backend.Controllers
                               return NotFound("Bookings not found");
 
                         return Ok(bookings);
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+                  }
+            }
+
+            private static int GetUserIdFromClaims(HttpContext httpContext)
+            {
+                  var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+                  if (userIdClaim != null)
+                        return int.Parse(userIdClaim!.Value);
+
+                  throw new UnauthorizedAccessException("User ID not found in claims.");
+            }
+
+            [HttpGet("customer_booking")]
+            [Authorize]
+            public async Task<ActionResult<IEnumerable<BookingModel>>> GetAuthorizedBookings()
+            {
+                  try
+                  {
+                        var userId = GetUserIdFromClaims(HttpContext);
+                        var bookings = await _bookingService.GetAuthorizedBookingsAsync(userId);
+                        if (bookings == null)
+                              return NotFound("Bookings not found");
+
+                        return Ok(bookings);
+
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+                  }
+            }
+
+            [HttpGet("customer_cancelled_booking")]
+            [Authorize]
+            public async Task<ActionResult<IEnumerable<BookingModel>>> GetAuthorizedCancalledBookings()
+            {
+                  try
+                  {
+                        var userId = GetUserIdFromClaims(HttpContext);
+                        var bookings = await _bookingService.GetAuthorizedCancelledBookingsAsync(userId);
+                        if (bookings == null)
+                              return NotFound("Cancelled Bookings not found");
+
+                        return Ok(bookings);
+
                   }
                   catch (UnauthorizedException ex)
                   {
@@ -77,7 +150,7 @@ namespace backend.Controllers
                         if (booking == null)
                               return NotFound("Booking not found.");
 
-                        if (booking.Status != 0 || booking.Status != 3)
+                        if (booking.Status != 0 && booking.Status != 3)
                               return StatusCode(403, new { message = "You only delete the booking that is canceled or checked-out" });
 
                         booking.DeletedAt = DateTime.UtcNow;
@@ -118,8 +191,6 @@ namespace backend.Controllers
                               var bookingFromDb = await _bookingService.GetBookingByIdAsync(booking.Id);
                               if (bookingFromDb == null)
                                     return NotFound("Booking not found");
-
-                              Console.WriteLine("Booking Status", bookingFromDb.Status);
 
                               // Canceled or Checked-out 
                               if (bookingFromDb.Status != 0 && bookingFromDb.Status != 3)

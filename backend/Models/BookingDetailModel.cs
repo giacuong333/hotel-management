@@ -5,20 +5,14 @@ namespace backend.Models
 {
       public class BookingDetailModel
       {
-            // Parameterless constructor required by EF Core
             public BookingDetailModel() { }
-
-            public BookingDetailModel(int bookingId, int roomId)
-            {
-                  BookingId = bookingId;
-                  RoomId = roomId;
-            }
 
             [Key]
             public int Id { get; set; }
 
             public int BookingId { get; set; }
             public int RoomId { get; set; }
+            public DateTime? DeletedAt { get; set; }
 
             // Navigation properties
             [ForeignKey("BookingId")]

@@ -87,8 +87,6 @@ const ImageForm = ({ isShow, onClose }) => {
         menuVisible && setMenuVisible(false);
     };
 
-    console.log('Loading: ', loading);
-
     return (
         <>
             {/* Show toast if error */}
