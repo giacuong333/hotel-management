@@ -30,8 +30,8 @@ namespace backend.Models
 
         public string? Resource { get; set; }
 
-        public RoleModel Role { get; set; }
+        public virtual RoleModel? Role { get; set; }
 
-        public PermissionModel Permission { get; set; }
+        public virtual PermissionModel? Permission { get; set; }
     }
 }
