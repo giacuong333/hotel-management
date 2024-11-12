@@ -20,9 +20,11 @@ namespace backend.Controllers
     public class RolePermissionController : ControllerBase
     {
         private readonly IRolePermissionService _rolePermissionService;
-        public RolePermissionController(IRolePermissionService rolePermissionService)
+        private readonly ILogger<RolePermissionController> _logger;
+        public RolePermissionController(IRolePermissionService rolePermissionService, ILogger<RolePermissionController> logger)
         {
             _rolePermissionService = rolePermissionService;
+            _logger = logger;
         }
         [HttpGet]
         [Produces("application/json")]
@@ -56,6 +58,7 @@ namespace backend.Controllers
 
         public async Task<ActionResult<RolepermissionModel>> GetRolePermissonById(int id)
         {
+
             try
             {
                 var rolePermission = await _rolePermissionService.GetRolePermissionByIdAsync(id);
@@ -78,6 +81,7 @@ namespace backend.Controllers
         [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<RolepermissionModel>>> SaveRolePermissions([FromBody] List<RolepermissionModel> models)
         {
+            _logger.LogInformation("Start saving role permissions.", models);
             if (models == null || !models.Any())
             {
                 return BadRequest("Invalid data.");

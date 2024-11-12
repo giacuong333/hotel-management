@@ -1,4 +1,8 @@
-import React, { useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+import { convertByteArrayToBase64 } from "../../../../../utils/handleByteArray";
 
 import Room from "./Room";
 
@@ -37,12 +41,40 @@ const carouselSettings = {
 const RoomList = () => {
       const slideRef = useRef(null);
 
+      const[rooms, setRooms] = useState([]);
+
+      useEffect(() => {
+            fetchRooms();
+      }, [])
+
+      const fetchRooms = async () => {
+            try {
+                  const response = await axios.get('http://localhost:5058/room');
+                  
+                  if (response?.status === 200) {     
+                        const roomsData = response?.data?.$values || response?.data?.obj;
+                        roomsData.filter(room => room.status === 1 && !room.deletedAt);
+                        setRooms(roomsData);
+                  }
+              } catch (error) {
+                  console.error('Failed to fetch room:', error);
+              } 
+      }
+
       return (
             <div className="position-relative">
                   <Slider {...carouselSettings} ref={slideRef}>
-                        <Room image={Room1} price={399} name="Beach Room" area={60} guest={8} bed={3} />
-                        <Room image={Room2} price={299} name="Hill Room" area={30} guest={2} bed={1} />
-                        <Room image={Room3} price={265} name="City Room" area={50} guest={5} bed={2} />
+                        {rooms.map((room) => (
+                              <Room
+                                    key={room.id}
+                                    image={room.thumbnail? convertByteArrayToBase64(room.thumbnail) : Room1} 
+                                    price={room.price}
+                                    name={room.name}
+                                    area={room.area}
+                                    bed={room.bedNum}
+                                    id={room.id}
+                              />
+                        ))}
                   </Slider>
                   <div
                         className="position-absolute"

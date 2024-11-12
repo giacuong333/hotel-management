@@ -1,7 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import axios from 'axios'
 
 import ExtraServices from './ExtraServices';
 import GalleryList from './GalleryList';
+import { useUser } from '../../../../providers/UserProvider'
 
 import { FaDollarSign } from 'react-icons/fa6';
 import { BiArea } from 'react-icons/bi';
@@ -19,7 +22,51 @@ import NoSmoking from './images/noSmoking.svg';
 import Belonging from './images/belonging.svg';
 import Reviews from './Reviews';
 
-const RoomDetail = ({ room }) => {
+const RoomDetail = () => {
+    const [roomDetail, setRoomDetail] = useState({});
+    const { user } = useUser();
+    const isAuthenticated = user !== null;
+
+    const { id } = useParams();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!id) {
+            console.error('Room ID is undefined.');
+            return;
+        }
+        fetchRoom();
+    }, [id]);
+
+    const fetchRoom = async () => {
+        try {
+              const response = await axios.get(`http://localhost:5058/room/${id}`);
+              
+              if (response?.status === 200) {
+                const roomData = response?.data || null;
+
+                console.log(roomData);
+                
+
+                if (roomData) {
+                    setRoomDetail(roomData);
+                } else {
+                    console.error('Undefined value:', response.data);
+                }
+              }
+        }  catch (error) {
+            console.error('Failed to fetch room:', error);
+        } 
+    }
+
+    const handleBookNow = () => {
+        if (isAuthenticated) {
+            navigate('/proceed-payment');
+        } else {
+            navigate('/signin');
+        }
+    };
+
     return (
         <section>
             <div className="container mx-auto">
@@ -43,8 +90,7 @@ const RoomDetail = ({ room }) => {
                                 >
                                     <span className="text-uppercase">From </span>
                                     <span className="d-flex align-items-center">
-                                        <FaDollarSign />
-                                        <p className="font-weight-bold">120.000 VND</p>
+                                        <p className="font-weight-bold">{roomDetail.price?.toLocaleString('en-US')} VND</p>
                                     </span>
                                 </div>
                             </div>
@@ -52,22 +98,17 @@ const RoomDetail = ({ room }) => {
                             <div className="border-bottom py-5">
                                 <div className="d-flex align-items-center justify-content-start gap-4">
                                     <span className="d-flex flex-nowrap align-items-center gap-2">
-                                        <BiArea size={24} /> 60m2
+                                        <BiArea size={24} /> {roomDetail.area}m2
                                     </span>
                                     <span className="d-flex flex-nowrap align-items-center gap-2">
-                                        <LuUsers2 size={24} /> 6 Guests
-                                    </span>
-                                    <span className="d-flex flex-nowrap align-items-center gap-2">
-                                        <IoBedOutline size={24} /> 3 Beds
+                                        <IoBedOutline size={24} /> {roomDetail.bedNum} Beds
                                     </span>
                                 </div>
 
                                 <div className="mt-3 d-flex flex-column gap-4">
-                                    <h3>Premier Room</h3>
+                                    <h3>{roomDetail.name}</h3>
                                     <p style={{ letterSpacing: '1px' }}>
-                                        The term “Premier Room” generally refers to a high-end hotel room or
-                                        accommodation that offers advanced amenities and services compared to standard
-                                        rooms. Premier Rooms often feature:
+                                        {roomDetail.description}
                                     </p>
                                 </div>
                             </div>
@@ -115,30 +156,16 @@ const RoomDetail = ({ room }) => {
                                 </div>
                             </div>
 
-                            <div className="py-5">
-                                <h3>House Rules</h3>
-                                <div className="row">
-                                    <div className="col-lg-6 text-start">
-                                        <span className="d-flex align-items-center justify-content-start gap-3 fs-5 my-4">
-                                            <img src={NoSmoking} alt="" />
-                                            <p>No smoking</p>
-                                        </span>
-                                        <span className="d-flex align-items-center justify-content-start gap-3 fs-5 my-4">
-                                            <img src={Belonging} alt="" />
-                                            <p>Keep belongings safe</p>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
                             <div className="w-full">
                                 <GalleryList />
                             </div>
                         </div>
                     </div>
-                    <div className="col-lg-4 pt-4">
-                        <div className="customer-third-bg-color p-4">
-                            <p className="text-center fs-3 p-2 pt-0">Your Reservation</p>
+
+                    {roomDetail.status === 1 ? (
+                        <div className="col-lg-4 pt-4">
+                            <div className="customer-third-bg-color p-4">
+                                <p className="text-center fs-3 p-2 pt-0">Your Reservation</p>
                             <div className="py-3 d-flex flex-column gap-4">
                                 <span className="d-flex flex-column gap-2">
                                     <p>Check-in</p>
@@ -156,35 +183,15 @@ const RoomDetail = ({ room }) => {
                                         className="customer-datetime-picker room-detail"
                                     />
                                 </span>
-                                <span className="d-flex flex-column gap-2">
-                                    <p>Rooms</p>
-                                    <select
-                                        aria-label="Date and time"
-                                        type="datetime-local"
-                                        className="customer-datetime-picker room-detail"
-                                    >
-                                        <option value="">1</option>
-                                    </select>
-                                </span>
-                                <span className="d-flex flex-column gap-2">
-                                    <p>Guests</p>
-                                    <select
-                                        aria-label="Date and time"
-                                        type="datetime-local"
-                                        className="customer-datetime-picker room-detail"
-                                    >
-                                        <option value="">1 Adult</option>
-                                    </select>
-                                </span>
                             </div>
                             <div className="d-flex flex-column gap-4">
                                 <p className="text-start fs-3 py-2 pt-0">Extra Services</p>
                                 <ExtraServices />
                                 <div className="bg-white border p-3">
-                                    <p className="fs-4">Your Price</p>
-                                    <p className="fs-5">$ 619</p>
+                                    <p className="fs-5">Your Price</p>
+                                    <p className="fs-5 fw-bold">619 VND</p>
                                 </div>
-                                <div className="d-flex align-items-center gap-1">
+                                <div className="d-flex align-items-center gap-1" onClick={handleBookNow}>
                                     <button
                                         variant="primary"
                                         className="customer-primary-button p-3 rounded-0 text-uppercase flex-grow-1 text-center text-uppercase text-white"
@@ -193,13 +200,20 @@ const RoomDetail = ({ room }) => {
                                     </button>
                                 </div>
                             </div>
+                            </div>
+                        </div> 
+                    ) : (
+                        <div className='col-lg-4 pt-4 d-flex'>
+                        <h3>Unavailable</h3>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 <div className="row my-5">
                     <div className="col-lg-8 px-lg-0 px-4">
-                        <Reviews />
+                        <Reviews 
+
+                        />
                     </div>
                 </div>
             </div>
