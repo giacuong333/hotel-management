@@ -26,7 +26,7 @@ namespace backend.Controllers
         {
             try
             {
-                var discounts = await context.Discount.Where(d => d.Status == true).ToListAsync();
+                var discounts = await context.Discount.ToListAsync();
 
                 if (discounts == null)
                 {
@@ -92,19 +92,24 @@ namespace backend.Controllers
 
         // POST /discount/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<DiscountModel>> UpdateDiscount(int id, DiscountModel discount)
+        public async Task<ActionResult<DiscountModel>> UpdateDiscount(int id,[FromBody] DiscountModel discount)
         {
             try
             {
+                if(!ModelState.IsValid) {
+                    return BadRequest("Missing data");
+                }
                 var IdDiscount = await context.Discount.FindAsync(id);
-
-                if (IdDiscount == null)
+                if (discount == null)
                 {
-                    return NotFound(new { message = "Discount not found" });
+                    return NotFound("Discount not found.");
                 }
                 
-                IdDiscount.Name = discount.Name;
-                IdDiscount.Value = discount.Value;
+                IdDiscount.Name = discount?.Name;
+                IdDiscount.Value = discount?.Value;
+                IdDiscount.Status = discount?.Status;
+                IdDiscount.StartAt = discount?.StartAt;
+                IdDiscount.EndAt = discount?.EndAt;
 
                 context.Discount.Update(IdDiscount);
                 await context.SaveChangesAsync();

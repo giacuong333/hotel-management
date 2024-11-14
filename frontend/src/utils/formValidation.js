@@ -27,3 +27,14 @@ export const isMinimunBookingDay = (checkInDate, checkOutDate) => {
     const differenceDays = (checkOut - checkIn) / (1000 * 60 * 60 * 24);
     return differenceDays >= 1;
 };
+
+export const isOverOneHundreds = (value) => {
+    return Number(value) > 100;
+}
+
+export const isValidDiscountDate = (startDate, endDate) => {
+    const start = new Date(startDate).getTime();
+    const end = new Date(endDate).getTime();
+    const differenceDays = (end - start) / (1000 * 60 * 60 * 24);
+    return differenceDays > 0;
+}

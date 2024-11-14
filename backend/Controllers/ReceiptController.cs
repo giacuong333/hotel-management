@@ -1,4 +1,4 @@
-﻿using backend.Database;
+using backend.Database;
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,12 +7,12 @@ namespace backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class FeedBackController : Controller
+    public class ReceiptController : Controller
     {
         private readonly DatabaseContext context;
         private readonly ILogger<DiscountController> _logger;
         private readonly IConfiguration configuration;
-        public FeedBackController(DatabaseContext context, ILogger<DiscountController> logger, IConfiguration configuration)
+        public ReceiptController(DatabaseContext context, ILogger<DiscountController> logger, IConfiguration configuration)
         {
             this.context = context;
             this._logger = logger;
@@ -21,29 +21,14 @@ namespace backend.Controllers
 
         // GET: /feedback
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<object>>> GetListFeedBacks()
+        public async Task<ActionResult<IEnumerable<object>>> GetListReceipt()
         {
             try
             {
-                var feedbacks = await context.Feedback
-                    .Join(context.User,
-                        feedback => feedback.UserId,
-                        user => user.Id,
-                        (feedback, user) => new { feedback, user })
-                    .Join(context.Room,
-                        feedbackUser => feedbackUser.feedback.RoomId,
-                        room => room.Id,
-                        (feedbackUser, room) => new
-                        {
-                            feedbackUser.feedback.Id,
-                            feedbackUser.feedback.Description,
-                            feedbackUser.feedback.CreatedAt,
-                            UserName = feedbackUser.user.Name,
-                            RoomName = room.Name
-                        })
-                    .ToListAsync();
+                var receipts = await context.Receipt.ToListAsync();
 
-                return Ok(feedbacks);
+
+                return Ok(receipts);
             }
             catch (Exception e)
             {
