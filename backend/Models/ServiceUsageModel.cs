@@ -2,12 +2,13 @@ using backend.Models;
 
 public class ServiceUsageModel
 {
-    public int? Id { get; set; }
-    public int? BookingId { get; set; } // Nullable, as the booking can be optional
-    public int? ServiceId { get; set; } // Nullable, as the service can be optional
-    public int? Quantity { get; set; } // The quantity of service usage
+    public ServiceUsageModel() { }
 
-    // Navigation properties for the relationships with Booking and Service
-    public BookingModel? Booking { get; set; } // Navigation property to Booking
-    public ServiceModel? Service { get; set; } // Navigation property to Service
+    public int? Id { get; set; }
+    public int? BookingId { get; set; }
+    public int? ServiceId { get; set; }
+    public int? Quantity { get; set; }
+
+    public virtual BookingModel? Booking { get; set; }
+    public virtual ServiceModel? Service { get; set; }
 }

@@ -1,5 +1,4 @@
 using backend.Models;
-using Repositories.Interfaces;
 
 public class BookingService(IUnitOfWork unitOfWork) : IBookingService
 {
@@ -15,9 +14,9 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
             await _unitOfWork.Bookings.DeleteAsync(id);
       }
 
-      public async Task<IEnumerable<BookingModel>> GetBookedDatesAsync()
+      public async Task<IEnumerable<BookingModel>> GetAuthorizedBookingsAsync(int id)
       {
-            return await _unitOfWork.Bookings.GetBookedDatesAsync();
+            return await _unitOfWork.Bookings.GetBookingsAuthorizedAsync(id);
       }
 
       public async Task<BookingModel> GetBookingByIdAsync(object id)
@@ -28,6 +27,11 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
       public async Task<IEnumerable<BookingModel>> GetBookingsAsync()
       {
             return await _unitOfWork.Bookings.GetBookingsAsync();
+      }
+
+      public async Task<IEnumerable<BookingModel>> GetAuthorizedCancelledBookingsAsync(int id)
+      {
+            return await _unitOfWork.Bookings.GetAuthorizedCancelledBookingsAsync(id);
       }
 
       public async Task<int> SaveAsync()

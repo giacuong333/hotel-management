@@ -52,6 +52,83 @@ namespace backend.Migrations
                         b.Navigation("Receipt");
                     });
 
+            // BookingModel
+            modelBuilder.Entity<BookingModel>(b =>
+            {
+                b.Property<int?>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
+
+                b.Property<DateTime?>("CheckIn")
+                    .HasColumnType("datetime(6)");
+
+                b.Property<DateTime?>("CheckOut")
+                    .HasColumnType("datetime(6)");
+
+                b.Property<DateTime>("CreatedAt")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("datetime(6)");
+
+                b.Property<string>("CustomerEmail")
+                    .HasColumnType("longtext");
+
+                b.Property<int?>("CustomerId")
+                    .HasColumnType("int");
+
+                b.Property<string>("CustomerName")
+                    .HasColumnType("longtext");
+
+                b.Property<string>("CustomerPhoneNumber")
+                    .HasColumnType("longtext");
+
+                b.Property<DateTime?>("DeletedAt")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasColumnType("datetime(6)");
+
+                b.Property<int?>("StaffCheckInId")
+                    .HasColumnType("int");
+
+                b.Property<int?>("StaffCheckOutId")
+                    .HasColumnType("int");
+
+                b.Property<int?>("Status")
+                    .HasColumnType("int");
+
+                b.Property<DateTime?>("UpdatedAt")
+                    .ValueGeneratedOnAddOrUpdate()
+                    .HasColumnType("datetime(6)");
+
+                MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime?>("UpdatedAt"));
+
+                b.HasKey("Id");
+
+                b.HasIndex("CustomerId");
+
+                b.HasIndex("StaffCheckInId");
+
+                b.HasIndex("StaffCheckOutId");
+
+                b.ToTable("Booking");
+
+                // Relationships
+                b.HasOne("backend.Models.UserModel", "Customer")
+                    .WithMany()  // You can specify a collection navigation property in UserModel if needed
+                    .HasForeignKey("CustomerId")
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                b.HasOne("backend.Models.UserModel", "StaffCheckIn")
+                    .WithMany()  // You can specify a collection navigation property in UserModel if needed
+                    .HasForeignKey("StaffCheckInId")
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                b.HasOne("backend.Models.UserModel", "StaffCheckOut")
+                    .WithMany()  // You can specify a collection navigation property in UserModel if needed
+                    .HasForeignKey("StaffCheckOutId")
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
             // BookingDetailModel
             modelBuilder.Entity<BookingDetailModel>(b =>
                     {
@@ -72,6 +149,9 @@ namespace backend.Migrations
                         b.HasIndex("BookingId");
                         b.HasIndex("RoomId");
 
+                        b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
                         b.ToTable("BookingDetail");
 
                         // Setting up relationships
@@ -85,82 +165,6 @@ namespace backend.Migrations
                             .HasForeignKey("RoomId")
                             .OnDelete(DeleteBehavior.Cascade);
                     });
-
-            // BookingModel
-            modelBuilder.Entity<BookingModel>(b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
-
-                    b.Property<DateTime?>("CheckIn")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("CheckOut")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("CustomerEmail")
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CustomerName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CustomerPhoneNumber")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("StaffCheckInId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StaffCheckOutId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime(6)");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime?>("UpdatedAt"));
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("StaffCheckInId");
-
-                    b.HasIndex("StaffCheckOutId");
-
-                    b.ToTable("Booking");
-
-                    // Relationships
-                    b.HasOne("backend.Models.UserModel", "Customer")
-                        .WithMany()  // You can specify a collection navigation property in UserModel if needed
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("backend.Models.UserModel", "StaffCheckIn")
-                        .WithMany()  // You can specify a collection navigation property in UserModel if needed
-                        .HasForeignKey("StaffCheckInId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("backend.Models.UserModel", "StaffCheckOut")
-                        .WithMany()  // You can specify a collection navigation property in UserModel if needed
-                        .HasForeignKey("StaffCheckOutId")
-                        .OnDelete(DeleteBehavior.SetNull);
-                });
 
             // DiscountModel
             modelBuilder.Entity<DiscountModel>(b =>
@@ -455,35 +459,42 @@ namespace backend.Migrations
 
             // ServiceModel
             modelBuilder.Entity<ServiceModel>(b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+            {
+                b.Property<int?>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
+                MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime?>("CreatedAt")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("datetime(6)")
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .IsRequired(false);
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<DateTime?>("UpdatedAt")
+                    .ValueGeneratedOnUpdate()
+                    .HasColumnType("datetime(6)")
+                    .IsRequired(false);
 
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
+                b.Property<DateTime?>("DeletedAt")
+                    .ValueGeneratedOnUpdate()
+                    .HasColumnType("datetime(6)")
+                    .IsRequired(false);
 
-                    b.Property<float?>("Price")
-                        .HasColumnType("float");
+                b.Property<string>("Name")
+                    .HasColumnType("longtext");
 
-                    b.Property<byte?>("Status")
-                        .HasColumnType("tinyint unsigned");
+                b.Property<float?>("Price")
+                    .HasColumnType("float");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime(6)");
+                b.Property<byte?>("Status")
+                    .HasColumnType("tinyint unsigned");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Service");
-                });
+                b.ToTable("Service");
+            });
 
             // ServiceUsageModel
             modelBuilder.Entity<ServiceUsageModel>(b =>
@@ -512,12 +523,12 @@ namespace backend.Migrations
                     b.ToTable("ServiceUsage");
 
                     b.HasOne("backend.Models.BookingModel", "Booking")
-                       .WithMany("ServiceUsages")
+                       .WithMany("ServiceUsage")
                        .HasForeignKey("BookingId")
                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("backend.Models.ServiceModel", "Service")
-                        .WithMany("ServiceUsages")
+                        .WithMany("ServiceUsage")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

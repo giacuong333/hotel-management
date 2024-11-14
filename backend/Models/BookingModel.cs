@@ -9,23 +9,6 @@ namespace backend.Models
       {
             public BookingModel() { }
 
-            public BookingModel(int id, string? customerName, string? customerEmail, string? customerPhoneNumber, int? staffCheckInId, int? staffCheckOutId, DateTime? checkIn, DateTime? checkOut, int customerId, int? status, DateTime createdAt, DateTime? updatedAt, DateTime? deletedAt)
-            {
-                  Id = id;
-                  CustomerName = customerName;
-                  CustomerEmail = customerEmail;
-                  CustomerPhoneNumber = customerPhoneNumber;
-                  StaffCheckInId = staffCheckInId;
-                  StaffCheckOutId = staffCheckOutId;
-                  CheckIn = checkIn;
-                  CheckOut = checkOut;
-                  CustomerId = customerId;
-                  Status = status;
-                  CreatedAt = createdAt;
-                  UpdatedAt = updatedAt;
-                  DeletedAt = deletedAt;
-            }
-
             [Key]
             public int Id { get; set; }
             public string? CustomerName { get; set; }

@@ -118,19 +118,6 @@ const Service = () => {
         setShowDeleteConfirm(true);
     };
 
-    // const handleTrashClicked = useCallback(async (id) => {
-    //     try {
-    //         const response = await axios.delete(`http://localhost:5058/service/${id}`);
-    //         if (response.status === 200) {
-    //             showToast(response?.data?.message, 'success');
-    //             setServices((prev) => prev.filter((service) => service.id !== id));
-    //         }
-    //     } catch (error) {
-    //         console.error('Error deleting service:', error);
-    //         showToast(error?.response?.data?.message || 'Error deleting service', 'error');
-    //     }
-    // }, []);
-
     const deleteService_del = async (id) => {
         try {
             const response = await axios.delete(`http://localhost:5058/service/${id}`);

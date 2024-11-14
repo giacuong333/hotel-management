@@ -288,7 +288,7 @@ public static class Seed
                     Type = "VIP",
                     Description = "A luxury suite room is typically a premium, upscale accommodation in a hotel or resort, offering a high level of comfort, exquisite decor, and upscale amenities. This suite is perfect for guests seeking exclusivity and elegance.",
                     BedNum = 1,
-                    Status = 1,
+                    Status = 2,
                     Price = 200000,
                     Area = 20
                 },
@@ -348,6 +348,15 @@ public static class Seed
                     CheckIn = new DateTime(2024, 11, 21),
                     CheckOut = new DateTime(2024, 11, 29),
                     Status = 2
+                },
+                new()
+                {
+                    Id = 4,
+                    CustomerId = 2,  // Use actual ID
+                    StaffCheckInId = 2,
+                    CheckIn = new DateTime(2024, 12, 29),
+                    CheckOut = new DateTime(2024, 1, 3),
+                    Status = 1
                 }
             );
             await context.SaveChangesAsync();
@@ -357,10 +366,22 @@ public static class Seed
         if (!context.BookingDetail.Any())
         {
             context.BookingDetail.AddRange(
-                new() { BookingId = 1, RoomId = 1 },
-                new() { BookingId = 1, RoomId = 2 },
-                new() { BookingId = 2, RoomId = 3 },
-                new() { BookingId = 3, RoomId = 6 }
+                new() { Id = 1, BookingId = 1, RoomId = 1 },
+                new() { Id = 2, BookingId = 1, RoomId = 2 },
+                new() { Id = 3, BookingId = 2, RoomId = 3 },
+                new() { Id = 4, BookingId = 3, RoomId = 6 },
+                new() { Id = 5, BookingId = 4, RoomId = 5 }
+            );
+            await context.SaveChangesAsync();
+        }
+
+        // Seed ServiceUsage
+        if (!context.ServiceUsage.Any())
+        {
+            context.ServiceUsage.AddRange(
+                new ServiceUsageModel { Id = 1, BookingId = 1, ServiceId = 1, Quantity = 1 },
+                new ServiceUsageModel { Id = 2, BookingId = 1, ServiceId = 2, Quantity = 1 },
+                new ServiceUsageModel { Id = 3, BookingId = 1, ServiceId = 3, Quantity = 1 }
             );
             await context.SaveChangesAsync();
         }

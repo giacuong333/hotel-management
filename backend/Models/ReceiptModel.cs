@@ -1,6 +1,4 @@
 using backend.Models;
-using System;
-using System.Collections.Generic; // Include for collection properties
 
 public class ReceiptModel
 {
