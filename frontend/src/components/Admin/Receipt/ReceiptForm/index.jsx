@@ -5,24 +5,23 @@ import FormGroup from '~/components/FormGroup';
 import Overlay from '~/components/Overlay';
 import Button from 'react-bootstrap/Button';
 import ToastContainer, { showToast } from '~/utils/showToast';
-import { isEmpty, isOverOneHundreds, isValidDiscountDate } from '~/utils/formValidation';
+import { isEmpty } from '~/utils/formValidation';
 
 import { FaRegUser } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
+import Receipt from '..';
 
 
-const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated, isShowed }) => {
+const ReceiptForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated, isShowed }) => {
     const [pendingSubmit, setPendingSubmit] = useState(false);
-    console.log('Data', data)
+
     const [fields, setFields] = useState({
         name: data?.name || '',
         value: data?.value || '',
         status: data?.status || '',
-        startAt: data?.startAt ? new Date(data?.startAt) : "",
-        endAt: data?.endAt ? new Date(data?.endAt) : '',
+        startAt: data?.startAt || '',
+        endAt: data?.endAt || '',
     });
-
-    console.log("Payload", fields)
 
     const [errors, setErrors] = useState({});
 
@@ -32,8 +31,8 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
             name: data?.name || '',
             value: data?.value || '',
             status: data?.status || '',
-            startAt: data?.startAt ? new Date(data?.startAt) : '',
-            endAt: data?.endAt ? new Date(data?.endAt) : '',
+            startAt: data?.startAt || '',
+            endAt: data?.endAt || '',
         });
         setErrors({});
     }, [type, data]);
@@ -43,12 +42,9 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
 
         if (isEmpty(fields.name)) validationErrors.name = 'Name is required';
         if (isEmpty(fields.value)) validationErrors.value = 'Value is required';
-        else if (!Number(fields.value)) validationErrors.value = 'Value must be a number';
-        else if (isOverOneHundreds(fields.value)) validationErrors.value = 'Can not reduce over 100%';
         if (isNaN(fields.status)) validationErrors.status = 'status is required';
         if (isEmpty(fields.startAt)) validationErrors.startAt = 'Start At is required';
         if (isEmpty(fields.endAt)) validationErrors.endAt = 'End At is required';
-        else if (!isValidDiscountDate(fields.startAt, fields.endAt)) validationErrors.endAt = 'End date must be greater than Start date';
 
         setErrors(validationErrors);
 
@@ -56,7 +52,6 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
     };
     const handleSubmitClicked = async (event) => {
         event.preventDefault();
-
         if (handleValidation()) {
             const payload = {
                 ...fields,
@@ -78,9 +73,9 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
                         onDiscountAdded(newDiscount);
                     }
                 } else if (type === 'edit' ) {
+                    
                     const response = await axios.put(`${url}/${data?.id}`, payload);
                      console.log(response);
-                     console.log(data?.status);
                     if (response?.status === 200) {
                         showToast('Discount updated successfully', 'success');
                         setTimeout(handleClose, 2000);
@@ -127,13 +122,6 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
             }));
         };
     }, []);
-
-    const handleFieldChange = (field, value) => {
-        setFields((prevFields) => ({
-            ...prevFields,
-            [field]: value,
-        }));
-    };
 
     return (
         <>
@@ -216,32 +204,24 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
                             label="Start At"
                             id="startAt"
                             name="startAt"
-                            type="datetime"
+                            type="date"
                             error={errors.startAt}
                             value={fields?.startAt}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={(date) => {
-                                handleFieldChange('startAt', date);
-                                handleFieldInput('startAt');
-                            }}
                             onInput={handleFieldInput('startAt')}
                         />
                         <FormGroup
                             label="End At"
                             id="endAt"
                             name="endAt"
-                            type="datetime"
+                            type="date"
                             error={errors.endAt}
                             value={fields?.endAt}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
-                            onChange={(date) => {
-                                handleFieldChange('endAt', date);
-                                handleFieldInput('endAt');
-                            }}
                             onInput={handleFieldInput('endAt')}
                         />
                         {type !== 'see' && (
@@ -271,4 +251,4 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
     );
 };
 
-export default DiscountForm;
+export default ReceiptForm;

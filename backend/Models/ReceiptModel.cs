@@ -6,6 +6,7 @@ public class ReceiptModel
     public int? StaffId { get; set; }
     public int? BookingId { get; set; }
     public int? DiscountId { get; set; }
+    
     public float? Total { get; set; }
     public DateTime? CreatedAt { get; set; } = DateTime.Now; // Initialize only in the class
     public DateTime? UpdatedAt { get; set; } = DateTime.Now; // Initialize only in the class

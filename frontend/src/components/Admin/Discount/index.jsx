@@ -49,6 +49,10 @@ const Discount = () => {
             selector: (row) => row.value,
         },
         {
+            name: 'Status',
+            selector: (row) => row.status,
+        },
+        {
             name: 'Start At',
             selector: (row) => row.startAt,
         },
@@ -67,7 +71,8 @@ const Discount = () => {
         id: discount?.id,
         no: index + 1,
         name: discount?.name,
-        value: discount?.value,
+        value: discount?.value + "%",
+        status: discount?.status === true ? 'Active' : "UnActive",
         startAt: discount?.startAt,
         endAt: discount?.endAt,
         actions: (
@@ -97,6 +102,8 @@ const Discount = () => {
     }));
    
 
+console.log("Discounts", searchedDiscounts)
+
     const handleEditClicked = (discount) => {
         setSelectedDiscount(discount);
         setShowPanel('edit');
@@ -109,6 +116,7 @@ const Discount = () => {
 
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
+        
         try {
             const response = await axios.get(`http://localhost:5058/discount/${id}`, {
                 headers: {
@@ -129,7 +137,7 @@ const Discount = () => {
     };
 
     const handleDiscountAdded = (newDiscount) => {
-        
+       
         setDiscounts((prevDiscounts) => [...prevDiscounts, newDiscount]);
         setSearchedDiscounts((prevDiscounts) => [...prevDiscounts, newDiscount]);
     };

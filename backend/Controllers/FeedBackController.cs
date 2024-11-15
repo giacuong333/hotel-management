@@ -20,7 +20,7 @@ namespace backend.Controllers
         }
 
         // GET: /feedback
-               [HttpGet]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<object>>> GetListFeedBacks()
         {
             try
@@ -42,7 +42,7 @@ namespace backend.Controllers
                             RoomName = room.Name
                         })
                     .ToListAsync();
-        
+
                 return Ok(feedbacks);
             }
             catch (Exception e)
@@ -56,7 +56,23 @@ namespace backend.Controllers
         {
             try
             {
-                var feedback = await context.Feedback.FindAsync(id);
+                var feedback = await context.Feedback
+            .Join(context.User,
+                feedback => feedback.UserId,
+                user => user.Id,
+                (feedback, user) => new { feedback, user })
+            .Join(context.Room,
+                feedbackUser => feedbackUser.feedback.RoomId,
+                room => room.Id,
+                (feedbackUser, room) => new
+                {
+                    feedbackUser.feedback.Id,
+                    feedbackUser.feedback.Description,
+                    feedbackUser.feedback.CreatedAt,
+                    UserName = feedbackUser.user.Name,
+                    RoomName = room.Name
+                })
+            .FirstOrDefaultAsync(f => f.Id == id);
 
                 if (feedback == null)
                 {
@@ -92,32 +108,32 @@ namespace backend.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-      
- [HttpDelete]
-public async Task<IActionResult> DeleteAllFeedbacks([FromBody] List<int> feedbackIds)
-{
-    try
-    {
-        var feedbacksToDelete = await context.Feedback
-            .Where(f => feedbackIds.Contains((int)f.Id))
-            .ToListAsync();
 
-        if (!feedbacksToDelete.Any())
+        [HttpDelete]
+        public async Task<IActionResult> DeleteAllFeedbacks([FromBody] List<int> feedbackIds)
         {
-            return NotFound(new { message = "No feedbacks found to delete" });
+            try
+            {
+                var feedbacksToDelete = await context.Feedback
+                    .Where(f => feedbackIds.Contains((int)f.Id))
+                    .ToListAsync();
+
+                if (!feedbacksToDelete.Any())
+                {
+                    return NotFound(new { message = "No feedbacks found to delete" });
+                }
+
+                context.Feedback.RemoveRange(feedbacksToDelete);
+                await context.SaveChangesAsync();
+
+                return Ok(new { message = "Feedbacks deleted successfully", newFeedback = context.Feedback.ToList() });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error deleting feedbacks");
+                return StatusCode(500, "Internal server error");
+            }
         }
-
-        context.Feedback.RemoveRange(feedbacksToDelete);
-        await context.SaveChangesAsync();
-
-        return Ok(new { message = "Feedbacks deleted successfully", newFeedback = context.Feedback.ToList() });
-    }
-    catch (Exception e)
-    {
-        _logger.LogError(e, "Error deleting feedbacks");
-        return StatusCode(500, "Internal server error");
-    }
-}
         public IActionResult Index()
         {
             return View();
