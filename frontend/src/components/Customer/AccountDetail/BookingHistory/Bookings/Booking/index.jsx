@@ -29,7 +29,7 @@ const Booking = ({ booking }) => {
                         <p
                             className="fw-semibold text-decoration-underline cursor-pointer"
                             style={{ color: '#35776d' }}
-                            onClick={() => navigate(`/account/bookinghistory/bookingdetails/${booking.id}`)}
+                            onClick={() => navigate(`/account/bookinghistory/bookingdetails/${booking?.id}`)}
                         >
                             View booking details
                         </p>
@@ -37,7 +37,7 @@ const Booking = ({ booking }) => {
                         <p
                             className="fw-semibold text-decoration-underline cursor-pointer"
                             style={{ color: '#35776d' }}
-                            onClick={() => navigate(`/account/bookinghistory/invoice/:id`)}
+                            onClick={() => navigate(`/account/bookinghistory/invoice/${booking?.id}`)}
                         >
                             View invoice
                         </p>

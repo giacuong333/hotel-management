@@ -112,7 +112,7 @@ const Header = () => {
                         >
                             <img
                                 src={
-                                    `data:image/jpeg;base64,${user?.avatar}` ||
+                                    (user?.avatar !== null && `data:image/jpeg;base64,${user?.avatar}`) ||
                                     'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'
                                 }
                                 alt="Avatar"

@@ -8,7 +8,9 @@ public interface IUnitOfWork : IDisposable
     IRoomRepository Rooms { get; }
     IGalleryRepository Gallery { get; }
     IServiceRepository Services { get; }
+    IServiceUsageRepository ServicesUsage { get; }
     IReviewRepository Reviews { get; }
+    IReceiptRepository Receipts { get; }
     IRoleRepository Roles { get; }
     IRolePermissionRepository RolePermissions { get; }
     IDashboardRepository Dashboards { get; }

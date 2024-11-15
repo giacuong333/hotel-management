@@ -72,7 +72,7 @@ const Siderbar = ({ showSidebar, setShowSidebar }) => {
                         <li
                             key={item.id}
                             className={`cursor-pointer ${showSidebar ? 'm-3' : 'mx-4 my-3'} rounded-2 ${
-                                currentPath === item.path ? 'selectedItem' : ''
+                                currentPath === item.path ? 'selectedItem shadow-sm' : ''
                             }`}
                         >
                             <Link className="text-white p-2 d-flex align-items-center gap-2" to={item?.path}>

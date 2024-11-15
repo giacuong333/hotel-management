@@ -12,6 +12,7 @@ import { FiPhone } from 'react-icons/fi';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import Button from 'react-bootstrap/Button';
 import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
+import formatCurrency from '~/utils/currencyPipe';
 const PopupPanel = ({ data, type, onClose, onServiceAdded, onServiceUpdated, isShowed }) => {
     const [fields, setFields] = useState({
         name: data?.name || '',
@@ -161,7 +162,7 @@ const PopupPanel = ({ data, type, onClose, onServiceAdded, onServiceUpdated, isS
                             error={errors.price}
                             Icon={FaRegUser}
                             // value={type !== 'add' ? data?.price : ''}
-                            value={fields?.price}
+                            value={type === 'see' ? formatCurrency(fields?.price) : fields?.price}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"

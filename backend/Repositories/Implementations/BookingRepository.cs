@@ -9,12 +9,13 @@ namespace Repositories.Implementations
       {
             public BookingRepository(DatabaseContext context) : base(context) { }
 
-            public async Task ChangeBookingStatus(BookingModel booking, int status)
+            public async Task ChangeBookingStatus(BookingModel booking, int status, int staffCheckOutId)
             {
                   var transaction = await _context.Database.BeginTransactionAsync();
                   try
                   {
                         booking.Status = status;
+                        booking.StaffCheckOutId = staffCheckOutId;
 
                         if (booking.BookingDetails != null)
                         {
@@ -95,7 +96,9 @@ namespace Repositories.Implementations
             {
                   return await _context.Booking
                               .Include(b => b.BookingDetails)
-                                    .ThenInclude(bd => bd!.Room)
+                                      .ThenInclude(bd => bd!.Room)
+                              .Include(b => b.ServiceUsage)
+                                    .ThenInclude(su => su.Service)
                               .Include(b => b.Customer)
                               .Include(b => b.StaffCheckIn)
                               .Include(b => b.StaffCheckOut)

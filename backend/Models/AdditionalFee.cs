@@ -1,3 +1,5 @@
+using backend.Models;
+
 public class AdditionalFeeModel
 {
     public int? Id { get; set; }

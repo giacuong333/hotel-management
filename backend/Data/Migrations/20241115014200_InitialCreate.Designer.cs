@@ -12,8 +12,8 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241109020750_MInitialigration")]
-    partial class MInitialigration
+    [Migration("20241115014200_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,124 @@ namespace backend.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("backend.Models.BookingDetailModel", b =>
+            modelBuilder.Entity("AdditionalFeeModel", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<float?>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("ReceiptId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiptId");
+
+                    b.ToTable("AdditionalFee");
+                });
+
+            modelBuilder.Entity("ReceiptModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("DiscountId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StaffId")
+                        .HasColumnType("int");
+
+                    b.Property<float?>("Total")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId")
+                        .IsUnique();
+
+                    b.HasIndex("DiscountId");
+
+                    b.HasIndex("StaffId");
+
+                    b.ToTable("Receipt");
+                });
+
+            modelBuilder.Entity("RoomModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("Area")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BedNum")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime?>("CreatedAt"));
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.Property<float?>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("Thumbnail")
+                        .HasColumnType("longblob");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime?>("UpdatedAt"));
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Room");
+                });
+
+            modelBuilder.Entity("ServiceUsageModel", b =>
                 {
                     b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,7 +153,36 @@ namespace backend.Migrations
                     b.Property<int?>("BookingId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoomId")
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ServiceId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("ServiceUsage");
+                });
+
+            modelBuilder.Entity("backend.Models.BookingDetailModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("RoomId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -50,11 +196,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.BookingModel", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CheckIn")
                         .HasColumnType("datetime(6)");
@@ -62,11 +208,11 @@ namespace backend.Migrations
                     b.Property<DateTime?>("CheckOut")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime?>("CreatedAt"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime>("CreatedAt"));
 
                     b.Property<string>("CustomerEmail")
                         .HasColumnType("longtext");
@@ -111,11 +257,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.DiscountModel", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("EndAt")
                         .HasColumnType("datetime(6)");
@@ -129,8 +275,8 @@ namespace backend.Migrations
                     b.Property<bool?>("Status")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<float?>("Value")
-                        .HasColumnType("float");
+                    b.Property<decimal?>("Value")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -139,16 +285,17 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.FeedBackModel", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int>("RoomId")
@@ -158,6 +305,10 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RoomId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Feedback");
                 });
@@ -220,6 +371,9 @@ namespace backend.Migrations
                     b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("RoomsId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
@@ -228,7 +382,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomId");
+                    b.HasIndex("RoomsId");
 
                     b.HasIndex("UserId");
 
@@ -270,59 +424,11 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PermissionId");
+
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Rolepermission");
-                });
-
-            modelBuilder.Entity("backend.Models.RoomModel", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
-
-                    b.Property<int?>("Area")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BedNum")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime?>("CreatedAt"));
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
-
-                    b.Property<float?>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<byte[]>("Thumbnail")
-                        .HasColumnType("longblob");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime(6)");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime?>("UpdatedAt"));
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Room");
                 });
 
             modelBuilder.Entity("backend.Models.ServiceModel", b =>
@@ -334,7 +440,10 @@ namespace backend.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
 
                     b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<DateTime?>("CreatedAt"));
 
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
@@ -349,7 +458,10 @@ namespace backend.Migrations
                         .HasColumnType("tinyint unsigned");
 
                     b.Property<DateTime?>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlComputedColumn(b.Property<DateTime?>("UpdatedAt"));
 
                     b.HasKey("Id");
 
@@ -358,11 +470,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.UserModel", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<byte[]>("Avatar")
                         .HasColumnType("longblob");
@@ -413,15 +525,72 @@ namespace backend.Migrations
                     b.ToTable("User");
                 });
 
+            modelBuilder.Entity("AdditionalFeeModel", b =>
+                {
+                    b.HasOne("ReceiptModel", "Receipt")
+                        .WithMany("AdditionalFees")
+                        .HasForeignKey("ReceiptId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Receipt");
+                });
+
+            modelBuilder.Entity("ReceiptModel", b =>
+                {
+                    b.HasOne("backend.Models.BookingModel", "Booking")
+                        .WithOne()
+                        .HasForeignKey("ReceiptModel", "BookingId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("backend.Models.DiscountModel", "Discount")
+                        .WithMany()
+                        .HasForeignKey("DiscountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("backend.Models.UserModel", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Discount");
+
+                    b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("ServiceUsageModel", b =>
+                {
+                    b.HasOne("backend.Models.BookingModel", "Booking")
+                        .WithMany("ServiceUsage")
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("backend.Models.ServiceModel", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Service");
+                });
+
             modelBuilder.Entity("backend.Models.BookingDetailModel", b =>
                 {
-                    b.HasOne("backend.Models.BookingModel", null)
+                    b.HasOne("backend.Models.BookingModel", "Booking")
                         .WithMany("BookingDetails")
-                        .HasForeignKey("BookingId");
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("backend.Models.RoomModel", "Room")
+                    b.HasOne("RoomModel", "Room")
                         .WithMany()
-                        .HasForeignKey("RoomId");
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
 
                     b.Navigation("Room");
                 });
@@ -430,15 +599,18 @@ namespace backend.Migrations
                 {
                     b.HasOne("backend.Models.UserModel", "Customer")
                         .WithMany()
-                        .HasForeignKey("CustomerId");
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("backend.Models.UserModel", "StaffCheckIn")
                         .WithMany()
-                        .HasForeignKey("StaffCheckInId");
+                        .HasForeignKey("StaffCheckInId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("backend.Models.UserModel", "StaffCheckOut")
                         .WithMany()
-                        .HasForeignKey("StaffCheckOutId");
+                        .HasForeignKey("StaffCheckOutId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Customer");
 
@@ -447,11 +619,30 @@ namespace backend.Migrations
                     b.Navigation("StaffCheckOut");
                 });
 
+            modelBuilder.Entity("backend.Models.FeedBackModel", b =>
+                {
+                    b.HasOne("RoomModel", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("backend.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Room");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("backend.Models.ReviewModel", b =>
                 {
-                    b.HasOne("backend.Models.RoomModel", "Rooms")
+                    b.HasOne("RoomModel", "Rooms")
                         .WithMany()
-                        .HasForeignKey("RoomId");
+                        .HasForeignKey("RoomsId");
 
                     b.HasOne("backend.Models.UserModel", "Users")
                         .WithMany()
@@ -462,18 +653,43 @@ namespace backend.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("backend.Models.RolepermissionModel", b =>
+                {
+                    b.HasOne("backend.Models.PermissionModel", "Permission")
+                        .WithMany()
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("backend.Models.RoleModel", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("backend.Models.UserModel", b =>
                 {
                     b.HasOne("backend.Models.RoleModel", "Roles")
                         .WithMany()
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("ReceiptModel", b =>
+                {
+                    b.Navigation("AdditionalFees");
                 });
 
             modelBuilder.Entity("backend.Models.BookingModel", b =>
                 {
                     b.Navigation("BookingDetails");
+
+                    b.Navigation("ServiceUsage");
                 });
 #pragma warning restore 612, 618
         }

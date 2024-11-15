@@ -396,5 +396,15 @@ public static class Seed
             );
             await context.SaveChangesAsync();
         }
+
+        // Seed Receipts
+        if (!context.Receipt.Any())
+        {
+            context.Receipt.AddRange(
+                new() { Id = 1, StaffId = 1, BookingId = 1, DiscountId = 1 },
+                new() { Id = 2, StaffId = 1, BookingId = 2, DiscountId = 3 }
+            );
+            await context.SaveChangesAsync();
+        }
     }
 }

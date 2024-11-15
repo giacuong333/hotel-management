@@ -10,7 +10,7 @@ namespace Repositories.Interfaces
             Task<IEnumerable<BookingModel>> GetBookingsAuthorizedAsync(int id);
             Task<BookingModel> GetBookingByIdAsync(object id);
             // Task DeleteBookingAsync(int id);
-            Task ChangeBookingStatus(BookingModel booking, int status);
+            Task ChangeBookingStatus(BookingModel booking, int status, int staffCheckOutId);
             Task CreateBookingAsync(BookingModel booking);
       }
 }

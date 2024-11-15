@@ -230,10 +230,11 @@ namespace backend.Controllers
                   try
                   {
                         var booking = await _bookingService.GetBookingByIdAsync((int)id);
+                        var staffCheckOutId = GetUserIdFromClaims(HttpContext);
                         if (booking == null)
                               return NotFound("Booking not found");
 
-                        await _bookingService.ChangeStatusAsync(booking, statusCode);
+                        await _bookingService.ChangeStatusAsync(booking, statusCode, staffCheckOutId);
                         await _bookingService.SaveAsync();
 
                         return Ok("Status changed successfully");

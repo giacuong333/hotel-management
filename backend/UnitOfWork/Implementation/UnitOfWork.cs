@@ -9,9 +9,11 @@ public class UnitOfWork(
     IRoomRepository rooms,
     IGalleryRepository gallery,
     IReviewRepository reviews,
+    IReceiptRepository receipts,
     IRoleRepository roles,
     IRolePermissionRepository rolePermissions,
     IServiceRepository services,
+    IServiceUsageRepository servicesUsage,
     IDashboardRepository dashboards
 
     ) : IUnitOfWork
@@ -20,20 +22,16 @@ public class UnitOfWork(
 
 
     public IUserRepository? Users { get; } = users;
-
     public IBookingRepository? Bookings { get; } = bookings;
-
     public IRoomRepository? Rooms { get; } = rooms;
-
     public IGalleryRepository? Gallery { get; } = gallery;
     public IReviewRepository? Reviews { get; } = reviews;
+    public IReceiptRepository Receipts { get; } = receipts;
     public IRoleRepository? Roles { get; } = roles;
     public IRolePermissionRepository? RolePermissions { get; } = rolePermissions;
     public IServiceRepository? Services { get; } = services;
     public IDashboardRepository? Dashboards { get; } = dashboards;
-
-
-
+    public IServiceUsageRepository ServicesUsage { get; } = servicesUsage;
 
     public async Task<int> CompleteAsync()
     {

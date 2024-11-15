@@ -64,8 +64,8 @@ const Sidebar = () => {
                             <img
                                 src={
                                     avatar?.preview ||
-                                    `data:image/jpeg;base64,${user?.avatar}` ||
-                                    'https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-2.jpg'
+                                    (user?.avatar !== null && `data:image/jpeg;base64,${user?.avatar}`) ||
+                                    'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'
                                 }
                                 alt=""
                                 className="w-full h-full rounded-circle border"

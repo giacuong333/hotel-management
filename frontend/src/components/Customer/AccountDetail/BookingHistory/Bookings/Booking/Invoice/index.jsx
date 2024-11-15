@@ -1,115 +1,152 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
-import { useNavigate } from 'react-router';
-import { BsThreeDots } from 'react-icons/bs';
+import { useNavigate, useParams } from 'react-router';
 import { useUser } from '~/providers/UserProvider';
-import ServicesUsed from './ServicesUsed';
+import axios from 'axios';
+import formatCurrency from '~/utils/currencyPipe';
+
+const customStyles = {
+    header: {
+        style: {
+            border: '2px solid #e0e0e0',
+        },
+    },
+    headRow: {
+        style: {
+            border: '2px solid #35776d',
+            backgroundColor: '#35776d',
+            color: '#fff',
+        },
+    },
+    headCells: {
+        style: {
+            border: '1px solid #ccc',
+        },
+    },
+    rows: {
+        style: {
+            borderBottom: '1px solid #ddd',
+        },
+        highlightOnHoverStyle: {
+            border: '1px solid #b5b5b5',
+        },
+    },
+    cells: {
+        style: {
+            border: '1px solid #ddd',
+        },
+    },
+};
 
 const Invoice = () => {
     const navigate = useNavigate();
     const { user } = useUser();
-    const [idDelete, setIdDelete] = useState(null);
+    const [servicesUsed, setServicesUsed] = useState();
+    const [roomsUsed, setRoomsUsed] = useState();
+    const [booking, setBooking] = useState();
+    const [stayedDate, setStayedDate] = useState();
+    const bookingId = useParams()?.id;
 
-    const handleClose = () => {
-        setIdDelete(null);
+    // fetch data
+    useEffect(() => {
+        fetchServicesUsed();
+        fetchBooking();
+    }, [bookingId, stayedDate]);
+
+    // Calculate stayed dates
+    useEffect(() => {
+        if (booking) {
+            const checkIn = new Date(booking?.checkIn);
+            const checkOut = new Date(booking?.checkOut);
+            const timeDifference = Math.abs(checkOut - checkIn);
+            const datesStayed = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+            setStayedDate(datesStayed);
+        }
+    }, [booking]);
+
+    const fetchServicesUsed = async () => {
+        try {
+            const url = `http://localhost:5058/booking/${bookingId}`;
+            const response = await axios.get(url);
+            if (response?.status === 200) {
+                const data = response?.data?.serviceUsage?.$values.map((s) => {
+                    s.service.formattedPrice = formatCurrency(s.service.price);
+                    return s.service;
+                });
+                setServicesUsed(data);
+            }
+        } catch (error) {
+            console.log('Error while fetching services used', error);
+        }
     };
 
-    const customStyles = {
-        header: {
-            style: {
-                border: '2px solid #e0e0e0',
-            },
-        },
-        headRow: {
-            style: {
-                border: '2px solid #35776d',
-                backgroundColor: '#35776d',
-                color: '#fff',
-            },
-        },
-        headCells: {
-            style: {
-                border: '1px solid #ccc',
-            },
-        },
-        rows: {
-            style: {
-                borderBottom: '1px solid #ddd',
-            },
-            highlightOnHoverStyle: {
-                border: '1px solid #b5b5b5',
-            },
-        },
-        cells: {
-            style: {
-                border: '1px solid #ddd',
-            },
-        },
+    const fetchBooking = async () => {
+        try {
+            const url = `http://localhost:5058/booking/${bookingId}`;
+            const response = await axios.get(url);
+            if (response?.status === 200) {
+                const data = response?.data?.bookingDetails?.$values.map((r) => {
+                    r.room.formattedPrice = formatCurrency(r?.room?.price);
+                    r.room.roomTotal =
+                        r?.room?.price && stayedDate ? formatCurrency(r?.room?.price * stayedDate) : 'Calculating...';
+                    return r?.room;
+                });
+                setRoomsUsed(data);
+                setBooking(response?.data);
+            }
+        } catch (error) {
+            console.log('Error while fetching services used', error);
+        }
     };
 
-    const columns = [
+    const roomColumns = [
         {
             name: 'ID',
             selector: (row) => row.id,
         },
         {
-            name: 'Room',
-            selector: (row) => row.room,
+            name: 'Name',
+            selector: (row) => row.name,
         },
         {
-            name: 'Room Price',
-            selector: (row) => row.roomPrice,
+            name: 'Type',
+            selector: (row) => row.type,
         },
         {
-            name: 'Total Service Price',
-            selector: (row) => row.totalServicePrice,
+            name: 'Beds',
+            selector: (row) => row.bedNum,
         },
         {
-            action: '',
-            selector: (row) => row.options,
+            name: 'Area',
+            selector: (row) => `${row.area}m2`,
+        },
+        {
+            name: 'Price',
+            selector: (row) => row.formattedPrice,
+        },
+        {
+            name: 'Room Total',
+            selector: (row) => row.roomTotal,
         },
     ];
 
-    const data = [
+    const servicesColumns = [
         {
-            id: 1,
-            room: 'Room 1',
-            roomPrice: '3.000.000 đ',
-            totalServicePrice: '300.000 đ',
-            options: (
-                <BsThreeDots
-                    size={28}
-                    className="cursor-pointer options-hover p-2 rounded-circle"
-                    onClick={() => {
-                        // handleClick();
-                        setIdDelete(1);
-                    }}
-                />
-            ),
+            name: 'ID',
+            selector: (row) => row.id,
         },
         {
-            id: 2,
-            room: 'Room 2',
-            roomPrice: '2.000.000 đ',
-            totalServicePrice: '318.000 đ',
-            options: (
-                <BsThreeDots
-                    size={28}
-                    className="cursor-pointer options-hover p-2 rounded-circle"
-                    onClick={() => {
-                        // handleClick();
-                        setIdDelete(2);
-                    }}
-                />
-            ),
+            name: 'Name',
+            selector: (row) => row.name,
+        },
+        {
+            name: 'Price',
+            selector: (row) => row.formattedPrice,
         },
     ];
 
     return (
         <>
-            {/* Services used */}
-            {idDelete && <ServicesUsed isShow={idDelete} onClose={handleClose} />}
-
             {/* Main */}
             <main className="">
                 <div className="d-flex flex-column gap-4">
@@ -138,7 +175,7 @@ const Invoice = () => {
                                 </div>
                             </div>
 
-                            <div className="d-flex align-items-start justify-content-between pt-3">
+                            <div className="d-flex flex-wrap align-items-start justify-content-between gap-4 pt-3">
                                 <div>
                                     <h5>BILL TO</h5>
                                     <p className="text-capitalize">{user?.name}</p>
@@ -147,13 +184,21 @@ const Invoice = () => {
                                 </div>
                                 <div>
                                     <h5>Invoice #312</h5>
-                                    <p>Invoice Date</p>
-                                    <p>Due Date</p>
+                                    <p>Invoice Date {}</p>
+                                    <p>Check-In Date: {booking?.checkIn.split('T')[0]}</p>
+                                    <p>Check-Out Date: {booking?.checkOut.split('T')[0]}</p>
+                                    <p>Stayed Date: {stayedDate ? stayedDate : 'Calculating...'}</p>
                                 </div>
                             </div>
 
-                            <div className="pt-4">
-                                <DataTable columns={columns} data={data} customStyles={customStyles} />
+                            <div className="pt-4 d-flex flex-column gap-2">
+                                <h5>Rooms Used</h5>
+                                <DataTable columns={roomColumns} data={roomsUsed} customStyles={customStyles} />
+                            </div>
+
+                            <div className="pt-4 d-flex flex-column gap-2">
+                                <h5>Services Used</h5>
+                                <DataTable columns={servicesColumns} data={servicesUsed} customStyles={customStyles} />
                             </div>
 
                             <div className="d-flex align-items-start justify-content-end pt-4">

@@ -15,6 +15,7 @@ import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import { useUser } from '~/providers/UserProvider';
 import { useCheckPermission } from '../../../providers/CheckPermissionProvider';
+import formatCurrency from '~/utils/currencyPipe';
 const columns = [
     {
         name: 'No',
@@ -199,7 +200,7 @@ const Service = () => {
         id: service.id,
         no: index + 1,
         name: service.name,
-        price: service.price,
+        price: formatCurrency(service.price),
         status: service.status,
         actions: (
             <>

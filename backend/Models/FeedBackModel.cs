@@ -1,4 +1,6 @@
-﻿namespace backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace backend.Models
 {
     public class FeedBackModel
     {
@@ -6,13 +8,15 @@
 
         public FeedBackModel(int id, int userId, int roomId, string description, DateTime createdAt)
         {
-            this.Id = id;
-            this.UserId = userId;
-            this.RoomId = roomId;
-            this.Description = description;
-            this.CreatedAt = createdAt;
+            Id = id;
+            UserId = userId;
+            RoomId = roomId;
+            Description = description;
+            CreatedAt = createdAt;
         }
 
+
+        [Key]
         public int Id { get; set; } // Non-nullable Id
         public int UserId { get; set; }
         public int RoomId { get; set; }
@@ -20,5 +24,6 @@
         public DateTime CreatedAt { get; set; }
 
         public UserModel User { get; set; }
+        public RoomModel Room { get; set; }
     }
 }

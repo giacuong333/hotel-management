@@ -29,6 +29,7 @@ namespace backend.Models
 
             public DateTime? DeletedAt { get; set; }
 
+            // Navigations
             public virtual ICollection<BookingDetailModel>? BookingDetails { get; set; }
 
             [ForeignKey("CustomerId")]
@@ -40,6 +41,6 @@ namespace backend.Models
             [ForeignKey("StaffCheckOutId")]
             public virtual UserModel? StaffCheckOut { get; set; }
 
-            public ICollection<ServiceUsageModel> ServiceUsage { get; set; } = new List<ServiceUsageModel>(); // A booking can have many service usages
+            public ICollection<ServiceUsageModel> ServiceUsage { get; set; } // A booking can have many service usages
       }
 }

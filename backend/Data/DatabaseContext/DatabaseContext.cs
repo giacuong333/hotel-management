@@ -63,6 +63,13 @@ namespace backend.Database
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Restrict); // Optional: You can change delete behavior
 
+            // Feedback - Room
+            modelBuilder.Entity<FeedBackModel>()
+                .HasOne(f => f.Room)  // Assuming FeedBackModel has a navigation property 'User'
+                .WithMany()  // A user can have many feedbacks
+                .HasForeignKey(f => f.RoomId)
+                .OnDelete(DeleteBehavior.Restrict); // Optional: You can change delete behavior
+
             // RolePermission - Role
             modelBuilder.Entity<RolepermissionModel>()
                 .HasOne(rp => rp.Role)

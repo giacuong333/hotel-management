@@ -8,6 +8,6 @@ public interface IBookingService
       Task<IEnumerable<BookingModel>> GetAuthorizedBookingsAsync(int id);
       Task<BookingModel> GetBookingByIdAsync(object id);
       Task DeleteBookingAsync(object id);
-      Task ChangeStatusAsync(BookingModel booking, int status);
+      Task ChangeStatusAsync(BookingModel booking, int status, int staffCheckOutId);
       Task<int> SaveAsync();
 }
