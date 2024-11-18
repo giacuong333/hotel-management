@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import CustomerLayout from './Layouts/CustomerLayout';
@@ -11,7 +11,6 @@ import Contact from './components/Admin/Contact';
 import Dashboard from './components/Admin/Dashboard';
 import Discount from './components/Admin/Discount';
 import Feedback from './components/Admin/Feedback';
-import Gallery from './components/Admin/Gallery';
 import Receipt from './components/Admin/Receipt';
 import Review from './components/Admin/Review';
 import Role from './components/Admin/Role';
@@ -33,17 +32,16 @@ import Password from './components/Customer/AccountDetail/Password';
 import RoomProvider from './providers/RoomProvider';
 import BookingDetails from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/BookingDetails';
 import Invoice from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/Invoice';
-import ProceedPayment from './components/Customer/Home/ProceedPayment'
+import ProceedPayment from './components/Customer/Home/ProceedPayment';
 
 function App() {
     const { user } = useUser();
     const isAuthenticated = user !== null;
     const isCustomer = user?.roleId === 4;
 
-    useEffect(()=> {
+    useEffect(() => {
         console.log(isAuthenticated, isCustomer);
-        
-    }, [])
+    }, []);
 
     return (
         <Routes>
@@ -85,9 +83,7 @@ function App() {
                     <Route index element={<CustomerHome />} />
                     <Route path="/rooms" element={<Rooms />} />
                     <Route path="/room/:id" element={<RoomDetail />} />
-                    {isAuthenticated && isCustomer && (
-                        <Route path="/proceed-payment" element={<Payments />} />
-                    )}
+                    {isAuthenticated && isCustomer && <Route path="/proceed-payment" element={<Payments />} />}
                 </Route>
             ) : (
                 // If roleId != 4, move on to the admin page
@@ -108,7 +104,6 @@ function App() {
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="discount" element={<Discount />} />
                         <Route path="feedback" element={<Feedback />} />
-                        <Route path="gallery" element={<Gallery />} />
                         <Route path="receipt" element={<Receipt />} />
                         <Route path="review" element={<Review />} />
                         <Route

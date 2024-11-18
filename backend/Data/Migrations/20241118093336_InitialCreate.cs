@@ -216,6 +216,7 @@ namespace backend.Migrations
                     CheckOut = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true),
                     CustomerId = table.Column<int>(type: "int", nullable: true),
+                    RoomId = table.Column<int>(type: "int", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UpdatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
@@ -225,6 +226,12 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Booking", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Booking_Room_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Room",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Booking_User_CustomerId",
                         column: x => x.CustomerId,
@@ -325,13 +332,13 @@ namespace backend.Migrations
                         column: x => x.BookingId,
                         principalTable: "Booking",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_BookingDetail_Room_RoomId",
                         column: x => x.RoomId,
                         principalTable: "Room",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -341,7 +348,6 @@ namespace backend.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StaffId = table.Column<int>(type: "int", nullable: true),
                     BookingId = table.Column<int>(type: "int", nullable: true),
                     DiscountId = table.Column<int>(type: "int", nullable: true),
                     Total = table.Column<float>(type: "float", nullable: true),
@@ -362,12 +368,6 @@ namespace backend.Migrations
                         name: "FK_Receipt_Discount_DiscountId",
                         column: x => x.DiscountId,
                         principalTable: "Discount",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Receipt_User_StaffId",
-                        column: x => x.StaffId,
-                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 })
@@ -435,6 +435,11 @@ namespace backend.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Booking_RoomId",
+                table: "Booking",
+                column: "RoomId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Booking_StaffCheckInId",
                 table: "Booking",
                 column: "StaffCheckInId");
@@ -474,11 +479,6 @@ namespace backend.Migrations
                 name: "IX_Receipt_DiscountId",
                 table: "Receipt",
                 column: "DiscountId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Receipt_StaffId",
-                table: "Receipt",
-                column: "StaffId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Review_RoomsId",
@@ -544,9 +544,6 @@ namespace backend.Migrations
                 name: "Receipt");
 
             migrationBuilder.DropTable(
-                name: "Room");
-
-            migrationBuilder.DropTable(
                 name: "Permission");
 
             migrationBuilder.DropTable(
@@ -557,6 +554,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Discount");
+
+            migrationBuilder.DropTable(
+                name: "Room");
 
             migrationBuilder.DropTable(
                 name: "User");

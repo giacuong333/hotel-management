@@ -56,6 +56,13 @@ namespace backend.Database
                 .HasForeignKey(b => b.StaffCheckOutId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Booking - Room
+            modelBuilder.Entity<BookingModel>()
+                .HasOne(b => b.Room)
+                .WithMany() // One user (staff) can check-out many bookings
+                .HasForeignKey(b => b.RoomId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Feedback - User
             modelBuilder.Entity<FeedBackModel>()
                 .HasOne(f => f.User)  // Assuming FeedBackModel has a navigation property 'User'
@@ -82,27 +89,6 @@ namespace backend.Database
                 .HasOne(rp => rp.Permission)
                 .WithMany() // One permission can be associated with many roles
                 .HasForeignKey(rp => rp.PermissionId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // BookingDetail - Booking
-            modelBuilder.Entity<BookingDetailModel>()
-                .HasOne(bd => bd.Booking)
-                .WithMany(b => b.BookingDetails) // A booking can have many booking details
-                .HasForeignKey(bd => bd.BookingId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // BookingDetail - Room
-            modelBuilder.Entity<BookingDetailModel>()
-                .HasOne(bd => bd.Room)
-                .WithMany() // One room can have many booking details
-                .HasForeignKey(bd => bd.RoomId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Receipt - Staff
-            modelBuilder.Entity<ReceiptModel>()
-                .HasOne(r => r.Staff)
-                .WithMany()  // One user (staff) can have many receipts
-                .HasForeignKey(r => r.StaffId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Receipt - Discount

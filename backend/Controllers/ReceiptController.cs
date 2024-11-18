@@ -1,18 +1,10 @@
-<<<<<<< HEAD
+using AspNetCoreGeneratedDocument;
 using Microsoft.AspNetCore.Mvc;
-
-=======
-using backend.Database;
-using backend.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
->>>>>>> 24898775f5485dde49cd2b676f57ec232a017e06
 
 namespace backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-<<<<<<< HEAD
     public class ReceiptController(IReceiptService receiptService) : ControllerBase
     {
         private readonly IReceiptService _receiptService = receiptService;
@@ -46,123 +38,95 @@ namespace backend.Controllers
                 return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
         }
-=======
-    public class ReceiptController : Controller
-    {
-        private readonly DatabaseContext context;
-        private readonly ILogger<DiscountController> _logger;
-        private readonly IConfiguration configuration;
-        public ReceiptController(DatabaseContext context, ILogger<DiscountController> logger, IConfiguration configuration)
-        {
-            this.context = context;
-            this._logger = logger;
-            this.configuration = configuration;
-        }
 
-        // GET: /feedback
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<object>>> GetListReceipt()
+        // [GET] /receipt
+        [HttpGet("{receiptId}")]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<ReceiptModel>>> GetReceiptsById(int receiptId)
         {
             try
             {
-                var receipts = await context.Receipt.ToListAsync();
-
+                var receipts = await _receiptService.GetReceiptsByIdAsync(receiptId);
+                if (receipts == null)
+                    return NotFound("Receipts not found");
 
                 return Ok(receipts);
             }
-            catch (Exception e)
+            catch (UnauthorizedException ex)
             {
-                _logger.LogError(e, "Error retrieving feedbacks");
-                return StatusCode(500, "Internal server error");
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
         }
-        [HttpGet("{id}")]
-        public async Task<ActionResult<FeedBackModel>> GetFeedBack(int id)
-        {
-            try
-            {
-                var feedback = await context.Feedback
-            .Join(context.User,
-                feedback => feedback.UserId,
-                user => user.Id,
-                (feedback, user) => new { feedback, user })
-            .Join(context.Room,
-                feedbackUser => feedbackUser.feedback.RoomId,
-                room => room.Id,
-                (feedbackUser, room) => new
-                {
-                    feedbackUser.feedback.Id,
-                    feedbackUser.feedback.Description,
-                    feedbackUser.feedback.CreatedAt,
-                    UserName = feedbackUser.user.Name,
-                    RoomName = room.Name
-                })
-            .FirstOrDefaultAsync(f => f.Id == id);
 
-                if (feedback == null)
-                {
-                    return NotFound(new { message = "FeedBack not found." });
-                }
-
-                return Ok(feedback);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error retrieving discount");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-        // DELETE: /feedback/{id}
+        // [DELETE] /receipt/{id}
         [HttpDelete("{id}")]
-        public async Task<ActionResult<FeedBackModel>> DeleteFeedBack(int id)
+        [Produces("application/json")]
+        public async Task<ActionResult> DeleteReceipt(int id)
         {
             try
             {
-                var feedback = await context.Feedback.FindAsync(id);
-                if (feedback == null)
-                {
-                    return NotFound(new { message = "Feedback not found" });
-                }
-                context.Feedback.Remove(feedback);
-                await context.SaveChangesAsync();
-                return Ok(feedback);
+                await _receiptService.DeleteReceiptByIdAsync(id);
+
+                return Ok("Receipt deleted successfully");
             }
-            catch (Exception e)
+            catch (UnauthorizedException ex)
             {
-                _logger.LogError(e, "Error deleting feedback");
-                return StatusCode(500, "Internal server error");
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
         }
 
+        // [DELETE] /receipt
         [HttpDelete]
-        public async Task<IActionResult> DeleteAllFeedbacks([FromBody] List<int> feedbackIds)
+        public async Task<ActionResult> DeleteReceipts([FromBody] IList<ReceiptModel> receiptIds)
         {
             try
             {
-                var feedbacksToDelete = await context.Feedback
-                    .Where(f => feedbackIds.Contains((int)f.Id))
-                    .ToListAsync();
+                if (!ModelState.IsValid)
+                    return BadRequest("Missing Data");
 
-                if (!feedbacksToDelete.Any())
-                {
-                    return NotFound(new { message = "No feedbacks found to delete" });
-                }
+                await _receiptService.DeleteReceiptsAsync(receiptIds);
 
-                context.Feedback.RemoveRange(feedbacksToDelete);
-                await context.SaveChangesAsync();
+                var newReceipts = await _receiptService.GetReceiptsAsync();
 
-                return Ok(new { message = "Feedbacks deleted successfully", newFeedback = context.Feedback.ToList() });
+                return Ok(new { message = "Receipts deleted successfully", newReceipts });
             }
-            catch (Exception e)
+            catch (UnauthorizedException ex)
             {
-                _logger.LogError(e, "Error deleting feedbacks");
-                return StatusCode(500, "Internal server error");
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
->>>>>>> 24898775f5485dde49cd2b676f57ec232a017e06
     }
 }

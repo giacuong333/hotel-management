@@ -327,6 +327,7 @@ public static class Seed
                     Id = 1,
                     CustomerId = 2,  // Use actual ID
                     StaffCheckInId = 2,
+                    RoomId = 1,
                     CheckIn = new DateTime(2024, 11, 20),
                     CheckOut = new DateTime(2024, 11, 29),
                     Status = 1
@@ -336,6 +337,7 @@ public static class Seed
                     Id = 2,
                     CustomerId = 3,  // Use actual ID
                     StaffCheckInId = 2,
+                    RoomId = 2,
                     CheckIn = new DateTime(2024, 11, 20),
                     CheckOut = new DateTime(2024, 11, 29),
                     Status = 1
@@ -345,6 +347,7 @@ public static class Seed
                     Id = 3,
                     CustomerId = 4,  // Use actual ID
                     StaffCheckInId = 2,
+                    RoomId = 3,
                     CheckIn = new DateTime(2024, 11, 21),
                     CheckOut = new DateTime(2024, 11, 29),
                     Status = 2
@@ -354,23 +357,11 @@ public static class Seed
                     Id = 4,
                     CustomerId = 2,  // Use actual ID
                     StaffCheckInId = 2,
+                    RoomId = 4,
                     CheckIn = new DateTime(2024, 12, 29),
                     CheckOut = new DateTime(2024, 1, 3),
                     Status = 1
                 }
-            );
-            await context.SaveChangesAsync();
-        }
-
-        // Seed BookingDetails
-        if (!context.BookingDetail.Any())
-        {
-            context.BookingDetail.AddRange(
-                new() { Id = 1, BookingId = 1, RoomId = 1 },
-                new() { Id = 2, BookingId = 1, RoomId = 2 },
-                new() { Id = 3, BookingId = 2, RoomId = 3 },
-                new() { Id = 4, BookingId = 3, RoomId = 6 },
-                new() { Id = 5, BookingId = 4, RoomId = 5 }
             );
             await context.SaveChangesAsync();
         }
@@ -401,8 +392,21 @@ public static class Seed
         if (!context.Receipt.Any())
         {
             context.Receipt.AddRange(
-                new() { Id = 1, StaffId = 1, BookingId = 1, DiscountId = 1 },
-                new() { Id = 2, StaffId = 1, BookingId = 2, DiscountId = 3 }
+                new() { Id = 1, BookingId = 1, DiscountId = 1, Total = 18240000 },
+                new() { Id = 2, BookingId = 2, DiscountId = 2, Total = 10800000 },
+                new() { Id = 3, BookingId = 3, DiscountId = 3, Total = 240000 },
+                new() { Id = 4, BookingId = 4, DiscountId = 1, Total = 200000 }
+            );
+            await context.SaveChangesAsync();
+        }
+
+        // Seed AdditionalFees
+        if (!context.AdditionalFee.Any())
+        {
+            context.AdditionalFee.AddRange(
+                new AdditionalFeeModel { Id = 1, ReceiptId = 1, Name = "Renting Cars", Price = 300000 },
+                new AdditionalFeeModel { Id = 2, ReceiptId = 1, Name = "Renting Shoes", Price = 100000 },
+                new AdditionalFeeModel { Id = 3, ReceiptId = 1, Name = "5 bottles water", Price = 50000 }
             );
             await context.SaveChangesAsync();
         }

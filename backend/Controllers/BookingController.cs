@@ -153,10 +153,9 @@ namespace backend.Controllers
                         if (booking.Status != 0 && booking.Status != 3)
                               return StatusCode(403, new { message = "You only delete the booking that is canceled or checked-out" });
 
-                        booking.DeletedAt = DateTime.UtcNow;
+                        // booking.DeletedAt = DateTime.UtcNow;
 
                         await _bookingService.DeleteBookingAsync(id);
-                        await _bookingService.SaveAsync();
 
                         return Ok("Booking delete successfully");
                   }
@@ -199,8 +198,6 @@ namespace backend.Controllers
                               await _bookingService.DeleteBookingAsync(booking.Id);
                         }
 
-                        await _bookingService.SaveAsync();
-
                         var updatedBookings = await _bookingService.GetBookingsAsync();
 
                         return Ok(new { message = "Bookings deleted successfully.", updatedBookings });
@@ -235,7 +232,6 @@ namespace backend.Controllers
                               return NotFound("Booking not found");
 
                         await _bookingService.ChangeStatusAsync(booking, statusCode, staffCheckOutId);
-                        await _bookingService.SaveAsync();
 
                         return Ok("Status changed successfully");
                   }

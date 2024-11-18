@@ -3,24 +3,26 @@ import axios from 'axios';
 
 import DataTable from 'react-data-table-component';
 
-import { FiEdit } from 'react-icons/fi';
 import { BsTrash } from 'react-icons/bs';
-import { FaSortAlphaDownAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
-import { FiPlus } from 'react-icons/fi';
 
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 import ReceiptForm from './ReceiptForm';
-import Button from 'react-bootstrap/Button';
 import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 import { RotatingLines } from 'react-loader-spinner';
+import formatCurrency from '~/utils/currencyPipe';
+import { BsThreeDots } from 'react-icons/bs';
+
+import Tippy from '@tippyjs/react';
+import ServicesUsedForm from './ServicesUsedForm';
+import AdditionalFeeForm from './AdditionalFeeForm';
 
 const Receipt = () => {
     const [showPanel, setShowPanel] = useState('');
     const [selectedReceipt, setSelectedReceipt] = useState(null);
-    const [receipt, setReceipts] = useState([]);
+    const [receipts, setReceipts] = useState([]);
     const [clearSelectedRows, setClearSelectedRows] = useState(false);
     const [deleteAll, setDeleteAll] = useState({ count: 0, payload: [], yes: false });
     const [showDeleteAllConfirm, setShowDeleteAllConfirm] = useState(false);
@@ -28,100 +30,191 @@ const Receipt = () => {
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [pendingDelete, setPendingDelete] = useState(false);
 
+    // Context menu
+    const [activeMenuId, setActiveMenuId] = useState(null);
+    const [actionMenuId, setActionMenuId] = useState(null);
+    const [menuItems, setMenuItems] = useState([
+        { label: 'Services used', value: 1 },
+        { label: 'Additional fee', value: 2 },
+    ]);
+
     const [searchInput, setSearchInput] = useState('');
     const [searchedReceipts, setSearchedReceipts] = useState([]);
-    const {
-        createReceipt: hasPermissionCreate,
-        updateReceipt: hasPermissionUpdate,
-        deleteReceipt: hasPermissionDelete,
-    } = useCheckPermission();
+    const { deleteReceipt: hasPermissionDelete } = useCheckPermission();
+
+    // For searching
+    useEffect(() => {
+        if (searchInput.trim() === '') {
+            setSearchedReceipts(receipts);
+        } else {
+            const filteredReceipt = receipts.filter(
+                (receipt) =>
+                    receipt?.booking?.customer?.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+                    receipt?.booking?.customer?.phoneNumber
+                        .toString()
+                        .toLowerCase()
+                        .includes(searchInput.toLowerCase()),
+            );
+            setSearchedReceipts(filteredReceipt);
+        }
+    }, [searchInput, receipts]);
+
+    // For fetching
+    useEffect(() => {
+        const fetchReceipts = async () => {
+            try {
+                const url = 'http://localhost:5058/receipt';
+                const response = await axios.get(url);
+                setReceipts(response?.data?.$values);
+            } catch (error) {
+                console.error(error);
+                showToast("There's something wrong while fetching receipts", 'error');
+            }
+        };
+        fetchReceipts();
+    }, []);
+
+    // For deleting multiple receipts
+    useEffect(() => {
+        const deleteAllReceipts = async () => {
+            try {
+                setPendingDelete(true);
+                // Create payload for deletion
+                const payload = deleteAll.payload.map((receiptDelete) => ({ id: receiptDelete.id }));
+                console.log('Delete payload', payload);
+                const url = 'http://localhost:5058/receipt';
+                const response = await axios.delete(url, { data: payload });
+                console.log('Delete response', response);
+                if (response?.status === 200) {
+                    showToast('Receipts deleted successfully', 'success');
+                    setReceipts(response?.data?.newReceipts?.$values);
+                    setSearchedReceipts(response?.data?.newReceipts?.$values);
+                    reset();
+                }
+            } catch (error) {
+                showToast(error?.response?.data?.message || 'Error deleting Discount', 'error');
+            } finally {
+                setPendingDelete(false);
+            }
+        };
+
+        if (deleteAll.yes) {
+            deleteAllReceipts();
+        }
+    }, [deleteAll.yes, deleteAll.payload]);
+
+    useEffect(() => {
+        actionMenuId && setActiveMenuId(null);
+    }, [actionMenuId]);
+
     const columns = [
         {
             name: 'No',
             selector: (row) => row.no,
         },
         {
-            name: 'Name Staff',
-            selector: (row) => row.staffId,
+            name: 'Booking ID',
+            selector: (row) => row.booking,
         },
         {
-            name: 'ID Booking',
-            selector: (row) => row.bookingId,
+            name: 'Customer',
+            selector: (row) => row.customer,
         },
         {
-            name: 'Name Customer ',
-            selector: (row) => row.customerId,
-        },
-        {
-            name: 'Name Room',
-            selector: (row) => row.roomId,
-        },
-        {
-            name: 'Name Discount',
-            selector: (row) => row.discountId,
+            name: 'Phone',
+            selector: (row) => row.phone,
         },
         {
             name: 'Total',
-            selector: (row) => row.total,
+            selector: (row) => formatCurrency(row.total),
+        },
+        {
+            name: 'Created At',
+            selector: (row) => row.createdAt,
         },
     ];
-    if (hasPermissionUpdate || hasPermissionDelete) {
+
+    if (hasPermissionDelete) {
         columns.push({
             name: 'Actions',
             selector: (row) => row.actions,
         });
     }
+
+    const handleMenuClick = (action) => {
+        setActionMenuId(action);
+    };
+
+    const MenuTrigger = React.forwardRef((props, ref) => (
+        <div ref={ref} className="cursor-pointer">
+            <BsThreeDots size={32} className="options-hover p-2 rounded-circle" onClick={props.onClick} />
+        </div>
+    ));
+
+    MenuTrigger.displayName = 'MenuTrigger';
+
     const data = searchedReceipts?.map((receipt, index) => ({
         id: receipt?.id,
         no: index + 1,
-        staffId: receipt?.staffId,
-        customerId: receipt?.customerId,
-        bookingId: receipt?.bookingId,
-        roomId: receipt?.roomId,
-        discountId: receipt?.discountId,
+        booking: receipt?.bookingId,
+        customer: receipt?.booking?.customer?.name,
+        phone: receipt?.booking?.customer?.phoneNumber,
         total: receipt?.total,
-        creatAt: receipt?.creatAt,
-
+        createdAt: receipt?.createdAt,
         actions: (
-            <>
-                {hasPermissionUpdate ? (
-                    <FiEdit
-                        size={18}
-                        className="cursor-pointer me-3"
-                        onClick={() => handleEditClicked(receipt)}
-                        style={{ color: '#80CBC4' }}
-                    />
-                ) : (
-                    ''
-                )}
+            <div className="d-flex align-items-center gap-3">
+                <div style={{ zIndex: 0 }}>
+                    <Tippy
+                        interactive={true}
+                        placement="left-end"
+                        arrow={false}
+                        visible={activeMenuId === receipt?.id}
+                        onClickOutside={() => setActiveMenuId(null)}
+                        className="bg-white shadow px-0"
+                        content={
+                            <div className="d-flex flex-column">
+                                {menuItems.map((item, index) => {
+                                    return (
+                                        <button
+                                            key={index}
+                                            className="cursor-pointer bg-white customer-primary-button py-2 px-4 text-white"
+                                            onClick={() => {
+                                                handleMenuClick(item.value);
+                                                // setActiveMenuId(null);
+                                            }}
+                                        >
+                                            {item.label}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        }
+                    >
+                        <MenuTrigger
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveMenuId(activeMenuId === receipt.id ? null : receipt.id);
+                            }}
+                        />
+                    </Tippy>
+                </div>
                 {hasPermissionDelete ? (
                     <BsTrash
                         size={18}
                         className="cursor-pointer"
-                        onClick={() => handleTrashClicked(receipt.id)}
+                        onClick={() => handleTrashClicked(receipt?.id)}
                         style={{ color: '#E57373' }}
                     />
                 ) : (
-                    ''
+                    <></>
                 )}
-            </>
+            </div>
         ),
     }));
-   
-
-    const handleEditClicked = (discount) => {
-        setSelectedReceipt(discount);
-        setShowPanel('edit');
-    };
-
-    const handleAddClicked = () => {
-        setShowPanel('add');
-        setSelectedReceipt(null);
-    };
 
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
-        
+
         try {
             const response = await axios.get(`http://localhost:5058/discount/${id}`, {
                 headers: {
@@ -142,13 +235,11 @@ const Receipt = () => {
     };
 
     const handleDiscountAdded = (newDiscount) => {
-       
         setReceipts((prevDiscounts) => [...prevDiscounts, newDiscount]);
         setSearchedReceipts((prevDiscounts) => [...prevDiscounts, newDiscount]);
     };
-    
+
     const handleDiscountUpdated = (currentDiscount) => {
-       
         setReceipts((prevDiscounts) =>
             prevDiscounts.map((prevDiscount) =>
                 prevDiscount.id === currentDiscount.id ? { ...currentDiscount } : prevDiscount,
@@ -167,52 +258,27 @@ const Receipt = () => {
         setDeleteOne({ payload: null });
         setShowDeleteConfirm(false);
     };
-    //Search  Discount
-    // For searching
-    useEffect(() => {
-        if (searchInput.trim() === '') {
-            setSearchedReceipts(receipt);
-        } else {
-            const filteredDiscount = receipt.filter(
-                (discount) =>
-                    discount.name.toLowerCase().includes(searchInput.toLowerCase())||
-                discount.value.toString().toLowerCase().includes(searchInput.toLowerCase()),
-            );
-            setSearchedReceipts(filteredDiscount);
-        }
-    }, [searchInput, receipt]);
-    //Search Discount
-    //List Discount
-    useEffect(() => {
-        const ListReceipts = async () => {
-            try {
-                const response = await axios.get('http://localhost:5058/receipt');
-                setReceipts(response?.data?.$values);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        ListReceipts();
-    }, []);
-    //List Discount
-    //Delete Discount
+
+    //Delete receipt
     const handleTrashClicked = (id) => {
         setDeleteOne({ payload: id });
         setShowDeleteConfirm(true);
     };
+
     const handleDeleteConfirm = () => {
         if (!deleteOne || !deleteOne.payload) {
             console.error('Invalid deleteOne payload:', deleteOne);
             return;
         }
-        deleteDiscount(deleteOne.payload);
+        deleteReceipt(deleteOne.payload);
     };
-    const deleteDiscount = async (payload) => {
+
+    const deleteReceipt = async (payload) => {
         try {
-            const response = await axios.delete(`http://localhost:5058/discount/${payload}`);
+            const response = await axios.delete(`http://localhost:5058/receipt/${payload}`);
             if (response.status === 200) {
-                showToast(response?.data?.message, 'success');
-                setReceipts((prev) => prev.filter((discount) => discount.id !== payload));
+                showToast('Receipt deleted successfully', 'success');
+                setReceipts((prev) => prev.filter((receipt) => receipt.id !== payload));
                 setSearchInput('');
             }
         } catch (error) {
@@ -228,52 +294,23 @@ const Receipt = () => {
             reset();
         }
     };
-    useEffect(() => {
-        const deleteAllDiscount = async () => {
-            try {
-                setPendingDelete(true);
-                // Create payload for deletion
-                const payload = deleteAll.payload.map((discountDelete) => discountDelete.id);
-                console.log('Delete payload', payload);
-                const url = 'http://localhost:5058/discount';
-                const response = await axios.delete(url, { data: payload });
-                console.log('Delete response', response);
-                if (response?.status === 200) {
-                    showToast(response?.data?.message, 'success');
-                    setReceipts(response?.data?.newDiscounts?.$values);
-                    setSearchedReceipts(response?.data?.newDiscounts?.$values);
-                    reset();
-                }
-            } catch (error) {
-                showToast(error?.response?.data?.message || 'Error deleting Discount', 'error');
-            } finally {
-                setPendingDelete(false);
-            }
-        };
 
-        if (deleteAll.yes) {
-            deleteAllDiscount();
-        }
-    }, [deleteAll.yes, deleteAll.payload]);
-    //Delete Discount
     const handleSelectedRowsChanged = ({ allSelected, selectedCount, selectedRows }) => {
         setDeleteAll({ count: selectedCount, payload: selectedRows });
         setClearSelectedRows(false);
     };
+
+    const handleCloseForm = () => {
+        if (actionMenuId || activeMenuId) {
+            setActionMenuId(null);
+            setActionMenuId(null);
+        }
+    };
+
     return (
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
-                {deleteAll.count === 0 ? (
-                    hasPermissionCreate ? (
-                        <FiPlus
-                            size={30}
-                            className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                            onClick={handleAddClicked}
-                        />
-                    ) : (
-                        ''
-                    )
-                ) : (
+                {deleteAll.count !== 0 && (
                     <BsTrash
                         size={30}
                         className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
@@ -292,15 +329,20 @@ const Receipt = () => {
                     onChange={(e) => setSearchInput(e.target.value)}
                 />
             </div>
+
+            {/* Datatable */}
             <DataTable
                 columns={columns}
                 data={data}
                 selectableRows
+                highlightOnHover
+                striped
                 onRowClicked={handleRowClicked}
                 onSelectedRowsChange={handleSelectedRowsChanged}
                 clearSelectedRows={clearSelectedRows}
                 pagination
             />
+
             {/* Show a toast */}
             {ToastContainer}
 
@@ -315,9 +357,29 @@ const Receipt = () => {
                     onDiscountUpdated={handleDiscountUpdated}
                 />
             )}
+
+            {/* Services used */}
+            {actionMenuId === 1 && (
+                <ServicesUsedForm
+                    receiptId={activeMenuId}
+                    onShow={actionMenuId !== null || actionMenuId != null}
+                    onClose={handleCloseForm}
+                />
+            )}
+
+            {/* Additional fee */}
+            {actionMenuId === 2 && (
+                <AdditionalFeeForm
+                    receiptId={activeMenuId}
+                    onShow={activeMenuId !== null || actionMenuId !== null}
+                    onClose={handleCloseForm}
+                />
+            )}
+
+            {/* Show confirmation when clicking on delete receipts */}
             {showDeleteAllConfirm && (
                 <ConfirmPopup
-                    header="Are you sure you want to delete all the selected Discounts?"
+                    header="Are you sure you want to delete all the selected Receipts?"
                     message="This action cannot be undone."
                     negativeChoice="Cancel"
                     positiveChoice={
@@ -342,10 +404,11 @@ const Receipt = () => {
                     onClose={() => setShowDeleteAllConfirm(false)}
                 />
             )}
-            {/* Show confirmation when clicking on delete a user*/}
+
+            {/* Show confirmation when clicking on delete a receipt*/}
             {showDeleteConfirm && (
                 <ConfirmPopup
-                    header="Are you sure you want to delete the selected Discounts?"
+                    header="Are you sure you want to delete the selected Receipt?"
                     message="This action cannot be undone."
                     negativeChoice="Cancel"
                     positiveChoice="Delete"

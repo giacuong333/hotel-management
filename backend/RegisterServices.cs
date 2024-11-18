@@ -26,6 +26,7 @@ class RegisterServices
         builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
         builder.Services.AddScoped<IServiceUsageRepository, ServiceUsageRepository>();
         builder.Services.AddScoped<IReceiptRepository, ReceiptRepository>();
+        builder.Services.AddScoped<IAdditionalFeeRepository, AdditionalFeeRepository>();
 
         // Register Services
         builder.Services.AddScoped<IAuthService, AuthService>();
@@ -41,6 +42,7 @@ class RegisterServices
         builder.Services.AddScoped<IDashboardService, DashboardService>();
         builder.Services.AddScoped<IServiceUsageService, ServiceUsageService>();
         builder.Services.AddScoped<IReceiptService, ReceiptService>();
+        builder.Services.AddScoped<IAdditionalFeeService, AdditionalFeeService>();
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     }

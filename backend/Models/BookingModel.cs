@@ -20,6 +20,7 @@ namespace backend.Models
             public DateTime? CheckOut { get; set; }
             public int? Status { get; set; }
             public int? CustomerId { get; set; }
+            public int? RoomId { get; set; }
 
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
             public DateTime CreatedAt { get; set; }
@@ -30,17 +31,14 @@ namespace backend.Models
             public DateTime? DeletedAt { get; set; }
 
             // Navigations
-            public virtual ICollection<BookingDetailModel>? BookingDetails { get; set; }
-
             [ForeignKey("CustomerId")]
             public virtual UserModel? Customer { get; set; }
-
             [ForeignKey("StaffCheckInId")]
             public virtual UserModel? StaffCheckIn { get; set; }
-
             [ForeignKey("StaffCheckOutId")]
             public virtual UserModel? StaffCheckOut { get; set; }
-
-            public ICollection<ServiceUsageModel> ServiceUsage { get; set; } // A booking can have many service usages
+            [ForeignKey("RoomId")]
+            public virtual RoomModel? Room { get; set; }
+            public ICollection<ServiceUsageModel>? ServiceUsage { get; set; }
       }
 }

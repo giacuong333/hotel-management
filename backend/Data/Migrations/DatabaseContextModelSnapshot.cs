@@ -66,9 +66,6 @@ namespace backend.Migrations
                     b.Property<int?>("DiscountId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StaffId")
-                        .HasColumnType("int");
-
                     b.Property<float?>("Total")
                         .HasColumnType("float");
 
@@ -81,8 +78,6 @@ namespace backend.Migrations
                         .IsUnique();
 
                     b.HasIndex("DiscountId");
-
-                    b.HasIndex("StaffId");
 
                     b.ToTable("Receipt");
                 });
@@ -226,6 +221,9 @@ namespace backend.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int?>("RoomId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("StaffCheckInId")
                         .HasColumnType("int");
 
@@ -244,6 +242,8 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("StaffCheckInId");
 
@@ -544,16 +544,9 @@ namespace backend.Migrations
                         .HasForeignKey("DiscountId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("backend.Models.UserModel", "Staff")
-                        .WithMany()
-                        .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Booking");
 
                     b.Navigation("Discount");
-
-                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("ServiceUsageModel", b =>
@@ -576,15 +569,15 @@ namespace backend.Migrations
             modelBuilder.Entity("backend.Models.BookingDetailModel", b =>
                 {
                     b.HasOne("backend.Models.BookingModel", "Booking")
-                        .WithMany("BookingDetails")
+                        .WithMany()
                         .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("RoomModel", "Room")
                         .WithMany()
                         .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Booking");
@@ -599,6 +592,11 @@ namespace backend.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("RoomModel", "Room")
+                        .WithMany()
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("backend.Models.UserModel", "StaffCheckIn")
                         .WithMany()
                         .HasForeignKey("StaffCheckInId")
@@ -610,6 +608,8 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Room");
 
                     b.Navigation("StaffCheckIn");
 
@@ -684,8 +684,6 @@ namespace backend.Migrations
 
             modelBuilder.Entity("backend.Models.BookingModel", b =>
                 {
-                    b.Navigation("BookingDetails");
-
                     b.Navigation("ServiceUsage");
                 });
 #pragma warning restore 612, 618
