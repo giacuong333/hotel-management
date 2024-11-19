@@ -26,7 +26,6 @@ const FormGroup = ({
     customParentParentInputStyle,
     options,
 }) => {
-    const [bookedDates, setBookedDates] = useState([]);
     return (
         <div className={`${customParentParentInputStyle}`}>
             {label && (

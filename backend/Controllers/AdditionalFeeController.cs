@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -53,7 +54,7 @@ namespace backend.Controllers
 
                 await _additionalFeeService.CreateAdditionalFee(additionalFee);
 
-                return Ok("Created additional fee successfully");
+                return StatusCode(201, new { message = "Created additional fee successfully" });
             }
             catch (UnauthorizedException ex)
             {
@@ -133,9 +134,9 @@ namespace backend.Controllers
             }
         }
 
-        // [DELETE] /additionalFee/{additionalFeeId}
+        // [DELETE] /additionalFee
         [HttpDelete]
-        public async Task<ActionResult> DeleteAdditionalFees([FromBody] ICollection<AdditionalFeeModel> additionalFeeIds)
+        public async Task<ActionResult> DeleteAdditionalFees([FromBody] List<int> additionalFeeIds)
         {
             try
             {

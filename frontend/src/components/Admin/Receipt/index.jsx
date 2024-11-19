@@ -33,6 +33,7 @@ const Receipt = () => {
     // Context menu
     const [activeMenuId, setActiveMenuId] = useState(null);
     const [actionMenuId, setActionMenuId] = useState(null);
+    const [activeBookingId, setActiveBookingId] = useState(null);
     const [menuItems, setMenuItems] = useState([
         { label: 'Services used', value: 1 },
         { label: 'Additional fee', value: 2 },
@@ -126,7 +127,7 @@ const Receipt = () => {
         },
         {
             name: 'Total',
-            selector: (row) => formatCurrency(row.total),
+            selector: (row) => row.total,
         },
         {
             name: 'Created At',
@@ -141,8 +142,11 @@ const Receipt = () => {
         });
     }
 
-    const handleMenuClick = (action) => {
+    const handleMenuClick = (action, bookingId = null) => {
         setActionMenuId(action);
+        if (action === 1) {
+            setActiveBookingId(bookingId);
+        }
     };
 
     const MenuTrigger = React.forwardRef((props, ref) => (
@@ -159,7 +163,7 @@ const Receipt = () => {
         booking: receipt?.bookingId,
         customer: receipt?.booking?.customer?.name,
         phone: receipt?.booking?.customer?.phoneNumber,
-        total: receipt?.total,
+        total: formatCurrency(receipt?.total),
         createdAt: receipt?.createdAt,
         actions: (
             <div className="d-flex align-items-center gap-3">
@@ -170,17 +174,18 @@ const Receipt = () => {
                         arrow={false}
                         visible={activeMenuId === receipt?.id}
                         onClickOutside={() => setActiveMenuId(null)}
-                        className="bg-white shadow px-0"
+                        className="bg-white shadow px-0 border"
                         content={
                             <div className="d-flex flex-column">
                                 {menuItems.map((item, index) => {
                                     return (
                                         <button
                                             key={index}
-                                            className="cursor-pointer bg-white customer-primary-button py-2 px-4 text-white"
+                                            className={`cursor-pointer bg-white text-black customer-primary-color-hover animation-effect py-2 px-4 ${
+                                                index === 0 ? 'border-bottom' : ''
+                                            }`}
                                             onClick={() => {
-                                                handleMenuClick(item.value);
-                                                // setActiveMenuId(null);
+                                                handleMenuClick(item.value, receipt.booking.id);
                                             }}
                                         >
                                             {item.label}
@@ -193,7 +198,7 @@ const Receipt = () => {
                         <MenuTrigger
                             onClick={(e) => {
                                 e.stopPropagation();
-                                setActiveMenuId(activeMenuId === receipt.id ? null : receipt.id);
+                                setActiveMenuId(receipt?.id);
                             }}
                         />
                     </Tippy>
@@ -216,7 +221,7 @@ const Receipt = () => {
         const { id } = e;
 
         try {
-            const response = await axios.get(`http://localhost:5058/discount/${id}`, {
+            const response = await axios.get(`http://localhost:5058/receipt/${id}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -318,6 +323,7 @@ const Receipt = () => {
                     />
                 )}
 
+                {/* Search Form */}
                 <FormGroup
                     id="search"
                     name="search"
@@ -346,29 +352,23 @@ const Receipt = () => {
             {/* Show a toast */}
             {ToastContainer}
 
-            {/* Show Form */}
+            {/* Receipt Form */}
             {showPanel && (
-                <ReceiptForm
-                    data={selectedReceipt}
-                    type={showPanel}
-                    isShowed={showPanel}
-                    onClose={() => setShowPanel(false)}
-                    onDiscountAdded={handleDiscountAdded}
-                    onDiscountUpdated={handleDiscountUpdated}
-                />
+                <ReceiptForm data={selectedReceipt} isShowed={showPanel} onClose={() => setShowPanel(false)} />
             )}
 
             {/* Services used */}
-            {actionMenuId === 1 && (
+            {actionMenuId && actionMenuId === 1 && (
                 <ServicesUsedForm
                     receiptId={activeMenuId}
+                    bookingId={activeBookingId}
                     onShow={actionMenuId !== null || actionMenuId != null}
                     onClose={handleCloseForm}
                 />
             )}
 
             {/* Additional fee */}
-            {actionMenuId === 2 && (
+            {actionMenuId && actionMenuId === 2 && (
                 <AdditionalFeeForm
                     receiptId={activeMenuId}
                     onShow={activeMenuId !== null || actionMenuId !== null}

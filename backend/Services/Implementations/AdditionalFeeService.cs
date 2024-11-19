@@ -25,7 +25,7 @@ public class AdditionalFeeService(IUnitOfWork unitOfWork) : IAdditionalFeeServic
         await _unitOfWork.CompleteAsync();
     }
 
-    public async Task DeleteAdditionalFees(ICollection<AdditionalFeeModel> additionalFeeIds)
+    public async Task DeleteAdditionalFees(List<int> additionalFeeIds)
     {
         await _unitOfWork.AdditionalFees.DeleteAdditionalFees(additionalFeeIds);
         await _unitOfWork.CompleteAsync();

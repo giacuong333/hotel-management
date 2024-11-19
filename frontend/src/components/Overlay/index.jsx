@@ -11,7 +11,7 @@ const Overlay = ({ isShow, onClose }) => {
                     bottom: 0,
                     left: 0,
                     backgroundColor: 'rgba(0,0,0,.6)',
-                    zIndex: 10,
+                    zIndex: 20,
                 }}
                 onClick={onClose}
             ></div>

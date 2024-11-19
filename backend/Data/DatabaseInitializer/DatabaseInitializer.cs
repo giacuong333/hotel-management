@@ -233,7 +233,7 @@ public static class Seed
             await context.SaveChangesAsync();
         }
 
-        // Seed Room Data
+        // Seed Room 
         if (!context.Room.Any())
         {
             context.Room.AddRange(
@@ -244,7 +244,7 @@ public static class Seed
                     Type = "VIP",
                     Description = "The Presidential Suite is the pinnacle of luxury and sophistication, offering an unparalleled level of comfort and style. This suite includes a spacious living area, a king-size bed, a private balcony with stunning views, and a dedicated butler service.",
                     BedNum = 4,
-                    Status = 2, // Assuming 2 is a 'Available' status
+                    Status = 2,
                     Price = 5000000,
                     Area = 50
                 },
@@ -266,7 +266,7 @@ public static class Seed
                     Type = "VIP",
                     Description = "Experience the ultimate in coastal luxury with our Ocean View Room. Situated on the upper floors, these rooms offer panoramic views of the ocean, along with plush furnishings and premium amenities for the perfect stay.",
                     BedNum = 6,
-                    Status = 2,
+                    Status = 3,
                     Price = 8000000,
                     Area = 100
                 },
@@ -277,7 +277,7 @@ public static class Seed
                     Type = "VIP",
                     Description = "Experience ultimate tranquility in our Mountain View Deluxe Room, offering breathtaking panoramic views of the surrounding mountains. Designed with relaxation in mind, this room features a spacious layout and modern amenities.",
                     BedNum = 2,
-                    Status = 1, // Assuming 1 is a 'Booked' status
+                    Status = 2,
                     Price = 1000000,
                     Area = 40
                 },
@@ -288,7 +288,7 @@ public static class Seed
                     Type = "VIP",
                     Description = "A luxury suite room is typically a premium, upscale accommodation in a hotel or resort, offering a high level of comfort, exquisite decor, and upscale amenities. This suite is perfect for guests seeking exclusivity and elegance.",
                     BedNum = 1,
-                    Status = 2,
+                    Status = 1,
                     Price = 200000,
                     Area = 20
                 },
@@ -299,7 +299,7 @@ public static class Seed
                     Type = "VIP",
                     Description = "A Junior Suite Room typically refers to a type of hotel room that offers more space and amenities compared to a standard room. This suite is perfect for guests who need extra space, a cozy sitting area, and enhanced comfort.",
                     BedNum = 1,
-                    Status = 3, // Assuming 3 is a 'Under Maintenance' status
+                    Status = 1,
                     Price = 300000,
                     Area = 30
                 }

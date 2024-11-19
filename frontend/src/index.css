@@ -66,6 +66,16 @@ h4 {
     }
 }
 
+.additionalFee-button-hover:hover {
+    background: #fff !important;
+    color: #35776d !important;
+    border: 1px solid #35776d !important;
+}
+
+.primary-bd-color-focus.additionalFee-input-focus:focus-within {
+    border: 1px solid #35776d !important;
+}
+
 .social-medias-hover {
     color: white !important;
     background: #000 !important;
@@ -136,7 +146,7 @@ h4 {
 }
 
 .customer-primary-button {
-    background-color: var(--customer-primary-color) !important;
+    background-color: var(--customer-primary-color);
     border-color: var(--customer-primary-color) !important;
     transition: all 0.5s ease-in-out;
 

@@ -15,16 +15,7 @@ public class AdditionalFeeRepository(DatabaseContext context) : GenericRepositor
 
     public async Task CreateAdditionalFee(AdditionalFeeModel additionalFee)
     {
-        var receipt = await _context.Receipt.FindAsync(additionalFee.ReceiptId);
-        if (receipt != null)
-        {
-            receipt.AdditionalFees ??= new List<AdditionalFeeModel>();
-
-            ((List<AdditionalFeeModel>)receipt.AdditionalFees).Add(additionalFee);
-            receipt.UpdatedAt = DateTime.UtcNow;
-
-            _context.Receipt.Update(receipt);
-        }
+        await CreateAsync(additionalFee);
     }
 
     public async Task UpdateAdditionalFee(AdditionalFeeModel additionalFee, int receiptId)
@@ -56,15 +47,15 @@ public class AdditionalFeeRepository(DatabaseContext context) : GenericRepositor
         }
     }
 
-    public async Task DeleteAdditionalFees(ICollection<AdditionalFeeModel> additionalFeeIds)
+    public async Task DeleteAdditionalFees(List<int> additionalFeeIds)
     {
 
-        foreach (var additionalFee in additionalFeeIds)
+        foreach (var additionalFeeId in additionalFeeIds)
         {
-            var additionalFeeFromDatabase = await GetByIdAsync((int)additionalFee.Id);
+            var additionalFeeFromDatabase = await GetByIdAsync(additionalFeeId);
             if (additionalFeeFromDatabase != null)
             {
-                await DeleteAsync((int)additionalFeeFromDatabase.Id);
+                await DeleteAsync(additionalFeeId);
             }
         }
     }

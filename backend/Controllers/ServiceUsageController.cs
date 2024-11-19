@@ -19,6 +19,62 @@ namespace backend.Controllers
             throw new UnauthorizedAccessException("User ID not found in claims.");
         }
 
+        // [POST] /serviceUsage
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult> CreateServiceForCustomer([FromBody] ServiceUsageModel service)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest("Missing bookingId or userId");
+
+                await _serviceUsageService.CreateServiceForCustomerAsync((int)service.BookingId, (int)service.ServiceId, (int)service.Quantity);
+                return StatusCode(201, new { message = "Create service successfully" });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // [DELETE] /serviceUsage
+        [HttpDelete]
+        public async Task<ActionResult> DeleteServiceUsage([FromBody] List<int> ids)
+        {
+            try
+            {
+                if (ids == null || !ids.Any())
+                    return BadRequest("No service usage IDs provided");
+
+                if (!ModelState.IsValid)
+                    return BadRequest("Missing bookingId or userId");
+
+                await _serviceUsageService.DeleteServiceUsageAsync(ids);
+                return Ok("Service usage deleted successfully");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error" + ex.Message);
+            }
+        }
+
         // [GET] /serviceUsage/services_used
         [HttpGet("services_used/{bookingId}")]
         [Authorize]

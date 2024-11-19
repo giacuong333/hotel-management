@@ -80,6 +80,8 @@ namespace Repositories.Implementations
                     Booking = new
                     {
                         r.Booking!.Id,
+                        r.Booking.CheckIn,
+                        r.Booking.CheckOut,
                         Customer = new
                         {
                             r.Booking.Customer!.Id,
@@ -90,6 +92,7 @@ namespace Repositories.Implementations
                         ServiceUsage = r.Booking.ServiceUsage.Select(s => new
                         {
                             s.Id,
+                            s.Quantity,
                             Service = new
                             {
                                 s.Service!.Id,
@@ -103,6 +106,8 @@ namespace Repositories.Implementations
                             r.Booking.Room!.Name,
                             r.Booking.Room!.Price,
                             r.Booking.Room!.Type,
+                            r.Booking.Room!.BedNum,
+                            r.Booking.Room!.Area,
                         }
                     },
                     Discount = new

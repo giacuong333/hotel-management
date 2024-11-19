@@ -3,7 +3,17 @@ import Overlay from '../Overlay';
 
 import { IoClose } from 'react-icons/io5';
 
-const ConfirmPopup = ({ header, message, positiveChoice, negativeChoice, onYes, isShow, onClose }) => {
+const ConfirmPopup = ({
+    customCloseBtn,
+    customePositiveChoiceBtn,
+    header,
+    message,
+    positiveChoice,
+    negativeChoice,
+    onYes,
+    isShow,
+    onClose,
+}) => {
     return (
         isShow && (
             <>
@@ -13,7 +23,7 @@ const ConfirmPopup = ({ header, message, positiveChoice, negativeChoice, onYes, 
                         position: 'fixed',
                         top: '50%',
                         left: '50%',
-                        zIndex: 20,
+                        zIndex: 30,
                         transform: 'translate(-50%, -50%)',
                         maxWidth: '500px',
                         maxHeight: '400px',
@@ -30,6 +40,7 @@ const ConfirmPopup = ({ header, message, positiveChoice, negativeChoice, onYes, 
                             top: 18,
                             right: 18,
                             backgroundColor: 'rgb(232, 191, 150)',
+                            ...customCloseBtn,
                         }}
                         onClick={onClose}
                     />
@@ -48,6 +59,7 @@ const ConfirmPopup = ({ header, message, positiveChoice, negativeChoice, onYes, 
                             <button
                                 onClick={onYes}
                                 className="w-full py-2 px-4 rounded-3 text-uppercase customer-primary-button text-white align-middle"
+                                style={{ ...customePositiveChoiceBtn }}
                             >
                                 {positiveChoice}
                             </button>

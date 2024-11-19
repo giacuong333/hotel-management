@@ -1,252 +1,317 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
-import FormGroup from '~/components/FormGroup';
 import Overlay from '~/components/Overlay';
-import Button from 'react-bootstrap/Button';
-import ToastContainer, { showToast } from '~/utils/showToast';
-import { isEmpty } from '~/utils/formValidation';
+import ToastContainer from '~/utils/showToast';
 
-import { FaRegUser } from 'react-icons/fa6';
-import { IoClose } from 'react-icons/io5';
-import Receipt from '..';
+import DataTable from 'react-data-table-component';
+import formatCurrency from '~/utils/currencyPipe';
 
+const customStyles = {
+    header: {
+        style: {
+            border: '2px solid #e0e0e0',
+        },
+    },
+    headRow: {
+        style: {
+            border: '2px solid #35776d',
+            backgroundColor: '#35776d',
+            color: '#fff',
+        },
+    },
+    headCells: {
+        style: {
+            border: '1px solid #ccc',
+        },
+    },
+    rows: {
+        style: {
+            borderBottom: '1px solid #ddd',
+        },
+        highlightOnHoverStyle: {
+            border: '1px solid #b5b5b5',
+        },
+    },
+    cells: {
+        style: {
+            border: '1px solid #ddd',
+        },
+    },
+};
 
-const ReceiptForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated, isShowed }) => {
-    const [pendingSubmit, setPendingSubmit] = useState(false);
+const roomColumns = [
+    {
+        name: 'ID',
+        selector: (row) => row.id,
+        center: true,
+    },
+    {
+        name: 'Name',
+        selector: (row) => row.name,
+    },
+    {
+        name: 'Type',
+        selector: (row) => row.type,
+    },
+    {
+        name: 'Beds',
+        selector: (row) => row.bedNum,
+        center: true,
+    },
+    {
+        name: 'Area',
+        selector: (row) => `${row.area}m2`,
+    },
+    {
+        name: 'Price',
+        selector: (row) => row.formattedPrice,
+    },
+];
 
-    const [fields, setFields] = useState({
-        name: data?.name || '',
-        value: data?.value || '',
-        status: data?.status || '',
-        startAt: data?.startAt || '',
-        endAt: data?.endAt || '',
-    });
+const servicesUsedColumns = [
+    {
+        name: 'ID',
+        selector: (row) => row.id,
+        center: true,
+    },
+    {
+        name: 'Name',
+        selector: (row) => row.name,
+    },
+    {
+        name: 'Quantity',
+        selector: (row) => row.quantity,
+        center: true,
+    },
+    {
+        name: 'Price',
+        selector: (row) => row.formattedPrice,
+    },
+];
 
-    const [errors, setErrors] = useState({});
+const additionalFeesColumns = [
+    {
+        name: 'ID',
+        selector: (row) => row.id,
+        center: true,
+    },
+    {
+        name: 'Name',
+        selector: (row) => row.name,
+    },
+    {
+        name: 'Price',
+        selector: (row) => row.formattedPrice,
+    },
+];
 
-    // Reset form fields whenever `type` or `data` changes
+const ReceiptForm = ({ data, onClose, isShowed }) => {
+    const [servicesData, setServicesData] = useState([]);
+    const [totalServicesUsed, setTotalServicesUsed] = useState(null);
+    const [additionalFees, setAdditionalFees] = useState([]);
+    const [totalAdditionalFees, setTotalAdditionalFees] = useState(null);
+    const [differenceDate, setDifferenceData] = useState(null);
+    const [subTotal, setSubTotal] = useState(null);
+    const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(null);
+    console.log('Data', data);
+
+    // Services used
     useEffect(() => {
-        setFields({
-            name: data?.name || '',
-            value: data?.value || '',
-            status: data?.status || '',
-            startAt: data?.startAt || '',
-            endAt: data?.endAt || '',
+        let totalOfServices = 0;
+        const servicesData = data?.booking?.serviceUsage?.$values.map((s) => {
+            totalOfServices += s?.quantity * s?.service?.price;
+            return { ...s.service, formattedPrice: formatCurrency(s?.service?.price), quantity: s.quantity };
         });
-        setErrors({});
-    }, [type, data]);
+        setTotalServicesUsed(totalOfServices);
+        setServicesData(servicesData);
+    }, [data]);
 
-    const handleValidation = () => {
-        const validationErrors = {};
+    // Additional Fees
+    useEffect(() => {
+        let totalOfFees = 0;
+        const additionalFees = data?.additionalFees?.$values.map((s) => {
+            totalOfFees += s?.price;
+            return { ...s, formattedPrice: formatCurrency(s?.price) };
+        });
+        setTotalAdditionalFees(totalOfFees);
+        setAdditionalFees(additionalFees);
+    }, [data]);
 
-        if (isEmpty(fields.name)) validationErrors.name = 'Name is required';
-        if (isEmpty(fields.value)) validationErrors.value = 'Value is required';
-        if (isNaN(fields.status)) validationErrors.status = 'status is required';
-        if (isEmpty(fields.startAt)) validationErrors.startAt = 'Start At is required';
-        if (isEmpty(fields.endAt)) validationErrors.endAt = 'End At is required';
+    // Calculate stayed dates
+    useEffect(() => {
+        const checkIn = new Date(data?.booking?.checkIn);
+        const checkOut = new Date(data?.booking?.checkOut);
+        const timeDifference = Math.abs(checkOut - checkIn);
+        const datesStayed = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+        setDifferenceData(datesStayed);
+    }, [data?.booking?.checkIn, data?.booking?.checkOut]);
 
-        setErrors(validationErrors);
-
-        return Object.keys(validationErrors).length === 0;
-    };
-    const handleSubmitClicked = async (event) => {
-        event.preventDefault();
-        if (handleValidation()) {
-            const payload = {
-                ...fields,
-                startAt: fields.startAt ? new Date(fields.startAt).toISOString().split('.')[0] : null,
-                endAt: fields.endAt ? new Date(fields.endAt).toISOString().split('.')[0] : null,
-
-            };
-            const url = 'http://localhost:5058/discount';
-           
-            try {
-                setPendingSubmit(true);
-                if (type === 'add') {
-                    const response = await axios.post(`${url}/`, payload);
-                    console.log(response);
-                    if (response?.status === 200) {
-                        showToast('Discount created successfully', 'success');
-                        setTimeout(handleClose, 2000);
-                        const newDiscount = response?.data;
-                        onDiscountAdded(newDiscount);
-                    }
-                } else if (type === 'edit' ) {
-                    
-                    const response = await axios.put(`${url}/${data?.id}`, payload);
-                     console.log(response);
-                    if (response?.status === 200) {
-                        showToast('Discount updated successfully', 'success');
-                        setTimeout(handleClose, 2000);
-                        const  currentDiscount  = response?.data;
-                        onDiscountUpdated(currentDiscount);
-                    }
-                
-                }
-            }catch (error) {
-                if (error?.response?.status === 409) {
-                    showToast(error?.response?.data?.message, 'error');
-                } else {
-                    showToast(error?.message, 'error');
-                }
-                console.log(error);
-            } finally {
-                setPendingSubmit(false);
-            }
+    // Calculate subtotal, subtotalwithdiscount
+    useEffect(() => {
+        if (differenceDate && data?.booking?.checkIn && data?.booking?.checkOut) {
+            setSubTotal(differenceDate * data?.booking?.room?.price + totalServicesUsed);
+            setSubTotalWithDiscount(
+                (differenceDate * data?.booking?.room?.price + totalServicesUsed) *
+                    ((100 - data?.discount?.value) / 100),
+            );
         }
-    };
+    }, [
+        differenceDate,
+        data?.booking?.checkIn,
+        data?.booking?.checkOut,
+        data?.booking?.room?.price,
+        data?.discount?.value,
+        totalServicesUsed,
+    ]);
 
-    const handleClose = useCallback(() => {
-        setErrors({});
-        setFields({
-            name: '',
-            value: '',
-            status: '',
-            startAt: '',
-            endAt: '',
-        });
-        onClose();
-    }, [onClose]);
-
-    const handleFieldInput = useCallback((field) => {
-        return (event) => {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                [field]: '',
-            }));
-            const value = event.target.value;
-            setFields((prevFields) => ({
-                ...prevFields,
-                [field]: field === 'status' ? (value === '1' ? true : false) : value,
-            }));
-        };
-    }, []);
+    console.log('Subtotal', subTotal);
 
     return (
         <>
+            {/* Toast */}
             {ToastContainer}
-            <Overlay isShow={isShowed} onClose={handleClose} />
-            <div
+
+            <Overlay isShow={isShowed} onClose={onClose} />
+            <main
+                className=""
                 style={{
-                    width: '500px',
-                    height: '550px',
+                    maxWidth: '70rem',
+                    width: '100%',
                     position: 'fixed',
                     top: '50%',
                     left: '50%',
                     zIndex: 20,
                     transform: 'translate(-50%, -50%)',
-                    padding: '0 1rem',
+                    padding: '1.4rem 2rem 2rem 2rem',
                 }}
             >
-                <form
-                    className="w-full h-full"
-                    style={{
-                        backgroundColor: '#fff',
-                        padding: '2rem',
-                        borderRadius: '1rem',
-                    }}
-                >
-                    <div className="d-flex align-items-center justify-content-between">
-                        <p className="fw-semibold fs-5 text-start text-capitalize">Details</p>
-                        <IoClose size={28} className="cursor-pointer" onClick={handleClose} />
-                    </div>
-                    <div
-                        className="hide-scrollbar w-full h-full pb-4"
-                        style={{
-                            overflowY: 'scroll',
-                        }}
-                    >
-                        <FormGroup
-                            label="Name"
-                            id="name"
-                            name="name"
-                            type="text"
-                            error={errors.name}
-                            Icon={FaRegUser}
-                            value={fields?.name}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onInput={handleFieldInput('name')}
-                        />
-                        <FormGroup
-                            label="Value"
-                            id="value"
-                            name="value"
-                            type="text"
-                            error={errors.value}
-                            Icon={FaRegUser}
-                            value={fields?.value}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onInput={handleFieldInput('value')}
-                        />
-                        <FormGroup
-                            label="Status"
-                            id="status"
-                            name="Status"
-                            type="select"
-                            error={errors.status}
-                            Icon={FaRegUser}
-                            value={fields?.status ? '1' : '0'}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onInput={handleFieldInput('status')}
-                            options={[
-                                { value: '0', label: 'unActive' },
-                                { value: '1', label: 'Active' },
-                            ]}
-                        />
-                        <FormGroup
-                            label="Start At"
-                            id="startAt"
-                            name="startAt"
-                            type="date"
-                            error={errors.startAt}
-                            value={fields?.startAt}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onInput={handleFieldInput('startAt')}
-                        />
-                        <FormGroup
-                            label="End At"
-                            id="endAt"
-                            name="endAt"
-                            type="date"
-                            error={errors.endAt}
-                            value={fields?.endAt}
-                            disabled={type === 'see'}
-                            customParentInputStyle="p-1 pe-3 rounded-2"
-                            customParentParentInputStyle="mt-2"
-                            onInput={handleFieldInput('endAt')}
-                        />
-                        {type !== 'see' && (
-                            <div className="d-flex align-items-center gap-2 mt-4">
-                                <Button
-                                    type="submit"
-                                    variant="outline-secondary"
-                                    className={`w-full p-2 primary-bg-color primary-bg-color-hover border`}
-                                    onClick={handleClose}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="primary"
-                                    className={`w-full p-2 customer-primary-button`}
-                                    onClick={handleSubmitClicked}
-                                >
-                                    Submit
-                                </Button>
+                <div className="d-flex flex-column gap-4">
+                    <div>
+                        <div className="bg-white shadow p-5" style={{ overflow: 'scroll', height: '50rem' }}>
+                            <div
+                                className="d-flex align-items-center justify-content-between pb-5"
+                                style={{ borderBottom: '2px solid #35776d' }}
+                            >
+                                <div>
+                                    <p>ID: #{data?.id}</p>
+                                </div>
+                                <div className="bg-black shadow p-2">
+                                    <img
+                                        src="http://localhost:3000/static/media/luxestay_logo.b519c98a9069f3de9e39.b519c98a9069f3de9e39.png"
+                                        alt="Logo"
+                                    />
+                                </div>
                             </div>
-                        )}
+
+                            <div className="d-flex flex-wrap align-items-start justify-content-between gap-4 pt-3">
+                                <div>
+                                    <h5>BILL TO</h5>
+                                    <span className="d-flex align-items-center gap-2">
+                                        <p className="fw-semibold">Name:</p>
+                                        <small className="text-capitalize text-secondary">
+                                            {data?.booking?.customer?.name}
+                                        </small>
+                                    </span>
+                                    <span className="d-flex align-items-center gap-2">
+                                        <p className="fw-semibold">Email:</p>
+                                        <small className="text-capitalize text-secondary">
+                                            {data?.booking?.customer?.email}
+                                        </small>
+                                    </span>
+                                    <span className="d-flex align-items-center gap-2">
+                                        <p className="fw-semibold">Phone:</p>
+                                        <small className="text-capitalize text-secondary">
+                                            {data?.booking?.customer?.phoneNumber}
+                                        </small>
+                                    </span>
+                                </div>
+                                <div>
+                                    <h5>Invoice #{data?.id}</h5>
+                                    <span className="d-flex align-items-center gap-2">
+                                        <p className="fw-semibold">Invoice Date:</p>
+                                        <small className="text-capitalize text-secondary">
+                                            {String(data?.createdAt).split('T')[0]}
+                                        </small>
+                                    </span>
+                                    <span className="d-flex align-items-center gap-2">
+                                        <p className="fw-semibold">Check-In Date:</p>
+                                        <small className="text-capitalize text-secondary">
+                                            {String(data?.booking?.checkIn).split('T')[0]}
+                                        </small>
+                                    </span>
+                                    <span className="d-flex align-items-center gap-2">
+                                        <p className="fw-semibold">Check-Out Date:</p>
+                                        <small className="text-capitalize text-secondary">
+                                            {String(data?.booking?.checkOut).split('T')[0]}
+                                        </small>
+                                    </span>
+                                    <span className="d-flex align-items-center gap-2">
+                                        <p className="fw-semibold">Stayed Date:</p>
+                                        <small className="text-capitalize text-secondary">
+                                            {differenceDate || 'Calculating...'}
+                                        </small>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="pt-2 d-flex flex-column gap-2">
+                                <h5 className="m-0">Rooms Used</h5>
+                                <DataTable
+                                    columns={roomColumns}
+                                    data={[
+                                        {
+                                            ...data?.booking?.room,
+                                            formattedPrice: formatCurrency(data?.booking?.room?.price),
+                                        },
+                                    ]}
+                                    customStyles={customStyles}
+                                />
+                            </div>
+                            <div className="pt-2 d-flex flex-column gap-2">
+                                <h5 className="m-0">Services Used</h5>
+                                <DataTable
+                                    pagination
+                                    columns={servicesUsedColumns}
+                                    data={servicesData}
+                                    customStyles={customStyles}
+                                />
+                            </div>
+                            <div className="pt-2 d-flex flex-column gap-2">
+                                <h5 className="m-0">Additional Fees</h5>
+                                <DataTable
+                                    pagination
+                                    columns={additionalFeesColumns}
+                                    data={additionalFees}
+                                    customStyles={customStyles}
+                                />
+                            </div>
+
+                            <div className="d-flex align-items-start justify-content-end pt-4">
+                                <div className="d-flex flex-column align-items-end gap-2">
+                                    <span className="d-flex align-items-center justify-content-between gap-5">
+                                        <p>Subtotal</p>
+                                        <p>{formatCurrency(subTotal)}</p>
+                                    </span>
+                                    <span className="d-flex align-items-center justify-content-between gap-5">
+                                        <p>Discount {data?.discount?.value}%</p>
+                                        <p>{formatCurrency(subTotalWithDiscount)}</p>
+                                    </span>
+                                    <span className="d-flex align-items-center justify-content-between gap-5">
+                                        <p>Additional Fees</p>
+                                        <p>{formatCurrency(totalAdditionalFees)}</p>
+                                    </span>
+                                    <span className="d-flex align-items-center justify-content-between gap-5">
+                                        <h6 className="fw-bold">Total</h6>
+                                        <h6 className="fw-bold">
+                                            {formatCurrency(totalAdditionalFees + subTotalWithDiscount)}
+                                        </h6>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </main>
         </>
     );
 };

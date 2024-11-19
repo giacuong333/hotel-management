@@ -1,10 +1,12 @@
+using System.ComponentModel.DataAnnotations;
 using backend.Models;
 
 public class ServiceUsageModel
 {
     public ServiceUsageModel() { }
 
-    public int? Id { get; set; }
+    [Key]
+    public int Id { get; set; }
     public int? BookingId { get; set; }
     public int? ServiceId { get; set; }
     public int? Quantity { get; set; }
