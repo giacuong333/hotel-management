@@ -29,6 +29,8 @@ class RegisterServices
         builder.Services.AddScoped<IAdditionalFeeRepository, AdditionalFeeRepository>();
         builder.Services.AddScoped<IGenericRepository<DiscountModel>, GenericRepository<DiscountModel>>();
         builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
+        builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
+
 
         // Register Services
         builder.Services.AddScoped<IAuthService, AuthService>();
@@ -46,6 +48,8 @@ class RegisterServices
         builder.Services.AddScoped<IReceiptService, ReceiptService>();
         builder.Services.AddScoped<IAdditionalFeeService, AdditionalFeeService>();
         builder.Services.AddScoped<IDiscountService, DiscountService>();
+        builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
