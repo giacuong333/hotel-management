@@ -15,6 +15,6 @@ public interface IUnitOfWork : IDisposable
     IRoleRepository Roles { get; }
     IRolePermissionRepository RolePermissions { get; }
     IDashboardRepository Dashboards { get; }
-
+    IDiscountRepository Discounts { get; }
     Task<int> CompleteAsync();
 }
