@@ -12,8 +12,13 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
+<<<<<<<< HEAD:backend/Migrations/20241120061934_InitialCreate.Designer.cs
     [Migration("20241120061934_InitialCreate")]
     partial class InitialCreate
+========
+    [Migration("20241120083506_discount")]
+    partial class discount
+>>>>>>>> f6b036eaaf190232d6109bf5c42d6ae73df56a16:backend/Migrations/20241120083506_discount.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

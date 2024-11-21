@@ -15,8 +15,9 @@ public class UnitOfWork(
     IRolePermissionRepository rolePermissions,
     IServiceRepository services,
     IServiceUsageRepository servicesUsage,
-    IDashboardRepository dashboards
-
+    IDashboardRepository dashboards,
+    IDiscountRepository discounts,
+    IStatisticsRepository statistics
     ) : IUnitOfWork
 {
     private readonly DatabaseContext _dbContext = dbContext;
@@ -33,6 +34,8 @@ public class UnitOfWork(
     public IServiceRepository? Services { get; } = services;
     public IDashboardRepository? Dashboards { get; } = dashboards;
     public IServiceUsageRepository ServicesUsage { get; } = servicesUsage;
+    public IDiscountRepository Discounts { get; } = discounts;
+    public IStatisticsRepository? Statistics { get; } = statistics;
 
     public async Task<int> CompleteAsync()
     {

@@ -152,6 +152,7 @@ public static class Seed
                      Dob = new DateTime(2024, 10, 12),
                      RoleId = 2
                  },
+                 
                  new UserModel
                  {
                      Id = 2,
@@ -228,7 +229,18 @@ public static class Seed
                     Gender = "male",
                     Dob = new DateTime(2024, 10, 5),
                     RoleId = 3
-                }
+                },
+                 new UserModel
+                 {
+                     Id = 9,
+                     Name = "Vo Dinh Van",
+                     Email = "dinhvanvo510@gmail.com",
+                     Password = Crypto.HashPassword("1"),
+                     PhoneNumber = "0398416537",
+                     Gender = "male",
+                     Dob = new DateTime(2024, 10, 12),
+                     RoleId = 2
+                 }
             );
             await context.SaveChangesAsync();
         }
@@ -387,7 +399,15 @@ public static class Seed
             );
             await context.SaveChangesAsync();
         }
-
+        //Seed Feedback
+        if(!context.Feedback.Any()){
+            context.Feedback.AddRange(
+                new () { Id = 1, UserId = 2, RoomId = 1, Description = "Good service",  CreatedAt = new DateTime(2024, 11, 20) },
+                new () { Id = 2, UserId = 3, RoomId = 2, Description = "Good service",  CreatedAt = new DateTime(2024, 11, 20) },
+                new () { Id = 3, UserId = 4, RoomId = 3, Description = "Good service",  CreatedAt = new DateTime(2024, 11, 21) },
+                new () { Id = 4, UserId = 2, RoomId = 4, Description = "Good service",  CreatedAt = new DateTime(2024, 12, 29) }
+            );
+        }
         // Seed Receipts
         if (!context.Receipt.Any())
         {

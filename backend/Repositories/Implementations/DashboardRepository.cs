@@ -6,8 +6,8 @@ using Repositories.Interfaces;
 
 namespace Repositories.Implementations
 {
-      public class DashboardRepository : IDashboardRepository
-      {
+    public class DashboardRepository : IDashboardRepository
+    {
         protected readonly DatabaseContext _context;
         private readonly DbSet<RoomModel> _dbSetRoom;
         private readonly DbSet<BookingModel> _dbSetBooking;
@@ -24,16 +24,16 @@ namespace Repositories.Implementations
 
         public async Task<IEnumerable<RoomModel>> GetAvailableRoomsAsync()
         {
-       
+
             return await _dbSetRoom
-                .Where(r => r.DeletedAt == null && r.Status == 1 )
+                .Where(r => r.DeletedAt == null && r.Status == 1)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<BookingModel>> GetBookingDetailsAsync()
         {
             var today = DateTime.Today;
-            return await _dbSetBooking.Where(bk => bk.DeletedAt == null  && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1)).Include(b => b.Customer)
+            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1)).Include(b => b.Customer)
                      .ToListAsync();
         }
         public async Task<IEnumerable<BookingModel>> GetBookingsByMonthAsync(string month)
@@ -56,21 +56,22 @@ namespace Repositories.Implementations
         public async Task<IEnumerable<BookingModel>> GetCancellationsAsync()
         {
             var today = DateTime.Today;
-            return await _dbSetBooking.Where(bk => bk.Status == 0 && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1))
+            return await _dbSetBooking.Where(bk => bk.Status == 0 && bk.UpdatedAt >= today && bk.UpdatedAt < today.AddDays(1))
                      .ToListAsync();
         }
 
         public async Task<IEnumerable<BookingModel>> GetPendingPaymentsAsync()
         {
             var today = DateTime.Today;
-            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.Status != 0 && bk.CheckIn == null  && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1))
+            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.Status != 0 && bk.Status != 3 && bk.UpdatedAt >= today && bk.UpdatedAt < today.AddDays(1))
                     .ToListAsync();
         }
 
         public async Task<IEnumerable<BookingModel>> GetTodayCheckoutsAsync()
         {
             var today = DateTime.Today;
-            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.Status != 0 && bk.CheckIn != null && bk.CheckOut != null && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1))
+            return await _dbSetBooking.Where(bk => bk.DeletedAt == null &&
+            bk.Status == 3 && bk.CheckOut >= today && bk.CheckOut < today.AddDays(1))
                     .ToListAsync();
         }
     }
