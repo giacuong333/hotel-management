@@ -11,5 +11,4 @@ public interface IUserService
       Task CreateUserAsync(UserModel user);
       Task UpdateUserAsync(UserModel user);
       Task DeleteUserAsync(object id);
-      Task<int> SaveAsync();
 }

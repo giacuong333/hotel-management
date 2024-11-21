@@ -12,7 +12,6 @@ namespace backend.Database
         public DbSet<RoleModel> Role { get; set; }
         public DbSet<RoomModel> Room { get; set; }
         public DbSet<BookingModel> Booking { get; set; }
-        public DbSet<BookingDetailModel> BookingDetail { get; set; }
         public DbSet<DiscountModel> Discount { get; set; }
         public DbSet<FeedBackModel> Feedback { get; set; }
         public DbSet<GalleryModel> Gallery { get; set; }

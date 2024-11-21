@@ -12,7 +12,7 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241118093336_InitialCreate")]
+    [Migration("20241120061934_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -139,11 +139,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("ServiceUsageModel", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("BookingId")
                         .HasColumnType("int");
@@ -161,32 +161,6 @@ namespace backend.Migrations
                     b.HasIndex("ServiceId");
 
                     b.ToTable("ServiceUsage");
-                });
-
-            modelBuilder.Entity("backend.Models.BookingDetailModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("RoomId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
-
-                    b.HasIndex("RoomId");
-
-                    b.ToTable("BookingDetail");
                 });
 
             modelBuilder.Entity("backend.Models.BookingModel", b =>
@@ -567,25 +541,6 @@ namespace backend.Migrations
                     b.Navigation("Booking");
 
                     b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("backend.Models.BookingDetailModel", b =>
-                {
-                    b.HasOne("backend.Models.BookingModel", "Booking")
-                        .WithMany()
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RoomModel", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("backend.Models.BookingModel", b =>

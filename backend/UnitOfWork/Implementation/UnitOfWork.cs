@@ -21,7 +21,6 @@ public class UnitOfWork(
 {
     private readonly DatabaseContext _dbContext = dbContext;
 
-
     public IUserRepository? Users { get; } = users;
     public IBookingRepository? Bookings { get; } = bookings;
     public IRoomRepository? Rooms { get; } = rooms;

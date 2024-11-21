@@ -4,7 +4,6 @@ import DataTable from 'react-data-table-component';
 import { BsTrash } from 'react-icons/bs';
 import { FaSortAlphaDownAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
-import { FiPlus } from 'react-icons/fi';
 import BookingForm from './BookingForm';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
@@ -35,8 +34,6 @@ const Booking = () => {
     ]);
     const { updateBooking: hasPermissionUpdate, deleteBooking: hasPermissionDelete } = useCheckPermission();
 
-    console.log('Selected Booking', selectedBookings);
-
     // For deleting selected bookings
     useEffect(() => {
         const deleteAllBookings = async () => {
@@ -65,8 +62,6 @@ const Booking = () => {
             } catch (error) {
                 console.log(error);
                 showToast(error?.response?.data?.message || 'Something went wrong while deleting bookings', 'error');
-            } finally {
-                reset();
             }
         };
 
@@ -112,6 +107,7 @@ const Booking = () => {
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.get(url, headers);
             if (response?.status === 200) {
+                console.log('Response', response);
                 const data = response?.data?.$values.map((booking) => {
                     booking.statusName =
                         booking.status === 0
@@ -181,6 +177,7 @@ const Booking = () => {
             }
         } catch (error) {
             console.error('Error fetching user details:', error);
+            showToast('Error while fetching booking details', 'error');
         }
     }, []);
 
@@ -215,7 +212,7 @@ const Booking = () => {
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.put(`${url}/${bookingId}`, statusCode, headers);
             if (response?.status === 200) {
-                fetchBookings();
+                await fetchBookings();
                 hideContext();
             }
         } catch (error) {
@@ -271,14 +268,14 @@ const Booking = () => {
             selector: (row) => row.actions,
         });
     }
-    console.log(searchedBookings);
+
     const data = searchedBookings?.map((booking, index) => ({
         id: booking?.id,
         no: index + 1,
         customer: booking?.customer?.name,
         phoneNumber: booking?.customer?.phoneNumber,
-        checkIn: booking?.checkIn,
-        checkOut: booking?.checkOut,
+        checkIn: booking?.staffCheckIn?.name,
+        checkOut: booking?.staffCheckOut?.name,
         statusName: (
             <Tippy
                 interactive={true}
@@ -350,12 +347,7 @@ const Booking = () => {
             </Tippy>
         ),
         actions: hasPermissionDelete ? (
-            <BsTrash
-                size={18}
-                className="cursor-pointer"
-                onClick={() => handleTrashClicked(booking?.id)}
-                style={{ color: '#E57373' }}
-            />
+            <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(booking?.id)} />
         ) : (
             <></>
         ),
@@ -418,13 +410,7 @@ const Booking = () => {
 
                 {/* Show Form */}
                 {showPanel && selectedBookings.status !== 0 && selectedBookings.status !== 3 && (
-                    <BookingForm
-                        data={selectedBookings}
-                        type={showPanel}
-                        isShowed={showPanel}
-                        onClose={() => setShowPanel(false)}
-                        onBookingAdded={handleBookingAdded}
-                    />
+                    <BookingForm data={selectedBookings} isShowed={showPanel} onClose={() => setShowPanel(false)} />
                 )}
 
                 {/* Show confirmation when clicking on delete all bookings */}

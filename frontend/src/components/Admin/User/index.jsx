@@ -83,6 +83,7 @@ const User = () => {
                 const headers = { headers: { 'Content-Type': 'application/json' } };
                 const response = await axios.get(url, headers);
                 if (response.status === 200) {
+                    console.log('Response', response);
                     setUsers(response.data.$values || []);
                     setSearchedUsers(response.data.$values || []);
                 }
@@ -149,7 +150,7 @@ const User = () => {
             const url = 'http://localhost:5058/user/avatar';
             const response = await axios.post(url, payload);
             console.log(response);
-            response?.status === 201 && showToast(response?.data?.obj?.message, 'success');
+            response?.status === 201 && showToast('Avatar set successfully', 'success');
         } catch (error) {
             showToast(
                 error?.response?.data?.message ||
@@ -285,22 +286,12 @@ const User = () => {
         actions: (
             <>
                 {hasPermissionUpdate ? (
-                    <FiEdit
-                        size={18}
-                        className="cursor-pointer me-3"
-                        onClick={() => handleEditClicked(user)}
-                        style={{ color: '#80CBC4' }}
-                    />
+                    <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} />
                 ) : (
                     ''
                 )}
                 {hasPermissionDelete ? (
-                    <BsTrash
-                        size={18}
-                        className="cursor-pointer"
-                        onClick={() => handleTrashClicked(user.id)}
-                        style={{ color: '#E57373' }}
-                    />
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(user.id)} />
                 ) : (
                     ''
                 )}
@@ -319,7 +310,7 @@ const User = () => {
                             onClick={handleAddClicked}
                         />
                     ) : (
-                        ''
+                        <></>
                     )
                 ) : (
                     <BsTrash
@@ -407,7 +398,7 @@ const User = () => {
                         }
                         isShow={showDeleteAllConfirm}
                         onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                        onClose={() => setShowDeleteAllConfirm(false)}
+                        onClose={reset}
                     />
                 )}
 

@@ -70,7 +70,7 @@ const AdditionalFeeForm = ({ receiptId, onShow, onClose }) => {
     const [showConfirmDeleteMany, setShowConfirmDeleteMany] = useState({ show: false, confirm: false });
 
     useEffect(() => {
-        receiptId && fetchAdditionalFees();
+        (receiptId || fields.receiptId) && fetchAdditionalFees();
     }, []);
 
     const fetchAdditionalFees = async () => {

@@ -71,38 +71,27 @@ const Discount = () => {
         id: discount?.id,
         no: index + 1,
         name: discount?.name,
-        value: discount?.value + "%",
-        status: discount?.status === true ? 'Active' : "UnActive",
+        value: discount?.value + '%',
+        status: discount?.status === true ? 'Active' : 'UnActive',
         startAt: discount?.startAt,
         endAt: discount?.endAt,
         actions: (
             <>
                 {hasPermissionUpdate ? (
-                    <FiEdit
-                        size={18}
-                        className="cursor-pointer me-3"
-                        onClick={() => handleEditClicked(discount)}
-                        style={{ color: '#80CBC4' }}
-                    />
+                    <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(discount)} />
                 ) : (
                     ''
                 )}
                 {hasPermissionDelete ? (
-                    <BsTrash
-                        size={18}
-                        className="cursor-pointer"
-                        onClick={() => handleTrashClicked(discount.id)}
-                        style={{ color: '#E57373' }}
-                    />
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(discount.id)} />
                 ) : (
                     ''
                 )}
             </>
         ),
     }));
-   
 
-console.log("Discounts", searchedDiscounts)
+    console.log('Discounts', searchedDiscounts);
 
     const handleEditClicked = (discount) => {
         setSelectedDiscount(discount);
@@ -116,7 +105,7 @@ console.log("Discounts", searchedDiscounts)
 
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
-        
+
         try {
             const response = await axios.get(`http://localhost:5058/discount/${id}`, {
                 headers: {
@@ -137,13 +126,11 @@ console.log("Discounts", searchedDiscounts)
     };
 
     const handleDiscountAdded = (newDiscount) => {
-       
         setDiscounts((prevDiscounts) => [...prevDiscounts, newDiscount]);
         setSearchedDiscounts((prevDiscounts) => [...prevDiscounts, newDiscount]);
     };
-    
+
     const handleDiscountUpdated = (currentDiscount) => {
-       
         setDiscounts((prevDiscounts) =>
             prevDiscounts.map((prevDiscount) =>
                 prevDiscount.id === currentDiscount.id ? { ...currentDiscount } : prevDiscount,
@@ -170,8 +157,8 @@ console.log("Discounts", searchedDiscounts)
         } else {
             const filteredDiscount = discount.filter(
                 (discount) =>
-                    discount.name.toLowerCase().includes(searchInput.toLowerCase())||
-                discount.value.toString().toLowerCase().includes(searchInput.toLowerCase()),
+                    discount.name.toLowerCase().includes(searchInput.toLowerCase()) ||
+                    discount.value.toString().toLowerCase().includes(searchInput.toLowerCase()),
             );
             setSearchedDiscounts(filteredDiscount);
         }

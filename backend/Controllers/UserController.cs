@@ -98,6 +98,7 @@ namespace backend.Controllers
                         var users = await _userService.GetUsersAsync();
                         if (!users.Any())
                               return NotFound("Users not found");
+
                         return Ok(users);
                   }
                   catch (NotFoundException ex)
@@ -166,7 +167,6 @@ namespace backend.Controllers
                               user.Password = passwordHashed;
 
                               await _userService.UpdateUserAsync(user);
-                              await _userService.SaveAsync();
 
                               return Ok("Password changed successfully");
                         }
@@ -238,7 +238,6 @@ namespace backend.Controllers
                         };
 
                         await _userService.CreateUserAsync(newUser);
-                        await _userService.SaveAsync();
 
                         return StatusCode(201, new { message = "Sign up successfully", newUser });
                   }
@@ -312,7 +311,6 @@ namespace backend.Controllers
                               return StatusCode(403, new { message = "You can not delete your own account." });
 
                         await _userService.DeleteUserAsync(id);
-                        await _userService.SaveAsync();
 
                         return Ok("User deleted successfully");
                   }
@@ -344,7 +342,6 @@ namespace backend.Controllers
                               return NotFound("User not found");
 
                         await _userService.DeleteUserAsync(id);
-                        await _userService.SaveAsync();
 
                         return Ok("Your account is deleted successfully");
                   }
@@ -383,7 +380,7 @@ namespace backend.Controllers
                   // Check manager role
                   var userRoleClaim = claimsIdentity.FindFirst(ClaimTypes.Role);
                   if (userRoleClaim?.Value == "Manager")
-                        return StatusCode(403, new { message = "Managers cannot be deleted." });
+                        return StatusCode(403, new { message = "Admin role cannot be deleted." });
 
                   // Filter out users who are managers or the currently logged-in user
                   foreach (var user in users)
@@ -406,19 +403,17 @@ namespace backend.Controllers
                         if (userFromDb.RoleId == 1)
                         {
                               Console.WriteLine($"Skipping deletion for User ID: {user.Id}, Logged-in User ID: {loggingInId})");
-                              return StatusCode(403, new { message = "Can not delete the manager" });
+                              return StatusCode(403, new { message = "You don't have permission." });
                         }
 
                         if (userFromDb.Id == loggingInId)
                         {
                               Console.WriteLine($"Skipping deletion for User ID: {user.Id}, Logged-in User ID: {loggingInId})");
-                              return StatusCode(403, new { message = "You can not delete yourself" });
+                              return StatusCode(403, new { message = "You don't have permission" });
                         }
 
                         await _userService.DeleteUserAsync(user.Id);
                   }
-
-                  await _userService.SaveAsync();
 
                   var newUsers = await _userService.GetUsersAsync();
 
@@ -462,7 +457,7 @@ namespace backend.Controllers
                         int defaultRoleId = 4;
                         if (request.RoleId != null)
                         {
-                              var roleExists = await _roleService.GetRoleByIdAsync((int)currentUser.RoleId);
+                              var roleExists = await _roleService.GetRoleByIdAsync((int)request.RoleId);
                               if (roleExists != null)
                                     defaultRoleId = (int)roleExists.Id; // Default role ID, can be moved to a config setting
                         }
@@ -487,7 +482,6 @@ namespace backend.Controllers
                         currentUser.UpdatedAt = DateTime.UtcNow;
 
                         await _userService.UpdateUserAsync(currentUser);
-                        await _userService.SaveAsync();
 
                         return Ok(new { message = "User updated successfully", currentUser });
                   }
@@ -524,15 +518,13 @@ namespace backend.Controllers
                         if (avatar == null || avatar.Length > 0)
                         {
                               using var ms = new MemoryStream();
-                              await avatar.CopyToAsync(ms);
+                              await avatar!.CopyToAsync(ms);
                               var imageData = ms.ToArray();
 
                               user.Avatar = imageData;
 
                               await _userService.UpdateUserAsync(user);
-                              await _userService.SaveAsync();
                         }
-
                         return StatusCode(201, new { message = "Avatar changed successfully" });
                   }
                   catch (UnauthorizedException ex)

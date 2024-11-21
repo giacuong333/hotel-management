@@ -204,12 +204,7 @@ const Receipt = () => {
                     </Tippy>
                 </div>
                 {hasPermissionDelete ? (
-                    <BsTrash
-                        size={18}
-                        className="cursor-pointer"
-                        onClick={() => handleTrashClicked(receipt?.id)}
-                        style={{ color: '#E57373' }}
-                    />
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(receipt?.id)} />
                 ) : (
                     <></>
                 )}

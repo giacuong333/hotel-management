@@ -315,34 +315,6 @@ namespace backend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "BookingDetail",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    BookingId = table.Column<int>(type: "int", nullable: false),
-                    RoomId = table.Column<int>(type: "int", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BookingDetail", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BookingDetail_Booking_BookingId",
-                        column: x => x.BookingId,
-                        principalTable: "Booking",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BookingDetail_Room_RoomId",
-                        column: x => x.RoomId,
-                        principalTable: "Room",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Receipt",
                 columns: table => new
                 {
@@ -450,16 +422,6 @@ namespace backend.Migrations
                 column: "StaffCheckOutId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookingDetail_BookingId",
-                table: "BookingDetail",
-                column: "BookingId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BookingDetail_RoomId",
-                table: "BookingDetail",
-                column: "RoomId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Feedback_RoomId",
                 table: "Feedback",
                 column: "RoomId");
@@ -521,9 +483,6 @@ namespace backend.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AdditionalFee");
-
-            migrationBuilder.DropTable(
-                name: "BookingDetail");
 
             migrationBuilder.DropTable(
                 name: "Feedback");
