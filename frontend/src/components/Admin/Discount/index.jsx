@@ -275,6 +275,9 @@ const Discount = () => {
                 />
             </div>
             <DataTable
+                striped
+                pointerOnHover
+                highlightOnHover
                 columns={columns}
                 data={data}
                 selectableRows

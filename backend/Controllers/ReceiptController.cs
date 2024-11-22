@@ -1,4 +1,5 @@
 using AspNetCoreGeneratedDocument;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend.Controllers
@@ -51,6 +52,37 @@ namespace backend.Controllers
                     return NotFound("Receipts not found");
 
                 return Ok(receipts);
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        // [GET] /receipt/booking/{bookingId}
+        [HttpGet("booking/{bookingId}")]
+        [Produces("application/json")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<ReceiptModel>>> GetReceiptByBookingId(int bookingId)
+        {
+            try
+            {
+                var receipt = await _receiptService.GetReceiptByBookingIdAsync(bookingId);
+                if (receipt == null)
+                    return NotFound("Receipts not found");
+
+                return Ok(receipt);
             }
             catch (UnauthorizedException ex)
             {

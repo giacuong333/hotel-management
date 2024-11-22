@@ -31,13 +31,13 @@ const Booking = ({ booking }) => {
                             style={{ color: '#35776d' }}
                             onClick={() => navigate(`/account/bookinghistory/bookingdetails/${booking?.id}`)}
                         >
-                            View booking details
+                            View room details
                         </p>
                         <span className="text-black-50">|</span>
                         <p
                             className="fw-semibold text-decoration-underline cursor-pointer"
                             style={{ color: '#35776d' }}
-                            onClick={() => navigate(`/account/bookinghistory/invoice/${booking?.id}`)}
+                            onClick={() => navigate(`/account/bookinghistory/invoice/booking/${booking?.id}`)}
                         >
                             View invoice
                         </p>

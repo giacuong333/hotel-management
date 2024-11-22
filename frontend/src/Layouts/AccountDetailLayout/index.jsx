@@ -10,7 +10,7 @@ const AccountDetailLayout = () => {
             <div className="row">
                 <Header />
             </div>
-            <div className="container mx-auto px-lg-0 p-4">
+            <div className="container mx-auto px-lg-0 p-4" style={{ minHeight: '100vh' }}>
                 <div className="row py-5">
                     {/* Sidebar */}
                     <div className="col-lg-3 col-md-4">

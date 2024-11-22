@@ -62,7 +62,11 @@ const roomColumns = [
     },
     {
         name: 'Price',
-        selector: (row) => row.formattedPrice,
+        selector: (row) => formatCurrency(row.price),
+    },
+    {
+        name: 'Total Price',
+        selector: (row) => formatCurrency(row.roomTotal),
     },
 ];
 
@@ -83,32 +87,53 @@ const servicesUsedColumns = [
     },
     {
         name: 'Price',
-        selector: (row) => row.formattedPrice,
+        selector: (row) => formatCurrency(row.price),
     },
 ];
 
 const BookingForm = ({ data, onClose, isShowed }) => {
     const [rooms, setRooms] = useState([]);
     const [services, setServices] = useState([]);
-    const [subTotal, setSubTotal] = useState(null);
-    const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(null);
+    const [total, setTotal] = useState(null);
+    const [stayedDate, setStayedDate] = useState(null);
 
     useEffect(() => {
-        data.room && setRooms([{ ...data.room, formattedPrice: formatCurrency(data?.room?.price) }]);
-    }, [data]);
+        if (data) {
+            const checkIn = new Date(data?.checkIn);
+            const checkOut = new Date(data?.checkOut);
+            const timeDifference = Math.abs(checkOut - checkIn);
+            const datesStayed = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+            setStayedDate(datesStayed);
+        }
+    }, [data, data?.checkIn, data?.checkOut]);
+
+    useEffect(() => {
+        data?.room?.price &&
+            stayedDate &&
+            setRooms(() => {
+                const roomTotal = data?.room?.price * stayedDate;
+                return [{ ...data.room, roomTotal: roomTotal }];
+            });
+    }, [data?.room, stayedDate]);
 
     useEffect(() => {
         data.serviceUsage.$values &&
             setServices(() => {
-                return data.serviceUsage.$values.map((su) => {
+                return data?.serviceUsage?.$values.map((su) => {
                     return {
                         ...su?.service,
                         quantity: su.quantity,
-                        formattedPrice: formatCurrency(su?.service?.price),
                     };
                 });
             });
     }, [data]);
+
+    useEffect(() => {
+        setTotal(() => {
+            const totalServices = services.reduce((total, su) => total + (su.price || 0) * (su.quantity || 0), 0);
+            return totalServices + rooms[0]?.roomTotal;
+        });
+    }, [rooms, services]);
 
     return (
         <>
@@ -187,12 +212,12 @@ const BookingForm = ({ data, onClose, isShowed }) => {
                                             {String(data?.checkOut).split('T')[0]}
                                         </small>
                                     </span>
-                                    {/* <span className="d-flex align-items-center gap-2">
+                                    <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Stayed Date:</p>
                                         <small className="text-capitalize text-secondary">
-                                            {differenceDate || 'Calculating...'}
+                                            {stayedDate ? String(stayedDate).split('T')[0] : 'Calculating...'}
                                         </small>
-                                    </span> */}
+                                    </span>
                                 </div>
                             </div>
 
@@ -213,20 +238,8 @@ const BookingForm = ({ data, onClose, isShowed }) => {
                             <div className="d-flex align-items-start justify-content-end pt-4">
                                 <div className="d-flex flex-column align-items-end gap-2">
                                     <span className="d-flex align-items-center justify-content-between gap-5">
-                                        <p>Subtotal</p>
-                                        <p>{formatCurrency(subTotal)}</p>
-                                    </span>
-                                    <span className="d-flex align-items-center justify-content-between gap-5">
-                                        <p>Discount {data?.discount?.value}%</p>
-                                        <p>{formatCurrency(subTotalWithDiscount)}</p>
-                                    </span>
-                                    {/* <span className="d-flex align-items-center justify-content-between gap-5">
-                                        <p>Additional Fees</p>
-                                        <p>{formatCurrency(totalAdditionalFees)}</p>
-                                    </span> */}
-                                    <span className="d-flex align-items-center justify-content-between gap-5">
                                         <h6 className="fw-bold">Total</h6>
-                                        <h6 className="fw-bold">{formatCurrency(subTotalWithDiscount)}</h6>
+                                        <h6 className="fw-bold">{total ? formatCurrency(total) : 'Calculating...'}</h6>
                                     </span>
                                 </div>
                             </div>

@@ -5,4 +5,5 @@ public interface IReceiptService
     Task DeleteReceiptByIdAsync(int id);
     Task DeleteReceiptsAsync(ICollection<ReceiptModel> receiptIds);
     Task<object> GetReceiptsByIdAsync(int receiptId);
+    Task<object> GetReceiptByBookingIdAsync(int bookingId);
 }

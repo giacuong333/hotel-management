@@ -264,26 +264,26 @@ namespace Repositories.Implementations
             public async Task<IEnumerable<BookingModel>> GetBookingsAuthorizedAsync(int id)
             {
                   return await _context.Booking
+                                          .Where(b => b.CustomerId == id && b.Status != 0)
                                           .Include(b => b!.Room)
                                           .Include(b => b.ServiceUsage)
                                                 .ThenInclude(su => su.Service)
                                           .Include(b => b.Customer)
                                           .Include(b => b.StaffCheckIn)
                                           .Include(b => b.StaffCheckOut)
-                                          .Where(b => b.CustomerId == id && b.Status != 0)
                                           .ToListAsync();
             }
 
             public async Task<IEnumerable<BookingModel>> GetAuthorizedCancelledBookingsAsync(int id)
             {
                   return await _context.Booking
+                                   .Where(b => b.Status == 0 && b.CustomerId == id)
                                     .Include(b => b!.Room)
                                    .Include(b => b.ServiceUsage)
                                          .ThenInclude(su => su.Service)
                                    .Include(b => b.Customer)
                                    .Include(b => b.StaffCheckIn)
                                    .Include(b => b.StaffCheckOut)
-                                   .Where(b => b.Status == 0 && b.CustomerId == id)
                                    .ToListAsync();
             }
       }

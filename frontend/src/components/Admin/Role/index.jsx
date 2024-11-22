@@ -817,6 +817,7 @@ const Role = () => {
                     columns={columns}
                     data={data}
                     selectableRows
+                    pointerOnHover
                     striped
                     highlightOnHover
                     pagination

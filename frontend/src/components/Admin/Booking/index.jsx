@@ -54,14 +54,13 @@ const Booking = () => {
                                 : 'Check-out';
                         return booking;
                     });
-                    showToast(response?.data?.obj?.message || response?.data?.message, 'success');
+                    showToast('Booking deleted successfully', 'success');
                     setBookings(data);
                     setSearchedBookings(data);
                     reset();
                 }
             } catch (error) {
                 console.log(error);
-                showToast(error?.response?.data?.message || 'Something went wrong while deleting bookings', 'error');
             }
         };
 
@@ -387,6 +386,7 @@ const Booking = () => {
                     selectableRows
                     striped
                     highlightOnHover
+                    pointerOnHover
                     pagination
                     sortIcon={<FaSortAlphaDownAlt />}
                     onRowClicked={handleRowClicked}

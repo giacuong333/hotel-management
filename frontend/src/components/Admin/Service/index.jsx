@@ -259,6 +259,7 @@ const Service = () => {
                     striped
                     highlightOnHover
                     pagination
+                    pointerOnHover
                     sortIcon={<FaSortAlphaDownAlt />}
                     onRowClicked={handleRowClicked}
                     onSelectedRowsChange={handleSelectedRowsChanged}

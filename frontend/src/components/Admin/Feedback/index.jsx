@@ -31,8 +31,8 @@ const Feedback = () => {
     const [searchedFeedbacks, setSearchedFeedbacks] = useState([]);
     const { deleteFeedback: hasPermissionDelete } = useCheckPermission();
 
-     // Search Feedback
-     useEffect(() => {
+    // Search Feedback
+    useEffect(() => {
         if (searchInput.trim() === '') {
             setSearchedFeedbacks(feedbacks);
         } else {
@@ -123,12 +123,7 @@ const Feedback = () => {
         createAt: feedback?.createdAt,
         actions: (
             <>
-                <BsTrash
-                    size={18}
-                    className="cursor-pointer"
-                    onClick={() => handleTrashClicked(feedback.id)}
-                    style={{ color: '#E57373' }}
-                />
+                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(feedback.id)} />
             </>
         ),
     }));
@@ -226,6 +221,9 @@ const Feedback = () => {
                 />
             </div>
             <DataTable
+                pointerOnHover
+                striped
+                highlightOnHover
                 columns={columns}
                 data={data}
                 selectableRows

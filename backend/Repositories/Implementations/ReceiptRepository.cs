@@ -36,7 +36,7 @@ namespace Repositories.Implementations
                                 r.Booking!.Room!.Type,
                             }
                         },
-                        ServiceUsage = r.Booking.ServiceUsage.Select(s => new
+                        ServiceUsage = r.Booking!.ServiceUsage!.Select(s => new
                         {
                             s.Id,
                             Service = new
@@ -148,6 +148,69 @@ namespace Repositories.Implementations
                     _context.Receipt.Update(receiptFromDatabase);
                 }
             }
+        }
+
+        public async Task<object> GetReceiptByBookingIdAsync(int bookingId)
+        {
+            var receipts = await _context.Receipt
+                .Where(r => r.DeletedAt == null && r.BookingId == bookingId)
+                .Select(r => new
+                {
+                    r.Id,
+                    r.BookingId,
+                    r.DiscountId,
+                    r.Total,
+                    r.CreatedAt,
+                    r.UpdatedAt,
+                    r.DeletedAt,
+                    Booking = new
+                    {
+                        r.Booking!.Id,
+                        r.Booking.CheckIn,
+                        r.Booking.CheckOut,
+                        Customer = new
+                        {
+                            r.Booking.Customer!.Id,
+                            r.Booking.Customer.Name,
+                            r.Booking.Customer.Email,
+                            r.Booking.Customer.PhoneNumber,
+                        },
+                        ServiceUsage = r.Booking.ServiceUsage!.Select(s => new
+                        {
+                            s.Id,
+                            s.Quantity,
+                            Service = new
+                            {
+                                s.Service!.Id,
+                                s.Service.Name,
+                                s.Service.Price,
+                            }
+                        }).ToList(),
+                        Room = new
+                        {
+                            r.Booking.Room!.Id,
+                            r.Booking.Room!.Name,
+                            r.Booking.Room!.Price,
+                            r.Booking.Room!.Type,
+                            r.Booking.Room!.BedNum,
+                            r.Booking.Room!.Area,
+                        }
+                    },
+                    Discount = new
+                    {
+                        r.Discount!.Id,
+                        r.Discount.Name,
+                        r.Discount.Value
+                    },
+                    AdditionalFees = r.AdditionalFees!.Select(af => new
+                    {
+                        af.Id,
+                        af.Name,
+                        af.Price,
+                    }).ToList()
+                }).FirstOrDefaultAsync();
+
+            return receipts;
         }
     }
 }

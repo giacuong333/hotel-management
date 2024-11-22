@@ -336,6 +336,7 @@ const User = () => {
                     columns={columns}
                     data={data}
                     selectableRows
+                    pointerOnHover
                     striped
                     highlightOnHover
                     pagination

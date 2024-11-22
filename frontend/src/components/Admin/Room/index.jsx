@@ -355,6 +355,7 @@ const Room = () => {
                     selectableRows
                     striped
                     highlightOnHover
+                    pointerOnHover
                     pagination
                     sortIcon={<FaSortAlphaDownAlt />}
                     onRowClicked={handleRowClicked}
