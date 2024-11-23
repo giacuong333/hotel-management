@@ -1,4 +1,4 @@
-using backend.Database;
+﻿using backend.Database;
 using backend.Models;
 using backend.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -63,7 +63,7 @@ namespace Repositories.Implementations
         public async Task<IEnumerable<BookingModel>> GetPendingPaymentsAsync()
         {
             var today = DateTime.Today;
-            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.Status != 0 && bk.Status != 3 && bk.UpdatedAt >= today && bk.UpdatedAt < today.AddDays(1))
+            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.Status == 4 && bk.UpdatedAt >= today && bk.UpdatedAt < today.AddDays(1))
                     .ToListAsync();
         }
 
