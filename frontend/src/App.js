@@ -7,7 +7,6 @@ import AdminLayout from './Layouts/AdminLayout';
 import CustomerHome from './components/Customer/Home';
 import AdminHome from './components/Admin/Home';
 import Booking from './components/Admin/Booking';
-import Contact from './components/Admin/Contact';
 import Dashboard from './components/Admin/Dashboard';
 import Discount from './components/Admin/Discount';
 import Feedback from './components/Admin/Feedback';
@@ -33,7 +32,7 @@ import RoomProvider from './providers/RoomProvider';
 import BookingDetails from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/BookingDetails';
 import Invoice from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/Invoice';
 import ProceedPayment from './components/Customer/Home/ProceedPayment';
-
+import Contacts from './components/Customer/Contact';
 function App() {
     const { user } = useUser();
     const isAuthenticated = user !== null;
@@ -62,6 +61,7 @@ function App() {
                     <Route path="bookinghistory/invoice/:id" element={<Invoice />}></Route>
                     <Route path="bookinghistory/bookingdetails/:id" element={<BookingDetails />}></Route>
                     <Route path="password" element={<Password />}></Route>
+                    
                 </Route>
             )}
 
@@ -84,6 +84,8 @@ function App() {
                     <Route path="/rooms" element={<Rooms />} />
                     <Route path="/room/:id" element={<RoomDetail />} />
                     {isAuthenticated && isCustomer && <Route path="/proceed-payment" element={<Payments />} />}
+                <Route path="/contact" element={<Contacts />} />
+
                 </Route>
             ) : (
                 // If roleId != 4, move on to the admin page
@@ -100,7 +102,6 @@ function App() {
                                 </RoomProvider>
                             }
                         />
-                        <Route path="contact" element={<Contact />} />
                         <Route path="dashboard" element={<Dashboard />} />
                         <Route path="discount" element={<Discount />} />
                         <Route path="feedback" element={<Feedback />} />
