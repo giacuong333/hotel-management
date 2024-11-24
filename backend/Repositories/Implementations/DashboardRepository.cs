@@ -34,7 +34,7 @@ namespace Repositories.Implementations
         public async Task<IEnumerable<object>> GetBookingDetailsAsync()
         {
             var today = DateTime.Today;
-            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1)).Join(_context.User,
+            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.Status !=0 && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1)).Join(_context.User,
                         booking => booking.CustomerId,
                         user => user.Id,
                         (booking, user) => new
@@ -46,7 +46,8 @@ namespace Repositories.Implementations
                             phoneNumber = user.PhoneNumber,
                             Name = user.Name,
                             CheckIn=booking.CheckIn,
-                            CheckOut=booking.CheckOut
+                            CheckOut=booking.CheckOut,
+                            Status=booking.Status
 
                         })
                      .ToListAsync();
