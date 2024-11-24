@@ -3,6 +3,7 @@ using backend.Models;
 using backend.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
+using System;
 
 namespace Repositories.Implementations
 {
@@ -30,12 +31,38 @@ namespace Repositories.Implementations
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<BookingModel>> GetBookingDetailsAsync()
+        public async Task<IEnumerable<object>> GetBookingDetailsAsync()
         {
             var today = DateTime.Today;
-            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1)).Include(b => b.Customer)
+            return await _dbSetBooking.Where(bk => bk.DeletedAt == null && bk.CreatedAt >= today && bk.CreatedAt < today.AddDays(1)).Join(_context.User,
+                        booking => booking.CustomerId,
+                        user => user.Id,
+                        (booking, user) => new
+                        {
+                            Id= booking.Id,
+                            CreatedAt = booking.CreatedAt,
+                            CustomerName=booking.CustomerName,
+                            CustomerPhoneNumber = booking.CustomerPhoneNumber,
+                            phoneNumber = user.PhoneNumber,
+                            Name = user.Name,
+                            CheckIn=booking.CheckIn,
+                            CheckOut=booking.CheckOut
+
+                        })
                      .ToListAsync();
         }
+
+    /*      .Join(context.Room,
+                        feedbackUser => feedbackUser.feedback.RoomId,
+                        room => room.Id,
+                        (feedbackUser, room) => new
+                        {
+                            feedbackUser.feedback.Id,
+                            feedbackUser.feedback.Description,
+                            feedbackUser.feedback.CreatedAt,
+                            UserName = feedbackUser.user.Name,
+                            RoomName = room.Name
+    })*/
         public async Task<IEnumerable<BookingModel>> GetBookingsByMonthAsync(string month)
         {
 
