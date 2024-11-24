@@ -75,24 +75,24 @@ const BookingDetails = () => {
 
     const data = bookings
         ?.filter((booking) => booking.status !== null)
-        .sort((a, b) => (a.status === 2 ? 1 : 0) - (b.status === 2 ? 1 : 0))
+        .sort((a, b) => (a.status === 4 ? 0 : 1) - (b.status === 4 ? 0 : 1))
         .map((booking) => ({
             id: booking.id,
             createdAt: booking.createdAt,
-            customer: booking.customer.name,
-            phoneNumber: booking.customerPhoneNumber ?? booking.customer?.phoneNumber,
+            customer: booking.customerName ?? booking.name,
+            phoneNumber: booking.customerPhoneNumber ?? booking.phoneNumber,
             checkIn: booking.checkIn || '',
             checkOut: booking.checkOut || '',
             payment: (
                 <p
                     style={{
-                        backgroundColor: booking.status === 2 ? '#80CBC4' : '#ffd5e1',
-                        color: booking.status === 2 ? 'white' : '#b74c4c',
+                        backgroundColor: booking.status === 4 ? '#ffd5e1' : '#80CBC4',
+                        color: booking.status === 4 ? '#b74c4c' : 'white',
                         fontSize: '10px',
                     }}
                     className="rounded-pill py-1 px-3"
                 >
-                    {booking.status === 2 ? 'Received' : 'Pending'}
+                    {booking.status === 4 ? 'Pending' : 'Received'}
                 </p>
             ),
         }));

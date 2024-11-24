@@ -29,7 +29,11 @@ const PopupPanel = ({ data, type, onClose, onRoleAdded, onRoleUpdated, isShowed 
     const handleValidation = () => {
         const validationErrors = {};
 
-        if (isEmpty(fields.name)) validationErrors.name = 'Name is required';
+        if (isEmpty(fields.name)) {
+            validationErrors.name = 'Name is required';
+        } else if (fields.name.trim().length <= 5) {
+            validationErrors.name = 'Name must be more than 5 characters';
+        }
 
         setErrors(validationErrors);
 

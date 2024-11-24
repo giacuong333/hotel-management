@@ -1,5 +1,5 @@
 export const isEmpty = (value) => {
-    return String(value).length === 0 || value === null;
+    return String(value).trim().length === 0 || value === null;
 };
 
 export const isEmail = (email) => {
@@ -30,11 +30,17 @@ export const isMinimunBookingDay = (checkInDate, checkOutDate) => {
 
 export const isOverOneHundreds = (value) => {
     return Number(value) > 100;
-}
+};
 
 export const isValidDiscountDate = (startDate, endDate) => {
     const start = new Date(startDate).getTime();
     const end = new Date(endDate).getTime();
     const differenceDays = (end - start) / (1000 * 60 * 60 * 24);
     return differenceDays > 0;
-}
+};
+
+//check value >= 1000 và là số
+export const isNumberAndGreaterThanOrEqual = (value, minValue) => {
+    const number = Number(value);
+    return !isNaN(number) && number >= minValue;
+};
