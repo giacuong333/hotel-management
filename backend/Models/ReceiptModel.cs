@@ -12,7 +12,7 @@ public class ReceiptModel
     public DateTime? UpdatedAt { get; set; } = DateTime.Now;
     public DateTime? DeletedAt { get; set; } = null;
 
-    public BookingModel? Booking { get; set; }
-    public DiscountModel? Discount { get; set; }
-    public IEnumerable<AdditionalFeeModel>? AdditionalFees { get; set; }
+    public virtual BookingModel? Booking { get; set; }
+    public virtual DiscountModel? Discount { get; set; }
+    public virtual IEnumerable<AdditionalFeeModel>? AdditionalFees { get; set; }
 }

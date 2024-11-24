@@ -43,6 +43,8 @@ const Receipt = () => {
     const [searchedReceipts, setSearchedReceipts] = useState([]);
     const { deleteReceipt: hasPermissionDelete } = useCheckPermission();
 
+    console.log('Selected Receipt', selectedReceipt);
+
     // For searching
     useEffect(() => {
         if (searchInput.trim() === '') {
@@ -204,12 +206,7 @@ const Receipt = () => {
                     </Tippy>
                 </div>
                 {hasPermissionDelete ? (
-                    <BsTrash
-                        size={18}
-                        className="cursor-pointer"
-                        onClick={() => handleTrashClicked(receipt?.id)}
-                        style={{ color: '#E57373' }}
-                    />
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(receipt?.id)} />
                 ) : (
                     <></>
                 )}
@@ -237,24 +234,6 @@ const Receipt = () => {
 
     const handleDeleteRowsSelected = () => {
         deleteAll.count !== 0 && setShowDeleteAllConfirm(true);
-    };
-
-    const handleDiscountAdded = (newDiscount) => {
-        setReceipts((prevDiscounts) => [...prevDiscounts, newDiscount]);
-        setSearchedReceipts((prevDiscounts) => [...prevDiscounts, newDiscount]);
-    };
-
-    const handleDiscountUpdated = (currentDiscount) => {
-        setReceipts((prevDiscounts) =>
-            prevDiscounts.map((prevDiscount) =>
-                prevDiscount.id === currentDiscount.id ? { ...currentDiscount } : prevDiscount,
-            ),
-        );
-        setSearchedReceipts((prevDiscounts) =>
-            prevDiscounts.map((prevDiscount) =>
-                prevDiscount.id === currentDiscount.id ? { ...currentDiscount } : prevDiscount,
-            ),
-        );
     };
 
     const reset = () => {
@@ -342,6 +321,7 @@ const Receipt = () => {
                 data={data}
                 selectableRows
                 highlightOnHover
+                pointerOnHover
                 striped
                 onRowClicked={handleRowClicked}
                 onSelectedRowsChange={handleSelectedRowsChanged}

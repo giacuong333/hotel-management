@@ -4,9 +4,9 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
 {
       private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
-      public async Task ChangeStatusAsync(BookingModel booking, int status, int staffCheckOutId)
+      public async Task ChangeStatusAsync(BookingModel booking, int status, int staffId)
       {
-            await _unitOfWork.Bookings.ChangeBookingStatus(booking, status, staffCheckOutId);
+            await _unitOfWork.Bookings.ChangeBookingStatus(booking, status, staffId);
             await _unitOfWork.CompleteAsync();
       }
 

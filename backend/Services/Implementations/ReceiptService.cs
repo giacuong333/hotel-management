@@ -15,6 +15,11 @@ public class ReceiptService(IUnitOfWork unitOfWork) : IReceiptService
         await _unitOfWork.CompleteAsync();
     }
 
+    public async Task<object> GetReceiptByBookingIdAsync(int bookingId)
+    {
+        return await _unitOfWork.Receipts.GetReceiptByBookingIdAsync(bookingId);
+    }
+
     public async Task<ReceiptModel> GetReceiptByIdAsync(int id)
     {
         return await _unitOfWork.Receipts.GetReceiptByIdAsync(id);

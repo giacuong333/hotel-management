@@ -56,7 +56,7 @@ namespace backend.Controllers
         // [GET] /dashboard/bookingdetails
         [HttpGet("bookingdetails")]
         [Produces("application/json")]
-        public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingDetailsAsync()
+        public async Task<ActionResult<IEnumerable<object>>> GetBookingDetailsAsync()
         {
             try
             {

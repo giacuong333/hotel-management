@@ -113,7 +113,6 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
     const [differenceDate, setDifferenceData] = useState(null);
     const [subTotal, setSubTotal] = useState(null);
     const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(null);
-    console.log('Data', data);
 
     // Services used
     useEffect(() => {
@@ -163,8 +162,6 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
         data?.discount?.value,
         totalServicesUsed,
     ]);
-
-    console.log('Subtotal', subTotal);
 
     return (
         <>

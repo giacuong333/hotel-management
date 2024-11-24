@@ -58,7 +58,7 @@ function App() {
                     <Route path="personal" element={<AccountDetail />}></Route>
                     <Route path="payments" element={<Payments />}></Route>
                     <Route path="bookinghistory" element={<BookingHistory />}></Route>
-                    <Route path="bookinghistory/invoice/:id" element={<Invoice />}></Route>
+                    <Route path="bookinghistory/invoice/booking/:id" element={<Invoice />}></Route>
                     <Route path="bookinghistory/bookingdetails/:id" element={<BookingDetails />}></Route>
                     <Route path="password" element={<Password />}></Route>
                     

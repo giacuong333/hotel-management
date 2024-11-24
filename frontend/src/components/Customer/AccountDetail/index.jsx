@@ -277,15 +277,18 @@ const AccountDetail = () => {
 
                         {/* Buttons */}
                         <div className="row">
-                            <div className="d-flex flex-md-row flex-column gap-3 align-items-center justify-content-between">
-                                <span className="d-flex align-items-center gap-2">
+                            <div className="d-flex flex-md-row flex-column gap-3 align-items-md-center">
+                                <span className="d-md-flex align-items-center justify-content-between gap-2">
                                     {fieldIsChanging && (
                                         <>
                                             <Button
                                                 type="submit"
-                                                className={`w-full btn secondary-bg-color-hover primary-bd-color-hover fw-semibold ${
+                                                className={`mb-md-0 mb-3 w-full btn secondary-bg-color-hover primary-bd-color-hover fw-semibold ${
                                                     loading ? 'pe-none opacity-75' : ''
                                                 }`}
+                                                style={{
+                                                    minWidth: 'fit-content',
+                                                }}
                                             >
                                                 {loading ? (
                                                     <RotatingLines

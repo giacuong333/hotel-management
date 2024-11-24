@@ -297,22 +297,12 @@ const Room = () => {
         actions: (
             <>
                 {hasPermissionUpdateRoom ? (
-                    <FiEdit
-                        size={18}
-                        className="cursor-pointer me-3"
-                        onClick={() => handleEditClicked(room)}
-                        style={{ color: '#80CBC4' }}
-                    />
+                    <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(room)} />
                 ) : (
                     ''
                 )}
                 {hasPermissionDeleteRoom ? (
-                    <BsTrash
-                        size={18}
-                        className="cursor-pointer"
-                        onClick={() => handleTrashClicked(room.id)}
-                        style={{ color: '#E57373' }}
-                    />
+                    <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(room.id)} />
                 ) : (
                     ''
                 )}
@@ -365,6 +355,7 @@ const Room = () => {
                     selectableRows
                     striped
                     highlightOnHover
+                    pointerOnHover
                     pagination
                     sortIcon={<FaSortAlphaDownAlt />}
                     onRowClicked={handleRowClicked}

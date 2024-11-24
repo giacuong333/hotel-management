@@ -152,7 +152,7 @@ public static class Seed
                      Dob = new DateTime(2024, 10, 12),
                      RoleId = 2
                  },
-                 
+
                  new UserModel
                  {
                      Id = 2,
@@ -400,12 +400,25 @@ public static class Seed
             await context.SaveChangesAsync();
         }
         //Seed Feedback
-        if(!context.Feedback.Any()){
+        if (!context.Feedback.Any())
+        {
             context.Feedback.AddRange(
-                new () { Id = 1, UserId = 2, RoomId = 1, Description = "Good service",  CreatedAt = new DateTime(2024, 11, 20) },
-                new () { Id = 2, UserId = 3, RoomId = 2, Description = "Good service",  CreatedAt = new DateTime(2024, 11, 20) },
-                new () { Id = 3, UserId = 4, RoomId = 3, Description = "Good service",  CreatedAt = new DateTime(2024, 11, 21) },
-                new () { Id = 4, UserId = 2, RoomId = 4, Description = "Good service",  CreatedAt = new DateTime(2024, 12, 29) }
+                new() { Id = 1, UserId = 2, RoomId = 1, Description = "Good service", CreatedAt = new DateTime(2024, 11, 20) },
+                new() { Id = 2, UserId = 3, RoomId = 2, Description = "Good service", CreatedAt = new DateTime(2024, 11, 20) },
+                new() { Id = 3, UserId = 4, RoomId = 3, Description = "Good service", CreatedAt = new DateTime(2024, 11, 21) },
+                new() { Id = 4, UserId = 2, RoomId = 4, Description = "Good service", CreatedAt = new DateTime(2024, 12, 29) }
+                
+            );
+        }
+        //Seed Review
+        if (!context.Review.Any())
+        {
+            context.Review.AddRange(
+                new() { Id = 1, UserId = 3, RoomId = 1, Comment = "The room was comfortable and clean. I had a great stay!", CreatedAt = new DateTime(2024, 11, 20),Status =0 ,DeletedAt=null},
+                new() { Id = 2, UserId = 4, RoomId = 2, Comment = "The service was excellent, and the staff were very friendly and helpful.", CreatedAt = new DateTime(2024, 7, 23), Status = 0, DeletedAt = null },
+                new() { Id = 3, UserId = 5, RoomId = 3, Comment = "Great experience! The room was spacious and had all the necessary amenities.", CreatedAt = new DateTime(2024, 1, 19), Status = 0, DeletedAt = null },
+                new() { Id = 4, UserId = 6, RoomId = 4, Comment = "The hotel was clean, and the staff made me feel very welcome. Would definitely return.", CreatedAt = new DateTime(2024, 2, 23), Status = 0, DeletedAt = null }
+
             );
         }
         // Seed Receipts

@@ -226,12 +226,13 @@ namespace backend.Controllers
             {
                   try
                   {
-                        var booking = await _bookingService.GetBookingByIdAsync((int)id);
-                        var staffCheckOutId = GetUserIdFromClaims(HttpContext);
+                        var booking = await _bookingService.GetBookingByIdAsync(id);
+                        var staffId = GetUserIdFromClaims(HttpContext);
+                        Console.WriteLine("Staff ID" + staffId);
                         if (booking == null)
                               return NotFound("Booking not found");
 
-                        await _bookingService.ChangeStatusAsync(booking, statusCode, staffCheckOutId);
+                        await _bookingService.ChangeStatusAsync(booking, statusCode, staffId);
 
                         return Ok("Status changed successfully");
                   }

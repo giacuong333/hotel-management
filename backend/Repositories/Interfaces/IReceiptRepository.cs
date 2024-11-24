@@ -8,6 +8,7 @@ namespace backend.Repositories.Interfaces
         Task<IEnumerable<object>> GetReceiptsAsync();
         Task<ReceiptModel> GetReceiptByIdAsync(int id);
         Task<object> GetReceiptsByIdAsync(int receiptId);
+        Task<object> GetReceiptByBookingIdAsync(int bookingId);
         Task DeleteReceiptByIdAsync(int id);
         Task DeleteReceiptsAsync(ICollection<ReceiptModel> receiptIds);
     }

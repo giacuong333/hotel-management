@@ -12,7 +12,6 @@ namespace backend.Database
         public DbSet<RoleModel> Role { get; set; }
         public DbSet<RoomModel> Room { get; set; }
         public DbSet<BookingModel> Booking { get; set; }
-        public DbSet<BookingDetailModel> BookingDetail { get; set; }
         public DbSet<DiscountModel> Discount { get; set; }
         public DbSet<FeedBackModel> Feedback { get; set; }
         public DbSet<GalleryModel> Gallery { get; set; }
@@ -125,6 +124,20 @@ namespace backend.Database
                 .WithOne()  // Assuming one-to-one relationship (Booking-Receipt)
                 .HasForeignKey<ReceiptModel>(r => r.BookingId)
                 .OnDelete(DeleteBehavior.Restrict); // Optional: Restrict delete
+
+            //Review
+            modelBuilder.Entity<ReviewModel>()
+                .HasOne(rv => rv.Users)
+                .WithMany()
+                .HasForeignKey(rv => rv.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Review
+            modelBuilder.Entity<ReviewModel>()
+                .HasOne(rv => rv.Rooms)
+                .WithMany()
+                .HasForeignKey(rv => rv.RoomId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
