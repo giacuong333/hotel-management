@@ -21,7 +21,7 @@ public class DashboardService : IDashboardService
         return await _unitOfWork.Dashboards.GetAvailableRoomsAsync();
     }
 
-    public async Task<IEnumerable<BookingModel>> GetBookingDetailsAsync()
+    public async Task<IEnumerable<object>> GetBookingDetailsAsync()
     {
         return await _unitOfWork.Dashboards.GetBookingDetailsAsync();
     }

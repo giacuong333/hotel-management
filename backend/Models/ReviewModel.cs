@@ -20,7 +20,7 @@ namespace backend.Models
         public int? Id { get; set; }
         [ForeignKey("Users")]
         public int? UserId { get; set; }
-        [ForeignKey("Roles")]
+        [ForeignKey("Rooms")]
         public int? RoomId { get; set; }
         public string? Comment { get; set; }
 

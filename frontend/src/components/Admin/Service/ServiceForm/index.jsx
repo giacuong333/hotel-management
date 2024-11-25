@@ -11,7 +11,14 @@ import { MdLockOutline } from 'react-icons/md';
 import { FiPhone } from 'react-icons/fi';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import Button from 'react-bootstrap/Button';
-import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
+import {
+    isEmail,
+    isEmpty,
+    isPhoneNumber,
+    isValidDate,
+    isVerifyPassword,
+    isNumberAndGreaterThanOrEqual,
+} from '~/utils/formValidation';
 import formatCurrency from '~/utils/currencyPipe';
 const PopupPanel = ({ data, type, onClose, onServiceAdded, onServiceUpdated, isShowed }) => {
     const [fields, setFields] = useState({
@@ -37,8 +44,16 @@ const PopupPanel = ({ data, type, onClose, onServiceAdded, onServiceUpdated, isS
     const handleValidation = () => {
         const validationErrors = {};
 
-        if (isEmpty(fields.name)) validationErrors.name = 'Name is required';
-        if (isEmpty(fields.price)) validationErrors.email = 'price is required';
+        if (isEmpty(fields.name)) {
+            validationErrors.name = 'Name is required';
+        } else if (fields.name.trim().length <= 5) {
+            validationErrors.name = 'Name must be more than 5 characters';
+        }
+        if (isEmpty(fields.price)) {
+            validationErrors.email = 'price is required';
+        } else if (!isNumberAndGreaterThanOrEqual(fields.price, 1000)) {
+            validationErrors.price = 'Price must be a number and greater than or equal to 1000';
+        }
         if (isEmpty(fields.status)) validationErrors.status = 'Role is required';
 
         setErrors(validationErrors);

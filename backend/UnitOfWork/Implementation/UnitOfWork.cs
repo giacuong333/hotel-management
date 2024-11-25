@@ -17,10 +17,11 @@ public class UnitOfWork(
     IServiceUsageRepository servicesUsage,
     IDashboardRepository dashboards,
     IDiscountRepository discounts,
-    IStatisticsRepository statistics
+    IFeedBackRepository feedbacks
     ) : IUnitOfWork
 {
     private readonly DatabaseContext _dbContext = dbContext;
+
 
     public IUserRepository? Users { get; } = users;
     public IBookingRepository? Bookings { get; } = bookings;
@@ -35,8 +36,7 @@ public class UnitOfWork(
     public IDashboardRepository? Dashboards { get; } = dashboards;
     public IServiceUsageRepository ServicesUsage { get; } = servicesUsage;
     public IDiscountRepository Discounts { get; } = discounts;
-    public IStatisticsRepository? Statistics { get; } = statistics;
-
+    public IFeedBackRepository FeedBacks { get; } = feedbacks;
     public async Task<int> CompleteAsync()
     {
         return await _dbContext.SaveChangesAsync();
