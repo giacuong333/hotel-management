@@ -75,7 +75,7 @@ namespace backend.Database
                 .WithMany()  // A user can have many feedbacks
                 .HasForeignKey(f => f.RoomId)
                 .OnDelete(DeleteBehavior.Restrict); // Optional: You can change delete behavior
-            
+
             // RolePermission - Role
             modelBuilder.Entity<RolepermissionModel>()
                 .HasOne(rp => rp.Role)
@@ -125,14 +125,14 @@ namespace backend.Database
                 .HasForeignKey<ReceiptModel>(r => r.BookingId)
                 .OnDelete(DeleteBehavior.Restrict); // Optional: Restrict delete
 
-            //Review
+            //Review - User
             modelBuilder.Entity<ReviewModel>()
                 .HasOne(rv => rv.Users)
                 .WithMany()
                 .HasForeignKey(rv => rv.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Review
+            //Review - Room
             modelBuilder.Entity<ReviewModel>()
                 .HasOne(rv => rv.Rooms)
                 .WithMany()

@@ -17,7 +17,8 @@ public class UnitOfWork(
     IServiceUsageRepository servicesUsage,
     IDashboardRepository dashboards,
     IDiscountRepository discounts,
-    IFeedBackRepository feedbacks
+    IFeedBackRepository feedbacks,
+    IStatisticsRepository statistics
     ) : IUnitOfWork
 {
     private readonly DatabaseContext _dbContext = dbContext;
@@ -37,6 +38,8 @@ public class UnitOfWork(
     public IServiceUsageRepository ServicesUsage { get; } = servicesUsage;
     public IDiscountRepository Discounts { get; } = discounts;
     public IFeedBackRepository FeedBacks { get; } = feedbacks;
+    public IStatisticsRepository? Statistics { get; } = statistics;
+
     public async Task<int> CompleteAsync()
     {
         return await _dbContext.SaveChangesAsync();

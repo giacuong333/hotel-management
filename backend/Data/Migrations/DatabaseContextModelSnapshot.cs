@@ -84,11 +84,11 @@ namespace backend.Migrations
 
             modelBuilder.Entity("RoomModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
 
                     b.Property<int?>("Area")
                         .HasColumnType("int");
@@ -342,9 +342,6 @@ namespace backend.Migrations
                     b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RoomsId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
@@ -353,7 +350,7 @@ namespace backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoomsId");
+                    b.HasIndex("RoomId");
 
                     b.HasIndex("UserId");
 
@@ -594,11 +591,13 @@ namespace backend.Migrations
                 {
                     b.HasOne("RoomModel", "Rooms")
                         .WithMany()
-                        .HasForeignKey("RoomsId");
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("backend.Models.UserModel", "Users")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Rooms");
 

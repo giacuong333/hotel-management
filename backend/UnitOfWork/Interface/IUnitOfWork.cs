@@ -17,5 +17,6 @@ public interface IUnitOfWork : IDisposable
     IDashboardRepository Dashboards { get; }
     IDiscountRepository Discounts { get; }
     IFeedBackRepository FeedBacks { get; }
+    IStatisticsRepository Statistics { get; }
     Task<int> CompleteAsync();
 }
