@@ -1,24 +1,101 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { convertByteArrayToBase64 } from '../../utils/handleByteArray';
 
 import { BiArea } from 'react-icons/bi';
 import { IoBedOutline } from 'react-icons/io5';
 import formatCurrency from '~/utils/currencyPipe';
+import axios from 'axios';
+import RightArrow from './images/rightArrow.svg';
+import LeftArrow from './images/leftArrow.svg';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from 'react-slick';
+
+const carouselSettings = {
+    infinite: true,
+    speed: 2000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 1500,
+    responsive: [
+        {
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 1,
+            },
+        },
+        {
+            breakpoint: 600,
+            settings: {
+                slidesToShow: 1,
+            },
+        },
+    ],
+};
 
 const Room = ({ room }) => {
+    const slideRef = useRef(null);
+    const [gallery, setGallery] = useState([]);
+
+    useEffect(() => {
+        fetchGallery();
+    }, [room.id]);
+
+    const fetchGallery = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5058/gallery/${room.id}`);
+            if (response?.status === 200) {
+                const gallery = response?.data?.$values || null;
+                room.thumbnail && gallery.unshift({ image: room?.thumbnail });
+                setGallery(gallery);
+            }
+        } catch (error) {
+            console.error('Failed to fetch gallery:', error);
+        }
+    };
+
     return (
         <div>
             <div className="position-relative w-full h-full">
-                <img
-                    src={
-                        room?.thumbnail
-                            ? convertByteArrayToBase64(room?.thumbnail)
-                            : `https://luxestay.wpthemeverse.com/wp-content/uploads/2024/08/room4-600x500.png`
-                    }
-                    alt={room?.name}
-                    className="w-full h-full"
-                />
+                <Slider {...carouselSettings} ref={slideRef}>
+                    {gallery.map((item) => {
+                        return (
+                            <img
+                                src={convertByteArrayToBase64(item.image)}
+                                alt="Room Thumbnail Is Not Available"
+                                className="w-full h-full"
+                            />
+                        );
+                    })}
+                </Slider>
+
+                {/* Arrows */}
+                <div
+                    className="cursor-pointer"
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        left: 20,
+                    }}
+                    onClick={() => slideRef.current.slickPrev()}
+                >
+                    <img src={LeftArrow} alt="Left Arrow" />
+                </div>
+                <div
+                    className="cursor-pointer"
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        right: 20,
+                    }}
+                    onClick={() => slideRef.current.slickNext()}
+                >
+                    <img src={RightArrow} alt="Right Arrow" />
+                </div>
 
                 <div
                     className="d-inline-flex align-items-center gap-2 p-2"

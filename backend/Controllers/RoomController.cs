@@ -72,12 +72,18 @@ namespace backend.Controllers
             // [POST] /room
             [HttpPost]
             [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<RoomModel>>> CreateRoom([FromBody] RoomModel request)
+            public async Task<ActionResult<IEnumerable<RoomModel>>> CreateRoom([FromForm] RoomModel request, IFormFile thumbnail)
             {
                   try
                   {
                         if (!ModelState.IsValid)
-                              return BadRequest(ModelState);
+                              return BadRequest("Missing Data");
+
+                        using (var memoryStream = new MemoryStream())
+                        {
+                              await thumbnail.CopyToAsync(memoryStream);
+                              request.Thumbnail = memoryStream.ToArray();
+                        }
 
                         var room = new RoomModel
                         {
@@ -88,20 +94,12 @@ namespace backend.Controllers
                               BedNum = request.BedNum,
                               Status = request.Status,
                               Price = request.Price,
-                              Area = request.Area
+                              Area = request.Area,
                         };
 
                         await _roomService.CreateRoomAsync(room);
-                        await _roomService.SaveAsync();
 
-                        if (room.Id != 0)
-                              return StatusCode(500, new { message = "Room ID not generated" });
-
-                        var addedRoom = await _roomService.GetRoomByIdAsync((int)room.Id);
-                        if (addedRoom == null)
-                              return NotFound("Room not found.");
-
-                        return StatusCode(201, new { message = "Room created successfully", room = addedRoom });
+                        return StatusCode(201, new { message = "Room created successfully", room });
                   }
                   catch (UnauthorizedException ex)
                   {
@@ -123,7 +121,7 @@ namespace backend.Controllers
             // [PUT] /room/{id}
             [HttpPut("{id}")]
             [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<RoomModel>>> EditRoom([FromBody] RoomModel payload, int id)
+            public async Task<ActionResult> EditRoom([FromForm] RoomModel payload, IFormFile thumbnail, int id)
             {
                   try
                   {
@@ -134,7 +132,12 @@ namespace backend.Controllers
                         if (room == null)
                               return NotFound("Room not found");
 
-                        room.Thumbnail = payload.Thumbnail;
+                        using (var memoryStream = new MemoryStream())
+                        {
+                              await thumbnail.CopyToAsync(memoryStream);
+                              room.Thumbnail = memoryStream.ToArray();
+                        }
+
                         room.Name = payload.Name;
                         room.Type = payload.Type;
                         room.Description = payload.Description;
@@ -144,7 +147,6 @@ namespace backend.Controllers
                         room.Area = payload.Area;
 
                         await _roomService.UpdateRoomAsync(room);
-                        await _roomService.SaveAsync();
 
                         return Ok(new { message = "Room edited successfully", room });
                   }
@@ -183,7 +185,6 @@ namespace backend.Controllers
                               return Conflict("The room is being stayed.");
 
                         await _roomService.DeleteRoomAsync(room.Id);
-                        await _roomService.SaveAsync();
 
                         return Ok(new { message = "Room deleted successfully", room });
                   }
@@ -228,8 +229,6 @@ namespace backend.Controllers
 
                               await _roomService.DeleteRoomAsync(room.Id);
                         }
-
-                        await _roomService.SaveAsync();
 
                         var updatedRooms = await _roomService.GetRoomsAsync();
 

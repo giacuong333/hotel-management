@@ -8,5 +8,4 @@ public interface IRoomService
       Task CreateRoomAsync(RoomModel room);
       Task UpdateRoomAsync(RoomModel room);
       Task DeleteRoomAsync(object id);
-      Task<int> SaveAsync();
 }

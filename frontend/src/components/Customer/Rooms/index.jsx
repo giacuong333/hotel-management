@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { convertByteArrayToBase64 } from '../../../utils/handleByteArray';
+import React, { useState, useEffect } from 'react';
 import Room from '../../Room';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([]);
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -39,7 +37,11 @@ const Rooms = () => {
             <div className="container mx-auto">
                 <div className="row py-5">
                     {rooms.map((room) => (
-                        <div key={room.id} className="col-lg-4 cursor-pointer" onClick={() => handleRoomClick(room.id)}>
+                        <div
+                            key={room.id}
+                            className="col-lg-4 col-md-6 col-xs-1 cursor-pointer"
+                            onClick={() => handleRoomClick(room.id)}
+                        >
                             <Room room={room} />
                         </div>
                     ))}

@@ -230,10 +230,6 @@ const User = () => {
             name: 'Role',
             selector: (row) => row.roleName,
         },
-        {
-            name: 'Create time',
-            selector: (row) => row.createdAt,
-        },
     ];
 
     // Conditionally add Avatar column if update permission exists
@@ -282,7 +278,6 @@ const User = () => {
                 )}
             </>
         ),
-        createdAt: new Date(user?.createdAt).toLocaleString(),
         actions: (
             <>
                 {hasPermissionUpdate ? (

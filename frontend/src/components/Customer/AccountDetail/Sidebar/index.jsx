@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { MdOutlineFileUpload } from 'react-icons/md';
 import { useUser } from '~/providers/UserProvider';
 import axios from 'axios';
+import { convertByteArrayToBase64 } from '~/utils/handleByteArray';
 
 const menu = [
     {
@@ -64,7 +65,7 @@ const Sidebar = () => {
                             <img
                                 src={
                                     avatar?.preview ||
-                                    (user?.avatar !== null && `data:image/jpeg;base64,${user?.avatar}`) ||
+                                    (user?.avatar !== null && convertByteArrayToBase64(user?.avatar)) ||
                                     'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'
                                 }
                                 alt=""

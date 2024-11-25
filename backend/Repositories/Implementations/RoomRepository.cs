@@ -8,5 +8,7 @@ namespace Repositories.Implementations
       public class RoomRepository : GenericRepository<RoomModel>, IRoomRepository
       {
             public RoomRepository(DatabaseContext context) : base(context) { }
+
+
       }
 }

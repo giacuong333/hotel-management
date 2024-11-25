@@ -40,7 +40,6 @@ const Booking = () => {
             try {
                 // Create payload for deletion (id list)
                 const payload = deleteAll.payload.map((bookingDelete) => ({ id: bookingDelete.id }));
-                console.log('Payload', payload);
                 const response = await axios.delete('http://localhost:5058/booking', { data: payload });
                 if (response?.status === 200) {
                     const data = response?.data?.updatedBookings?.$values.map((booking) => {
@@ -187,13 +186,6 @@ const Booking = () => {
 
     const handleDeleteRowsSelected = () => {
         deleteAll.count !== 0 && setShowDeleteAllConfirm(true);
-    };
-
-    const handleBookingAdded = (newRoom) => {
-        newRoom.statusName = newRoom.status === 1 ? 'Empty' : newRoom.status === 2 ? 'Booked' : 'Staying';
-        newRoom.formattedPrice = formatCurrency(newRoom.price);
-        setBookings((prevRoom) => [...prevRoom, newRoom]);
-        setSearchedBookings((prevRoom) => [...prevRoom, newRoom]);
     };
 
     const reset = () => {

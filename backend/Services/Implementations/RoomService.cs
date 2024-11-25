@@ -8,11 +8,13 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
       public async Task CreateRoomAsync(RoomModel room)
       {
             await _unitOfWork.Rooms.CreateAsync(room);
+            await _unitOfWork.CompleteAsync();
       }
 
       public async Task DeleteRoomAsync(object id)
       {
             await _unitOfWork.Rooms.DeleteAsync(id);
+            await _unitOfWork.CompleteAsync();
       }
 
       public async Task<RoomModel> GetRoomByIdAsync(object id)
@@ -25,13 +27,10 @@ public class RoomService(IUnitOfWork unitOfWork) : IRoomService
             return await _unitOfWork.Rooms.GetAllAsync();
       }
 
-      public async Task<int> SaveAsync()
-      {
-            return await _unitOfWork.CompleteAsync();
-      }
 
       public async Task UpdateRoomAsync(RoomModel user)
       {
             await _unitOfWork.Rooms.UpdateAsync(user);
+            await _unitOfWork.CompleteAsync();
       }
 }

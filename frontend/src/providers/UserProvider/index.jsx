@@ -2,8 +2,8 @@ import React, { createContext, useCallback, useContext, useEffect, useState } fr
 import axios from 'axios';
 import { getAuthHeader } from '../../utils/getAuthHeader';
 import { showToast } from '../../utils/showToast';
+import { useNavigate } from 'react-router';
 
-// Create the UserContext
 const userContext = createContext();
 
 const UserProvider = ({ children }) => {
@@ -12,24 +12,26 @@ const UserProvider = ({ children }) => {
     const [error, setError] = useState('');
     const [isCreatingAccount, setIsCreatingAccount] = useState(false);
     const [isLogginginAccount, setIsLogginginAccount] = useState(false);
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const interceptor = axios.interceptors.response.use(
-    //         (response) => response,
-    //         (error) => {
-    //             if (error.response?.status === 401) {
-    //                 showToast('Session expired. Please log in again.', 'error');
-    //                 localStorage.removeItem('jwtToken');
-    //                 delete axios.defaults.headers.common['Authorization'];
-    //                 setUser(null);
-    //                 navigate('/');
-    //             }
-    //             return Promise.reject(error);
-    //         },
-    //     );
-    //     return () => axios.interceptors.response.eject(interceptor);
-    // }, [navigate]);
+    useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401) {
+                    showToast('Session expired. Please log in again.', 'warning');
+                    localStorage.removeItem('jwtToken');
+                    delete axios.defaults.headers.common['Authorization'];
+                    setUser(null);
+                    navigate('/');
+                }
+                return Promise.reject(error);
+            },
+        );
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
+    }, [navigate]);
 
     useEffect(() => {
         fetchUser();

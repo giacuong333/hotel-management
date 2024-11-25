@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import FormGroup from '~/components/FormGroup';
 import Overlay from '~/components/Overlay';
@@ -23,9 +23,11 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
         price: data?.price || '',
         area: data?.area || '',
         createdAt: data?.createdAt ? new Date(data?.createdAt) : null,
+        thumbnail: data?.thumbnail || '',
     });
     const [errors, setErrors] = useState({});
     const [pendingSubmit, setPendingSubmit] = useState(false);
+    const thumbnailRef = useRef();
 
     // Reset form fields whenever `type` or `data` changes
     useEffect(() => {
@@ -38,6 +40,7 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
             price: data?.price || '',
             area: data?.area || '',
             createdAt: data?.createdAt ? new Date(data?.createdAt) : null,
+            thumbnail: data?.thumbnail || '',
         });
         setErrors({});
     }, [type, data]);
@@ -58,17 +61,23 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
         return Object.keys(validationErrors).length === 0;
     };
 
+    console.log('Payload', fields);
+
     const handleSubmitClicked = async (e) => {
         e.preventDefault();
 
         const apiUrl = 'http://localhost:5058/room';
 
         if (handleValidation()) {
-            const payload = { ...fields };
+            const formData = new FormData();
+            Object.entries(fields).forEach(([key, value]) => {
+                formData.append(key, value);
+            });
+
             try {
                 if (type === 'add') {
                     setPendingSubmit(true);
-                    const response = await axios.post(`${apiUrl}`, payload);
+                    const response = await axios.post(`${apiUrl}`, formData);
                     console.log(response);
                     if (response?.status === 201) {
                         showToast('Room created successfully', 'success');
@@ -77,7 +86,7 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                     }
                 } else if (type === 'edit') {
                     setPendingSubmit(true);
-                    const response = await axios.put(`${apiUrl}/${data?.id}`, payload);
+                    const response = await axios.put(`${apiUrl}/${data?.id}`, formData);
                     console.log(response);
                     if (response?.status === 200) {
                         showToast('Room updated successfully', 'success');
@@ -86,6 +95,7 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                     }
                 }
             } catch (error) {
+                console.log('Error while editing', error);
                 showToast(error?.response?.data?.message || error?.response?.message, 'error');
             } finally {
                 setPendingSubmit(false);
@@ -104,6 +114,7 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
             price: data?.price || '',
             area: data?.area || '',
             createdAt: data?.createdAt ? new Date(data?.createdAt) : null,
+            thumbnail: data?.thumbnail || '',
         });
         onClose();
     };
@@ -120,6 +131,10 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
             ...prevErrors,
             [field]: '',
         }));
+    };
+
+    const handleAddClick = () => {
+        thumbnailRef.current.click();
     };
 
     return (
@@ -139,6 +154,27 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                 }}
                 className="container mx-auto px-5"
             >
+                <>
+                    <input
+                        type="file"
+                        hidden
+                        ref={thumbnailRef}
+                        onChange={() => handleFieldChange('thumbnail', thumbnailRef.current.files[0])}
+                    />
+                    <button
+                        size={30}
+                        className="p-2 rounded-pill cursor-pointer text-white customer-primary-button bg-hover-white text-hover-black"
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 14,
+                            zIndex: 20,
+                        }}
+                        onClick={handleAddClick}
+                    >
+                        A<br />d<br />d
+                    </button>
+                </>
                 <form
                     className="w-full h-full"
                     style={{

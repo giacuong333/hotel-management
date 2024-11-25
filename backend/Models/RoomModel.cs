@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 public class RoomModel
 {
       public RoomModel() { }
 
       [Key]
-      public int Id { get; set; }
+      public int? Id { get; set; }
       public byte[]? Thumbnail { get; set; }
       public string? Name { get; set; }
       public string? Type { get; set; }
@@ -17,6 +18,7 @@ public class RoomModel
       public int? Area { get; set; }
 
       [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+      [BindNever]
       public DateTime? CreatedAt { get; set; }
 
       [DatabaseGenerated(DatabaseGeneratedOption.Computed)]

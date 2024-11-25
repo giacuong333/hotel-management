@@ -258,7 +258,7 @@ public static class Seed
                     BedNum = 4,
                     Status = 2,
                     Price = 5000000,
-                    Area = 50
+                    Area = 50,
                 },
                 new RoomModel
                 {

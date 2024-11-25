@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-
 import ExtraServices from './ExtraServices';
 import GalleryList from './GalleryList';
 import { useUser } from '../../../../providers/UserProvider';
-
 import { BiArea } from 'react-icons/bi';
 import { IoBedOutline } from 'react-icons/io5';
 import { TbAirConditioning } from 'react-icons/tb';
@@ -18,14 +16,44 @@ import { CgSmartHomeRefrigerator } from 'react-icons/cg';
 import { IoWifiOutline } from 'react-icons/io5';
 import Reviews from './Reviews';
 import formatCurrency from '~/utils/currencyPipe';
+import { convertByteArrayToBase64 } from '~/utils/handleByteArray';
+import RightArrow from './images/rightArrow.svg';
+import LeftArrow from './images/leftArrow.svg';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from 'react-slick';
+
+const carouselSettings = {
+    infinite: true,
+    speed: 2000,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 1500,
+    responsive: [
+        {
+            breakpoint: 1024,
+            settings: {
+                slidesToShow: 1,
+            },
+        },
+        {
+            breakpoint: 600,
+            settings: {
+                slidesToShow: 1,
+            },
+        },
+    ],
+};
 
 const RoomDetail = () => {
     const [roomDetail, setRoomDetail] = useState({});
+    const [gallery, setGallery] = useState([]);
     const { user } = useUser();
     const isAuthenticated = user !== null;
-
     const { id } = useParams();
     const navigate = useNavigate();
+    const slideRef = useRef(null);
 
     useEffect(() => {
         if (!id) {
@@ -33,17 +61,27 @@ const RoomDetail = () => {
             return;
         }
         fetchRoom();
+        fetchGallery();
     }, [id]);
+
+    const fetchGallery = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5058/gallery/${id}`);
+            if (response?.status === 200) {
+                const gallery = response?.data?.$values || null;
+                roomDetail.thumbnail && gallery.unshift({ image: roomDetail?.thumbnail });
+                setGallery(gallery);
+            }
+        } catch (error) {
+            console.error('Failed to fetch gallery:', error);
+        }
+    };
 
     const fetchRoom = async () => {
         try {
             const response = await axios.get(`http://localhost:5058/room/${id}`);
-
             if (response?.status === 200) {
                 const roomData = response?.data || null;
-
-                console.log(roomData);
-
                 if (roomData) {
                     setRoomDetail(roomData);
                 } else {
@@ -70,11 +108,17 @@ const RoomDetail = () => {
                     <div className="col-lg-8 px-lg-0">
                         <div className="px-2 pt-4">
                             <div className="position-relative w-full h-full">
-                                <img
-                                    src="https://luxestay.wpthemeverse.com/wp-content/uploads/2024/08/classic-room.png"
-                                    alt=""
-                                    className="w-full h-full"
-                                />
+                                <Slider {...carouselSettings} ref={slideRef}>
+                                    {gallery.map((item) => {
+                                        return (
+                                            <img
+                                                src={convertByteArrayToBase64(item.image)}
+                                                alt="Room Thumbnail Is Not Available"
+                                                className="w-full h-full"
+                                            />
+                                        );
+                                    })}
+                                </Slider>
                                 <div
                                     className="bg-white d-inline-flex align-items-center gap-2 px-4 py-3"
                                     style={{
@@ -88,6 +132,38 @@ const RoomDetail = () => {
                                     <span className="d-flex align-items-center">
                                         <p className="font-weight-bold">{formatCurrency(roomDetail?.price)}</p>
                                     </span>
+                                </div>
+
+                                {/* Arrows */}
+                                <div
+                                    className="cursor-pointer"
+                                    style={{
+                                        position: 'absolute',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        left: 20,
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        slideRef.current.slickPrev();
+                                    }}
+                                >
+                                    <img src={LeftArrow} alt="Left Arrow" />
+                                </div>
+                                <div
+                                    className="cursor-pointer"
+                                    style={{
+                                        position: 'absolute',
+                                        top: '50%',
+                                        transform: 'translateY(-50%)',
+                                        right: 20,
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        slideRef.current.slickNext();
+                                    }}
+                                >
+                                    <img src={RightArrow} alt="Right Arrow" />
                                 </div>
                             </div>
 
