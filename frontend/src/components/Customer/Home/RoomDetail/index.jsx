@@ -22,6 +22,7 @@ import LeftArrow from './images/leftArrow.svg';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
+import ToastContainer, { showToast } from '~/utils/showToast';
 
 const carouselSettings = {
     infinite: true,
@@ -104,6 +105,7 @@ const RoomDetail = () => {
     return (
         <section>
             <div className="container mx-auto">
+                {ToastContainer}
                 <div className="row">
                     <div className="col-lg-8 px-lg-0">
                         <div className="px-2 pt-4">
