@@ -8,7 +8,9 @@ namespace backend.Repositories.Interfaces
         Task<IEnumerable<ReviewModel>> GetAllAsync();
         Task<ReviewModel> GetByIdAsync(object id);
         Task DeleteAsync(object id);
-     
+        Task CreateAsync(ReviewModel review);
+
+
 
     }
 }

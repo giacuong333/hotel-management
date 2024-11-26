@@ -55,8 +55,13 @@ namespace Repositories.Implementations
                         throw;
                   }
             }
-
-            public async Task<BookingModel?> GetBookingByIdAsync(object id)
+        public async Task<BookingModel> CheckCustomerCheckedOutAsync(int userId, int roomId)
+        {
+            return await _context.Booking
+                .Where(bk => bk.CustomerId == userId && bk.RoomId == roomId && bk.Status == 3)
+                .FirstOrDefaultAsync();
+        }
+        public async Task<BookingModel?> GetBookingByIdAsync(object id)
             {
                   // Validate and convert id parameter
                   if (id == null || !int.TryParse(id.ToString(), out int bookingId))

@@ -10,5 +10,6 @@ namespace Repositories.Interfaces
             Task<IEnumerable<BookingModel>> GetBookingsAuthorizedAsync(int id);
             Task<BookingModel?> GetBookingByIdAsync(object id);
             Task ChangeBookingStatus(BookingModel booking, int status, int staffId);
+        Task<BookingModel> CheckCustomerCheckedOutAsync(int userId, int roomId);
       }
 }
