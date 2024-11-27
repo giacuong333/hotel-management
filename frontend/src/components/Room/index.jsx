@@ -96,20 +96,7 @@ const Room = ({ room }) => {
                 >
                     <img src={RightArrow} alt="Right Arrow" />
                 </div>
-
-                <div
-                    className="d-inline-flex align-items-center gap-2 p-2"
-                    style={{
-                        position: 'absolute',
-                        top: '1rem',
-                        right: '1rem',
-                        zIndex: 10,
-                        backgroundColor: room.status === 1 ? '#C2FFC7' : '#FFB38E',
-                    }}
-                >
-                    <span className="fw-bold">{room.status === 1 ? 'Available' : 'Unvailable'}</span>
-                </div>
-
+                
                 <div
                     className="bg-white d-inline-flex align-items-center gap-2 px-4 py-3"
                     style={{

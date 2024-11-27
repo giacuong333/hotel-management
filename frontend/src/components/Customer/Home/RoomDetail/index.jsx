@@ -1,9 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from 'react-slick';
+
 import ExtraServices from './ExtraServices';
 import GalleryList from './GalleryList';
+import Reviews from './Reviews';
+import formatCurrency from '~/utils/currencyPipe';
+import { convertByteArrayToBase64 } from '~/utils/handleByteArray';
 import { useUser } from '../../../../providers/UserProvider';
+import ToastContainer, { showToast } from '~/utils/showToast';
+import formatDate from '~/utils/formatDate';
+
 import { BiArea } from 'react-icons/bi';
 import { IoBedOutline } from 'react-icons/io5';
 import { TbAirConditioning } from 'react-icons/tb';
@@ -14,15 +24,10 @@ import { PiBathtub } from 'react-icons/pi';
 import { PiHairDryer } from 'react-icons/pi';
 import { CgSmartHomeRefrigerator } from 'react-icons/cg';
 import { IoWifiOutline } from 'react-icons/io5';
-import Reviews from './Reviews';
-import formatCurrency from '~/utils/currencyPipe';
-import { convertByteArrayToBase64 } from '~/utils/handleByteArray';
 import RightArrow from './images/rightArrow.svg';
 import LeftArrow from './images/leftArrow.svg';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import Slider from 'react-slick';
-import ToastContainer, { showToast } from '~/utils/showToast';
+import DatePicker from 'react-datepicker';
+import { Alert } from 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const carouselSettings = {
     infinite: true,
@@ -48,11 +53,17 @@ const carouselSettings = {
 };
 
 const RoomDetail = () => {
+    const { id } = useParams();
     const [roomDetail, setRoomDetail] = useState({});
     const [gallery, setGallery] = useState([]);
+    const [ bookedDates, setBookedDates ] = useState([]);
+    const [ checkInDate, setCheckInDate ] = useState();
+    const [ checkOutDate, setCheckOutDate ] = useState();
+    const [selectedServices, setSelectedServices] = useState([]);
+
     const { user } = useUser();
     const isAuthenticated = user !== null;
-    const { id } = useParams();
+
     const navigate = useNavigate();
     const slideRef = useRef(null);
 
@@ -63,7 +74,21 @@ const RoomDetail = () => {
         }
         fetchRoom();
         fetchGallery();
+        fetchBookedDates();
     }, [id]);
+
+    useEffect(()=>{
+        console.log(bookedDates);
+    },[bookedDates])
+
+    useEffect(()=>{
+        console.log("Check-in: ", checkInDate);
+        console.log("Check-out: ", checkOutDate);
+    }, [checkInDate, checkOutDate])
+
+    useEffect(()=>{
+        console.log('Selected Services:', selectedServices);
+    }, [selectedServices])
 
     const fetchGallery = async () => {
         try {
@@ -94,13 +119,63 @@ const RoomDetail = () => {
         }
     };
 
-    const handleBookNow = () => {
-        if (isAuthenticated) {
-            navigate('/proceed-payment');
-        } else {
-            navigate('/signin');
+    const fetchBookedDates = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5058/booking/room/${id}`);
+            console.log("Reponse: ", response);
+            
+            if (response?.status === 200) {
+                const bookingData = response?.data?.$values || response?.data?.obj;;
+                console.log("Booking data: ", bookingData);
+                
+                if (bookingData) {
+                    const allBookedDates = bookingData.map((booking) => {
+                        return getDatesInRange(booking.checkIn, booking.checkOut);
+                      });
+            
+                      // Dùng flatMap để chuyển đổi mảng 2 chiều thành mảng 1 chiều
+                    setBookedDates(allBookedDates.flat());
+                } else {
+                    console.error('Undefined value:', response.data);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch booked dates:', error);
         }
     };
+
+    const handleBookNow = () => {
+        navigate('/proceed-payment');
+    };
+
+    const getDatesInRange = (startDate, endDate) => {
+        let dates = [];
+        let currentDate = new Date(startDate);
+        const end = new Date(endDate);
+
+        while (currentDate <= end) {
+            dates.push(new Date(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return dates;
+    };
+
+    const handleCheckInDateChange = (date) => {
+        setCheckInDate(date);
+    }
+
+    const handleCheckOutDateChange = (date) => {
+        setCheckOutDate(date);
+    }
+
+    const handleServicesChange = (services) => {
+        setSelectedServices(services);
+    };
+
+    const getTotalBookingDate=()=>{
+
+    }
 
     return (
         <section>
@@ -234,51 +309,53 @@ const RoomDetail = () => {
                         </div>
                     </div>
 
-                    {roomDetail?.status === 1 ? (
-                        <div className="col-lg-4 pt-4">
-                            <div className="customer-third-bg-color p-4">
-                                <p className="text-center fs-3 p-2 pt-0">Your Reservation</p>
-                                <div className="py-3 d-flex flex-column gap-4">
-                                    <span className="d-flex flex-column gap-2">
-                                        <p>Check-in</p>
-                                        <input
-                                            aria-label="Date and time"
-                                            type="datetime-local"
-                                            className="customer-datetime-picker room-detail"
-                                        />
-                                    </span>
-                                    <span className="d-flex flex-column gap-2">
-                                        <p>Check-out</p>
-                                        <input
-                                            aria-label="Date and time"
-                                            type="datetime-local"
-                                            className="customer-datetime-picker room-detail"
-                                        />
-                                    </span>
+                    <div className="col-lg-4 pt-4">
+                        <div className="customer-third-bg-color p-4">
+                            <p className="text-center fs-3 p-2 pt-0">Your Reservation</p>
+                            <div className="py-3 d-flex flex-column gap-4">
+                                <span className="d-flex flex-column gap-2">
+                                    <p>Check-in</p>
+                                    <DatePicker
+                                        selected={checkInDate} 
+                                        onChange={handleCheckInDateChange} 
+                                        dateFormat="yyyy-MM-dd" 
+                                        className="customer-datetime-picker room-detail" 
+                                        placeholderText="Choose check-in date" 
+                                    />
+                                </span>
+                                <span className="d-flex flex-column gap-2">
+                                    <p>Check-out</p>
+                                    <DatePicker
+                                        selected={checkOutDate} 
+                                        onChange={handleCheckOutDateChange} 
+                                        dateFormat="yyyy-MM-dd" 
+                                        className="customer-datetime-picker room-detail" 
+                                        placeholderText="Choose check-out date" 
+                                    />
+                                </span>
+                            </div>
+                            <div className="d-flex flex-column gap-4">
+                                <p className="text-start fs-3 py-2 pt-0">Extra Services</p>
+                                <ExtraServices onServicesChange={handleServicesChange} />
+                                <div className="bg-white border p-3">
+                                    <p className="fs-5">Your Price</p>
+                                    <p className="fs-5 fw-bold">
+                                        {formatCurrency(
+                                            selectedServices.reduce((total, service) => total + service.price * service.quantity, 0)
+                                        )}
+                                    </p>
                                 </div>
-                                <div className="d-flex flex-column gap-4">
-                                    <p className="text-start fs-3 py-2 pt-0">Extra Services</p>
-                                    <ExtraServices />
-                                    <div className="bg-white border p-3">
-                                        <p className="fs-5">Your Price</p>
-                                        <p className="fs-5 fw-bold">619 VND</p>
-                                    </div>
-                                    <div className="d-flex align-items-center gap-1" onClick={handleBookNow}>
-                                        <button
-                                            variant="primary"
-                                            className="customer-primary-button p-3 rounded-0 text-uppercase flex-grow-1 text-center text-uppercase text-white"
-                                        >
-                                            Book Now
-                                        </button>
-                                    </div>
+                                <div className="d-flex align-items-center gap-1" onClick={handleBookNow}>
+                                    <button
+                                        variant="primary"
+                                        className="customer-primary-button p-3 rounded-0 text-uppercase flex-grow-1 text-center text-uppercase text-white"
+                                    >
+                                        Book Now
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    ) : (
-                        <div className="col-lg-4 pt-4 d-flex">
-                            <h3>Unavailable</h3>
-                        </div>
-                    )}
+                    </div>
                 </div>
 
                 <div className="row my-5">
