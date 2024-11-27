@@ -39,4 +39,9 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
       {
             return await _unitOfWork.Bookings.GetAuthorizedCancelledBookingsAsync(id);
       }
+
+      public async Task<IEnumerable<BookingModel>> GetBookingsByRoomIdAsync(int roomId)
+      {
+           return await _unitOfWork.Bookings.GetBookingsByRoomIdAsync(roomId);
+      }
 }

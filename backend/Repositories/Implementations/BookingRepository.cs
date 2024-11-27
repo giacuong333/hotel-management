@@ -1,4 +1,4 @@
-using backend.Database;
+﻿using backend.Database;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
@@ -291,5 +291,12 @@ namespace Repositories.Implementations
                                    .Include(b => b.StaffCheckOut)
                                    .ToListAsync();
             }
-      }
+
+        public async Task<IEnumerable<BookingModel>> GetBookingsByRoomIdAsync(int roomId)
+        {
+            return await _context.Booking
+                .Where(b => b.RoomId == roomId && b.DeletedAt == null)  
+                .ToListAsync();  
+        }
+    }
 }
