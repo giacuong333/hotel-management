@@ -27,7 +27,6 @@ import { IoWifiOutline } from 'react-icons/io5';
 import RightArrow from './images/rightArrow.svg';
 import LeftArrow from './images/leftArrow.svg';
 import DatePicker from 'react-datepicker';
-import { Alert } from 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const carouselSettings = {
     infinite: true,
@@ -335,6 +334,7 @@ const RoomDetail = () => {
                                         dateFormat="yyyy-MM-dd" 
                                         className="customer-datetime-picker room-detail" 
                                         placeholderText="Choose check-in date" 
+                                        excludeDates={bookedDates}
                                     />
                                 </span>
                                 <span className="d-flex flex-column gap-2">
@@ -345,6 +345,7 @@ const RoomDetail = () => {
                                         dateFormat="yyyy-MM-dd" 
                                         className="customer-datetime-picker room-detail" 
                                         placeholderText="Choose check-out date" 
+                                        excludeDates={bookedDates}
                                     />
                                 </span>
                                 <span className="d-flex flex-column gap-2">
