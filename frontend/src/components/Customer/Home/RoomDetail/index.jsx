@@ -173,9 +173,23 @@ const RoomDetail = () => {
         setSelectedServices(services);
     };
 
-    const getTotalBookingDate=()=>{
-
-    }
+    const calculateDays = (checkInDate, checkOutDate) => {
+        if(!checkInDate || !checkOutDate) {
+            return 0
+        }
+        // Chuyển chuỗi ngày thành đối tượng Date
+        const checkIn = new Date(checkInDate);
+        const checkOut = new Date(checkOutDate);
+    
+        // Tính chênh lệch thời gian (millisecond)
+        const timeDifference = checkOut - checkIn;
+    
+        // Tính số ngày (chênh lệch thời gian chia cho số milliseconds trong 1 ngày)
+        const days = timeDifference / (24 * 60 * 60 * 1000);
+    
+        // Nếu check-in bằng hoặc sau check-out thì trả về 0
+        return days > 0 ? days : 0;
+    };
 
     return (
         <section>
@@ -333,6 +347,9 @@ const RoomDetail = () => {
                                         placeholderText="Choose check-out date" 
                                     />
                                 </span>
+                                <span className="d-flex flex-column gap-2">
+                                    <p className="fs-5 fw-bold">Total days booked: {calculateDays(checkInDate, checkOutDate)}</p>
+                                </span>
                             </div>
                             <div className="d-flex flex-column gap-4">
                                 <p className="text-start fs-3 py-2 pt-0">Extra Services</p>
@@ -341,7 +358,7 @@ const RoomDetail = () => {
                                     <p className="fs-5">Your Price</p>
                                     <p className="fs-5 fw-bold">
                                         {formatCurrency(
-                                            selectedServices.reduce((total, service) => total + service.price * service.quantity, 0)
+                                            roomDetail.price * calculateDays(checkInDate, checkOutDate) + selectedServices.reduce((total, service) => total + service.price * service.quantity, 0)
                                         )}
                                     </p>
                                 </div>
