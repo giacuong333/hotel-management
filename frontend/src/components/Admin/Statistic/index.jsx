@@ -4,6 +4,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Col, Form, Row } from 'react-bootstrap';
 import { Pie, Line, Bar } from 'react-chartjs-2';
 import axios from 'axios';
+import ToastContainer, { showToast } from '~/utils/showToast';
+
 import {
     Chart,
     CategoryScale,
@@ -36,12 +38,25 @@ const Statistics = () => {
     const [labelLines, setLabelLines] = useState([]);
 
     useEffect(() => {
-        setDisplayType(getDisplayType());
+        if (selectedDate && selectedDateEnd) {
+            if (selectedDate > selectedDateEnd) {
+            } else {
+                setDisplayType(getDisplayType());
+            }
+        }
     }, [selectedDate, selectedDateEnd]);
 
     useEffect(() => {
+        if (selectedDate > selectedDateEnd) {
+            showToast('Start date cannot be after end date!', 'error');
+            return;
+        }
         const fetchBookings = async (url, setData) => {
             try {
+                if (!selectedDate || !selectedDateEnd) {
+                    return;
+                }
+
                 const startDate = selectedDate?.toLocaleDateString();
                 const endDate = selectedDateEnd?.toLocaleDateString();
 
@@ -233,6 +248,7 @@ const Statistics = () => {
 
     return (
         <div>
+            {ToastContainer}
             <Row className="mb-4">
                 <Col md={7} className="">
                     {' '}

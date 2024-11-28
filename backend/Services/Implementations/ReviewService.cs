@@ -12,6 +12,12 @@ public class ReviewService : IReviewService
         _unitOfWork = unitOfWork;
 
     }
+    public async Task CreateReviewAsync(ReviewModel review)
+    {
+       await _unitOfWork.Reviews.CreateAsync(review);
+        await _unitOfWork.CompleteAsync();
+
+    }
 
 
 

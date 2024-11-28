@@ -119,6 +119,7 @@ C:\HK1_2024-2025\Coding projects\dotnet-labs\hotel-management\backend\obj\Debug\
 C:\HK1_2024-2025\Coding projects\dotnet-labs\hotel-management\backend\obj\Debug\net8.0\backend.pdb
 C:\HK1_2024-2025\Coding projects\dotnet-labs\hotel-management\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 C:\HK1_2024-2025\Coding projects\dotnet-labs\hotel-management\backend\obj\Debug\net8.0\ref\backend.dll
+<<<<<<< HEAD
 C:\HocReact\hotel-management\backend\bin\Debug\net8.0\appsettings.Development.json
 C:\HocReact\hotel-management\backend\bin\Debug\net8.0\appsettings.json
 C:\HocReact\hotel-management\backend\bin\Debug\net8.0\backend.staticwebassets.runtime.json
@@ -493,3 +494,5 @@ D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\obj\Debug\net8.0\refin
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\obj\Debug\net8.0\backend.pdb
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\obj\Debug\net8.0\ref\backend.dll
+=======
+>>>>>>> 7eba89d55c33ee28ee3b2cbf12bc9825fa2dcb55

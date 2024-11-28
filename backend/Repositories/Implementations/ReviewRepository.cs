@@ -16,7 +16,10 @@ namespace Repositories.Implementations
             _context = context;
             _dbSet = context.Set<ReviewModel>();
         }
-
+        public async Task CreateAsync(ReviewModel review)
+        {
+            await _dbSet.AddAsync(review);
+        }
         public async Task DeleteAsync(object id)
         {
             ReviewModel entity = await _dbSet.FindAsync(id);

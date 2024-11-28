@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using backend.Models;
@@ -23,12 +23,15 @@ namespace backend.Controllers
 
 
         private readonly IReviewService _reviewService;
+        private readonly IBookingService _bookingService;
 
-        public ReviewController(IReviewService reviewService)
+
+        public ReviewController(IReviewService reviewService, IBookingService bookingService)
         {
 
 
             _reviewService = reviewService;
+            _bookingService = bookingService;
         }
 
         // [GET] /review
@@ -128,6 +131,51 @@ namespace backend.Controllers
             {
                 Console.WriteLine(e);
                 return StatusCode(500, "Internal server error");
+            }
+        }
+        [HttpPost]
+        [Produces("application/json")]
+
+        public async Task<ActionResult<IEnumerable<ReviewModel>>> CreateReview([FromBody] ReviewModel review)
+        {
+            try
+            {
+         
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+         
+                var newReview = new ReviewModel
+                {
+                    UserId = review.UserId,
+                    RoomId = review.RoomId,
+                    Comment = review.Comment,
+                    CreatedAt = DateTime.UtcNow,
+                    Status = 0, 
+                };
+
+
+                var checkCustomer = await _bookingService.CheckCustomerCheckedOutAsync(int.Parse(review.UserId.ToString()), int.Parse(review.RoomId.ToString()));
+
+
+                if (checkCustomer != null)
+                {
+                    await _reviewService.CreateReviewAsync(newReview);
+                    return StatusCode(201, new { message = "Review added successfully" });
+                }
+                else
+                {
+                    
+                    return StatusCode(202, new { message = "You must stay in this room before leaving a review" });
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+              
+                return StatusCode(500, new { message = "Internal server error" });
             }
         }
 

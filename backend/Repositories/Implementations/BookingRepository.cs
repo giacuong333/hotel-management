@@ -1,4 +1,4 @@
-using backend.Database;
+﻿using backend.Database;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Interfaces;
@@ -55,8 +55,13 @@ namespace Repositories.Implementations
                         throw;
                   }
             }
-
-            public async Task<BookingModel?> GetBookingByIdAsync(object id)
+        public async Task<BookingModel> CheckCustomerCheckedOutAsync(int userId, int roomId)
+        {
+            return await _context.Booking
+                .Where(bk => bk.CustomerId == userId && bk.RoomId == roomId && bk.Status == 3)
+                .FirstOrDefaultAsync();
+        }
+        public async Task<BookingModel?> GetBookingByIdAsync(object id)
             {
                   // Validate and convert id parameter
                   if (id == null || !int.TryParse(id.ToString(), out int bookingId))
@@ -286,5 +291,12 @@ namespace Repositories.Implementations
                                    .Include(b => b.StaffCheckOut)
                                    .ToListAsync();
             }
-      }
+
+        public async Task<IEnumerable<BookingModel>> GetBookingsByRoomIdAsync(int roomId)
+        {
+            return await _context.Booking
+                .Where(b => b.RoomId == roomId && b.DeletedAt == null)  
+                .ToListAsync();  
+        }
+    }
 }

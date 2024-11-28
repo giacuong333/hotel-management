@@ -252,5 +252,33 @@ namespace backend.Controllers
                         return StatusCode(500, new { message = "Internal server error", error = ex.Message });
                   }
             }
-      }
+
+            // [GET] /booking/room/{roomId}
+            [HttpGet("room/{roomId}")]
+            public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingsByRoomIdAsync(int roomId)
+            {
+                try
+                {
+                    var bookings = await _bookingService.GetBookingsByRoomIdAsync(roomId);
+
+                    return Ok(bookings);
+                }
+                catch (UnauthorizedException ex)
+                {
+                    return Unauthorized(new { message = ex.Message });
+                }
+                catch (NotFoundException ex)
+                {
+                    return NotFound(new { message = ex.Message });
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception
+                    Console.WriteLine($"An error occurred: {ex.Message}");
+                    Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                    return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+                }
+            }
+
+    }
 }

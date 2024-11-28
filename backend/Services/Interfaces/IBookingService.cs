@@ -9,4 +9,6 @@ public interface IBookingService
       Task<BookingModel> GetBookingByIdAsync(object id);
       Task DeleteBookingAsync(object id);
       Task ChangeStatusAsync(BookingModel booking, int status, int staffCheckOutId);
+      Task<BookingModel> CheckCustomerCheckedOutAsync(int userId, int roomId);
+      Task<IEnumerable<BookingModel>> GetBookingsByRoomIdAsync(int roomId);
 }

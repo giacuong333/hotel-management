@@ -73,6 +73,7 @@ const Service = () => {
                 }
             } catch (error) {
                 console.log(error);
+                showToast('One of the services is in use and cannot be deleted!', 'error');
             }
         };
 
@@ -128,7 +129,7 @@ const Service = () => {
             }
         } catch (error) {
             console.error('Error deleting service:', error);
-            showToast(error?.response?.data?.message || 'Error deleting service', 'error');
+            showToast(error?.response?.data?.message || 'This service is in use and cannot be deleted!', 'error');
         } finally {
             reset();
         }
