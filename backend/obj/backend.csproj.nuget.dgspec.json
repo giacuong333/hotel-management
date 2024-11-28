@@ -1,7 +1,6 @@
 {
   "format": 1,
   "restore": {
-<<<<<<< HEAD
     "D:\\ReactJS\\Projects\\ReactJS-.NET\\hotel-management\\backend\\backend.csproj": {}
   },
   "projects": {
@@ -16,32 +15,11 @@
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Cuong\\AppData\\Roaming\\NuGet\\NuGet.Config"
-=======
-    "C:\\HocReact\\hotel-management\\backend\\backend.csproj": {}
-  },
-  "projects": {
-    "C:\\HocReact\\hotel-management\\backend\\backend.csproj": {
-      "version": "1.0.0",
-      "restore": {
-        "projectUniqueName": "C:\\HocReact\\hotel-management\\backend\\backend.csproj",
-        "projectName": "backend",
-        "projectPath": "C:\\HocReact\\hotel-management\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\84967\\.nuget\\packages\\",
-        "outputPath": "C:\\HocReact\\hotel-management\\backend\\obj\\",
-        "projectStyle": "PackageReference",
-        "configFilePaths": [
-          "C:\\Users\\84967\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
->>>>>>> 73a7b2e10019b8254c87c20edf735d74d8f40fe6
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-<<<<<<< HEAD
-=======
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
->>>>>>> 73a7b2e10019b8254c87c20edf735d74d8f40fe6
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -54,6 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -63,10 +46,6 @@
             "Google.Apis.Auth": {
               "target": "Package",
               "version": "[1.65.0, )"
-            },
-            "Microsoft.AspNetCore.Authentication.Cookies": {
-              "target": "Package",
-              "version": "[2.2.0, )"
             },
             "Microsoft.AspNetCore.Authentication.Google": {
               "target": "Package",
@@ -91,10 +70,6 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[7.0.0, )"
-            },
-            "Newtonsoft.Json": {
-              "target": "Package",
-              "version": "[13.0.3, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
@@ -124,7 +99,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

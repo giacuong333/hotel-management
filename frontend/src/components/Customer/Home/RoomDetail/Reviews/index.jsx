@@ -33,16 +33,19 @@ const Reviews = () => {
     return (
         <div className="d-flex flex-column gap-4">
             <h3>{reviews.length} thoughts on “Alps Mountains Winter Cottage Monte Bianco in Aosta Valley”</h3>
-
-            {reviews.map((review, index) => (
-                <Review
-                    key={index}
-                    image={review.image || 'default-avatar-url'}
-                    name={review.userName || 'Anonymous'}
-                    date={review.createdAt || 'Unknown date'}
-                    comment={review.comment || 'No comment provided'}
-                />
-            ))}
+            {reviews.map((review, index) => {
+                console.log('Review', review);
+                return (
+                    <Review
+                        key={index}
+                        id={id}
+                        image={review?.image || 'https://cdn-icons-png.flaticon.com/512/6596/6596121.png'}
+                        name={review?.userName || 'Anonymous'}
+                        date={review?.createdAt || 'Unknown date'}
+                        comment={review?.comment || 'No comment provided'}
+                    />
+                );
+            })}
 
             <LeaveReview onReviewSubmitted={fetchReviews} />
         </div>

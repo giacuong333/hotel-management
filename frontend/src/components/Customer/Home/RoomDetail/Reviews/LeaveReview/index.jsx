@@ -82,7 +82,7 @@ const LeaveReview = ({ onReviewSubmitted }) => {
                     }
                 }}
             ></textarea>
-            <p className="text-danger">{errors.comment}</p>
+            <p className="text-danger fw-semibold">{errors.comment}</p>
         </div>
     );
 };

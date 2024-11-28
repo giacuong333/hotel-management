@@ -16,10 +16,8 @@
     </PackageReference>
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.2"/>
     <PackageReference Include="System.Web.Helpers.Crypto" Version="3.2.3"/>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
     <PackageReference Include="Google.Apis.Auth" Version="1.65.0"/>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2"/>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.2"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0"/>
   </ItemGroup>
 </Project>
