@@ -161,7 +161,6 @@ const PopupPanel = ({ data, type, onClose, onServiceAdded, onServiceUpdated, isS
                             name="name"
                             type="text"
                             error={errors.name}
-                            Icon={FaRegUser}
                             value={fields?.name}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
@@ -175,7 +174,6 @@ const PopupPanel = ({ data, type, onClose, onServiceAdded, onServiceUpdated, isS
                             name="price"
                             type="text"
                             error={errors.price}
-                            Icon={FaRegUser}
                             // value={type !== 'add' ? data?.price : ''}
                             value={type === 'see' ? formatCurrency(fields?.price) : fields?.price}
                             disabled={type === 'see'}

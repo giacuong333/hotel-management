@@ -138,7 +138,6 @@ const PopupPanel = ({ data, type, onClose, onRoleAdded, onRoleUpdated, isShowed 
                             name="name"
                             type="text"
                             error={errors.name}
-                            Icon={FaRegUser}
                             value={fields?.name}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
