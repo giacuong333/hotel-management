@@ -7,6 +7,7 @@ public interface IReviewService
     Task<ReviewModel> GetReviewByIdAsync(object id);
       Task DeleteReviewAsync(object id);
     Task CreateReviewAsync(ReviewModel review);
+    Task<IEnumerable<object>> GetReviewsByRoomIdAsync(int id);
 
 
 }

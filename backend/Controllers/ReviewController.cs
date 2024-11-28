@@ -57,9 +57,32 @@ namespace backend.Controllers
             }
         }
 
+            // [GET] /reviewbyroomid
+            [HttpGet("getReviewsByRoomId")]
+            [Produces("application/json")]
+            public async Task<ActionResult<IEnumerable<object>>> GetReviewsByRoomId(int roomId)
+            {
+                try
+                {
+                    var reviews = await _reviewService.GetReviewsByRoomIdAsync(roomId);
 
-        // [GET] /review/{id}
-        [HttpGet("{id}")]
+                    if (reviews == null)
+                    {
+                        return NotFound(new { message = "Reviews not found." });
+                    }
+
+                    return Ok(reviews);
+                }
+                catch (Exception e)
+                {
+
+                    return StatusCode(500, "Internal server error");
+                }
+            }
+
+
+            // [GET] /review/{id}
+            [HttpGet("{id}")]
         [Produces("application/json")]
         public async Task<ActionResult<ReviewModel>> GetReviewById(int id)
         {
