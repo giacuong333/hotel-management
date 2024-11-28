@@ -3,11 +3,9 @@ import axios from 'axios';
 
 import DataTable from 'react-data-table-component';
 
-import { FiEdit } from 'react-icons/fi';
 import { BsTrash } from 'react-icons/bs';
 import { FaSortAlphaDownAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
-import { FiPlus } from 'react-icons/fi';
 
 import PopupPanel from './ReviewForm';
 import ToastContainer, { showToast } from '~/utils/showToast';
@@ -244,6 +242,7 @@ const Review = () => {
                     selectableRows
                     striped
                     highlightOnHover
+                    pointerOnHover
                     pagination
                     sortIcon={<FaSortAlphaDownAlt />}
                     onRowClicked={handleRowClicked}

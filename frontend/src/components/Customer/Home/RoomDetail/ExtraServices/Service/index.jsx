@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import formatCurrency from '~/utils/currencyPipe';
 
 const Service = ({ service, onChange }) => {
@@ -15,7 +15,7 @@ const Service = ({ service, onChange }) => {
     const totalPrice = service.quantity === 0 ? service.price : service.price * service.quantity;
 
     return (
-        <li className="d-flex align-items-center justify-content-between">
+        <li className="d-flex flex-wrap align-items-center justify-content-between gap-2">
             <div className="form-check d-flex align-items-center gap-2">
                 <input
                     className="form-check-input"
@@ -32,14 +32,14 @@ const Service = ({ service, onChange }) => {
             <div className="d-flex align-items-center gap-3">
                 <input
                     type="number"
-                    className="form-control"
+                    className="form-control py-1"
                     min="0"
                     max="20"
                     step="1"
                     value={service.quantity}
                     onChange={handleQuantityChange}
                     disabled={!service.isChecked}
-                    style={{ width: '80px' }}
+                    style={{ width: '70px' }}
                 />
                 <p className="mb-0">{formatCurrency(totalPrice)}</p>
             </div>

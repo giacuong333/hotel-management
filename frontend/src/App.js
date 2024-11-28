@@ -1,9 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-
 import CustomerLayout from './Layouts/CustomerLayout';
 import AdminLayout from './Layouts/AdminLayout';
-
 import CustomerHome from './components/Customer/Home';
 import AdminHome from './components/Admin/Home';
 import Booking from './components/Admin/Booking';
@@ -33,14 +31,12 @@ import BookingDetails from './components/Customer/AccountDetail/BookingHistory/B
 import Invoice from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/Invoice';
 import ProceedPayment from './components/Customer/Home/ProceedPayment';
 import Contacts from './components/Customer/Contact';
+import NotFoundPage from './components/404page';
+
 function App() {
     const { user } = useUser();
     const isAuthenticated = user !== null;
     const isCustomer = user?.roleId === 4;
-
-    useEffect(() => {
-        console.log(isAuthenticated, isCustomer);
-    }, []);
 
     return (
         <Routes>
@@ -61,7 +57,6 @@ function App() {
                     <Route path="bookinghistory/invoice/booking/:id" element={<Invoice />}></Route>
                     <Route path="bookinghistory/bookingdetails/:id" element={<BookingDetails />}></Route>
                     <Route path="password" element={<Password />}></Route>
-                    
                 </Route>
             )}
 
@@ -84,8 +79,7 @@ function App() {
                     <Route path="/rooms" element={<Rooms />} />
                     <Route path="/room/:id" element={<RoomDetail />} />
                     {isAuthenticated && isCustomer && <Route path="/proceed-payment" element={<Payments />} />}
-                <Route path="/contact" element={<Contacts />} />
-
+                    <Route path="/contact" element={<Contacts />} />
                 </Route>
             ) : (
                 // If roleId != 4, move on to the admin page
@@ -129,6 +123,8 @@ function App() {
                     </Route>
                 )
             )}
+
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
 }

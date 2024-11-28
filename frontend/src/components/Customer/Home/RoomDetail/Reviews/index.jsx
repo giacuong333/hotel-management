@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 const Reviews = () => {
     const { id } = useParams();
     const [reviews, setReviews] = useState([]);
+    const [room, setRoom] = useState(null);
 
     const fetchReviews = async () => {
         try {
@@ -26,13 +27,29 @@ const Reviews = () => {
         }
     };
 
+    const fetchRoom = async () => {
+        try {
+            const response = await axios.get(`http://localhost:5058/room/${id}`, {
+                headers: { 'Content-Type': 'application/json' },
+            });
+            if (response.status === 200) {
+                setRoom(response.data);
+            }
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        }
+    };
+
     useEffect(() => {
         fetchReviews();
+        fetchRoom();
     }, [id]);
 
     return (
         <div className="d-flex flex-column gap-4">
-            <h3>{reviews.length} thoughts on “Alps Mountains Winter Cottage Monte Bianco in Aosta Valley”</h3>
+            <h3>
+                {reviews.length} thoughts on “{room?.name}”
+            </h3>
             {reviews.map((review, index) => {
                 console.log('Review', review);
                 return (
