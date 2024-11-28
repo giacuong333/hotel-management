@@ -27,8 +27,11 @@ namespace backend.Controllers
                         if (!ModelState.IsValid)
                               return BadRequest(ModelState);
 
-                        var email = await _userService.GetUserByEmailAsync(request.Email);
-                        if (email == null)
+                        Console.WriteLine("Login Email: " + request.Email);
+                        Console.WriteLine("Login Password: " + request.Password);
+
+                        var user = await _userService.GetUserByEmailAsync(request.Email);
+                        if (user == null)
                               return NotFound("Email does not exist");
 
                         var response = await _authService.LoginAsync(request);
@@ -36,10 +39,7 @@ namespace backend.Controllers
                   }
                   catch (NotFoundException ex)
                   {
-                        return NotFound(new
-                        {
-                              message = ex.Message
-                        });
+                        return NotFound(new { message = ex.Message });
                   }
                   catch (UnauthorizedException ex)
                   {

@@ -41,11 +41,10 @@ public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork) :
             {
                   var user = await _unitOfWork.Users.GetUserByEmailAsync(request.Email) ??
                         throw new NotFoundException("Email does not exist");
+                  Console.WriteLine("User password: " + user.Password);
                   bool isPasswordValid = Crypto.VerifyHashedPassword(user.Password, request.Password);
                   if (!isPasswordValid)
-                  {
                         throw new UnauthorizedException("Password is incorrect");
-                  }
 
                   var token = GenerateJwtToken(user);
 

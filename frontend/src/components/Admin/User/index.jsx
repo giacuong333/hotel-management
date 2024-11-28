@@ -107,7 +107,7 @@ const User = () => {
         try {
             const response = await axios.delete(`http://localhost:5058/user/${payload}`);
             if (response?.status === 200) {
-                showToast(response?.data?.message, 'success');
+                showToast('User deleted successfully', 'success');
                 setUsers((prev) => prev.filter((user) => user.id !== payload));
                 setSearchInput('');
             }

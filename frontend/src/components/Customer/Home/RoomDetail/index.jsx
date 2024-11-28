@@ -13,7 +13,6 @@ import { convertByteArrayToBase64 } from '~/utils/handleByteArray';
 import { useUser } from '../../../../providers/UserProvider';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import formatDate from '~/utils/formatDate';
-
 import { BiArea } from 'react-icons/bi';
 import { IoBedOutline } from 'react-icons/io5';
 import { TbAirConditioning } from 'react-icons/tb';
@@ -93,6 +92,7 @@ const RoomDetail = () => {
     const fetchGallery = async () => {
         try {
             const response = await axios.get(`http://localhost:5058/gallery/${id}`);
+
             if (response?.status === 200) {
                 const gallery = response?.data?.$values || null;
                 roomDetail.thumbnail && gallery.unshift({ image: roomDetail?.thumbnail });
@@ -208,7 +208,9 @@ const RoomDetail = () => {
     return (
         <section>
             <div className="container mx-auto">
+                {/* Toast */}
                 {ToastContainer}
+
                 <div className="row">
                     <div className="col-lg-8 px-lg-0">
                         <div className="px-2 pt-4">
@@ -225,7 +227,7 @@ const RoomDetail = () => {
                                     })}
                                 </Slider>
                                 <div
-                                    className="bg-white d-inline-flex align-items-center gap-2 px-4 py-3"
+                                    className="bg-white d-inline-flex align-items-center gap-2 px-4 py-3 shadow border"
                                     style={{
                                         position: 'absolute',
                                         bottom: '1rem',
@@ -338,7 +340,7 @@ const RoomDetail = () => {
                     </div>
 
                     <div className="col-lg-4 pt-4">
-                        <div className="customer-third-bg-color p-4">
+                        <div className="customer-third-bg-color p-4 border shadow-sm">
                             <p className="text-center fs-3 p-2 pt-0">Your Reservation</p>
                             <div className="py-3 d-flex flex-column gap-4">
                                 <span className="d-flex flex-column gap-2">
@@ -401,6 +403,7 @@ const RoomDetail = () => {
                     </div>
                 </div>
 
+                {/* Review */}
                 <div className="row my-5">
                     <div className="col-lg-8 px-lg-0 px-4">
                         <Reviews />

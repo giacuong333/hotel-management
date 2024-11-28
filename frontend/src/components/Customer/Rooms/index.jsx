@@ -28,9 +28,7 @@ const Rooms = () => {
         }
     };
 
-    const handleRoomClick = (id) => {
-        navigate(`/room/${id}`);
-    };
+    const handleRoomClick = (id) => navigate(`/room/${id}`);
 
     return (
         <section>

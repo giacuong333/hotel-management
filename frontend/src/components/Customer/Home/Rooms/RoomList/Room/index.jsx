@@ -33,14 +33,14 @@ const Room = ({ image, price, name, area, bed, id }) => {
                 onClick={handleRoomClick}
             >
                 <div className="d-flex flex-column align-items-start justify-content-end w-full h-full gap-3 cursor-pointer">
-                    <div className="bg-white d-inline-flex align-items-center gap-2 px-3 py-2">
+                    <div className="bg-white d-inline-flex align-items-center gap-2 px-3 py-2 shadow border">
                         <span className="text-uppercase">From </span>
                         <span className="d-flex align-items-center">
                             <p className="font-weight-bold">{formatCurrency(price)}</p>
                         </span>
                     </div>
                     <div
-                        className="p-4 d-flex align-items-center justify-content-between gap-4 text-white w-full"
+                        className="p-4 d-flex align-items-center justify-content-between gap-4 text-white w-full shadow"
                         style={{
                             backgroundColor: '#223546',
                         }}

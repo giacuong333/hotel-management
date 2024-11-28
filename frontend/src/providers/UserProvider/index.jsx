@@ -63,7 +63,7 @@ const UserProvider = ({ children }) => {
             const url = 'http://localhost:5058/user/login';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.post(url, payload, headers);
-            console.log('Response', response);
+            console.log('Login response', response);
             if (response?.status === 200) {
                 const { token } = response.data;
                 localStorage.setItem('jwtToken', token);
@@ -72,6 +72,7 @@ const UserProvider = ({ children }) => {
                 return response;
             }
         } catch (error) {
+            console.log('Login error', error);
             if (error?.status === 404) showToast('Email does not exist', 'error');
             else if (error?.status === 401) showToast('Password is incorrect', 'error');
         } finally {

@@ -46,6 +46,7 @@ const Room = ({ room }) => {
     const fetchGallery = async () => {
         try {
             const response = await axios.get(`http://localhost:5058/gallery/${room.id}`);
+
             if (response?.status === 200) {
                 const gallery = response?.data?.$values || null;
                 room.thumbnail && gallery.unshift({ image: room?.thumbnail });
@@ -96,9 +97,9 @@ const Room = ({ room }) => {
                 >
                     <img src={RightArrow} alt="Right Arrow" />
                 </div>
-                
+
                 <div
-                    className="bg-white d-inline-flex align-items-center gap-2 px-4 py-3"
+                    className="bg-white d-inline-flex align-items-center gap-2 px-4 py-3 shadow border"
                     style={{
                         position: 'absolute',
                         bottom: '1rem',

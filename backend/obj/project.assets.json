@@ -3828,27 +3828,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\stsup\\.nuget\\packages\\": {}
+    "C:\\Users\\Cuong\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\backend.csproj",
+      "projectUniqueName": "D:\\ReactJS\\Projects\\ReactJS-.NET\\hotel-management\\backend\\backend.csproj",
       "projectName": "backend",
-      "projectPath": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\backend.csproj",
-      "packagesPath": "C:\\Users\\stsup\\.nuget\\packages\\",
-      "outputPath": "C:\\HK1_2024-2025\\Coding projects\\dotnet-labs\\hotel-management\\backend\\obj\\",
+      "projectPath": "D:\\ReactJS\\Projects\\ReactJS-.NET\\hotel-management\\backend\\backend.csproj",
+      "packagesPath": "C:\\Users\\Cuong\\.nuget\\packages\\",
+      "outputPath": "D:\\ReactJS\\Projects\\ReactJS-.NET\\hotel-management\\backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\stsup\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Cuong\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3941,6 +3938,12 @@
     }
   },
   "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problem reading the cache file D:\\ReactJS\\Projects\\ReactJS-.NET\\hotel-management\\backend\\obj\\project.nuget.cache : Invalid property identifier character: <. Path 'version', line 3, position 0."
+    },
     {
       "code": "NU1701",
       "level": "Warning",

@@ -59,13 +59,13 @@ const RoomList = () => {
                     console.log('Room: ', room);
                     return (
                         <Room
-                            key={room.id}
-                            image={room.thumbnail ? convertByteArrayToBase64(room.thumbnail) : Room1}
-                            price={room.price}
-                            name={room.name}
-                            area={room.area}
-                            bed={room.bedNum}
-                            id={room.id}
+                            key={room?.id}
+                            image={room?.thumbnail ? convertByteArrayToBase64(room?.thumbnail) : Room1}
+                            price={room?.price}
+                            name={room?.name}
+                            area={room?.area}
+                            bed={room?.bedNum}
+                            id={room?.id}
                         />
                     );
                 })}
