@@ -199,6 +199,7 @@ const Review = () => {
         userId: review.userId,
         roomId: review.roomId,
         comment: review.comment,
+        createdAt: review.createdAt,
 
         actions: (
             <>

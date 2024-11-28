@@ -19,6 +19,7 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
         name: '',
         comment: '',
         status: '',
+        createdAt: '',
     });
 
     const handleInputChanged = () => {};
@@ -61,12 +62,12 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                         }}
                     >
                         <FormGroup
-                            label="UserId:"
+                            label="User Id:"
                             id="userid"
                             name="userid"
                             type="text"
                             // error={error}
-                            Icon={FaRegUser}
+
                             value={type !== 'add' ? data?.userId : ''}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
@@ -76,12 +77,12 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             onBlur={handleInputBlured}
                         />
                         <FormGroup
-                            label="UserName:"
+                            label="User Name:"
                             id="username"
                             name="username"
                             type="text"
                             // error={error}
-                            Icon={FaRegUser}
+
                             value={type !== 'add' ? data?.users?.name : ''}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
@@ -92,12 +93,12 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                         />
 
                         <FormGroup
-                            label="RoomId:"
+                            label="Room Id:"
                             id="roomid"
                             name="roomid"
                             type="text"
                             // error={error}
-                            Icon={MdOutlineEmail}
+
                             value={type !== 'add' ? data?.roomId : ''}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
@@ -112,7 +113,7 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             name="nameroom"
                             type="text"
                             // error={error}
-                            Icon={FaRegUser}
+
                             value={type !== 'add' ? data?.rooms?.name : ''}
                             disabled={type === 'see'}
                             customParentInputStyle="p-1 pe-3 rounded-2"
@@ -127,9 +128,24 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
                             name="comment"
                             type="text"
                             // error={error}
-                            Icon={MdLockOutline}
+
                             value={type !== 'add' ? data?.comment : ''}
                             disabled={type === 'see'}
+                            customParentInputStyle="p-1 pe-3 rounded-2"
+                            customParentParentInputStyle="mt-2"
+                            onChange={handleInputChanged}
+                            onInput={handleInputTyped}
+                            onBlur={handleInputBlured}
+                        />
+                        <FormGroup
+                            label="Created At:"
+                            id="createdat"
+                            name="createdat"
+                            type="text"
+                            // error={error}
+
+                            value={type !== 'add' ? data?.createdAt : ''}
+                            disabled
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
                             onChange={handleInputChanged}

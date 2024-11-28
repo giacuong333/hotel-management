@@ -34,6 +34,10 @@ const LeaveReview = ({ onReviewSubmitted }) => {
 
     const handleSubmitClicked = async (e) => {
         e.preventDefault();
+        if (!user || !user.id) {
+            showToast('Please, Login to comment!', 'error');
+            return;
+        }
 
         const apiUrl = 'http://localhost:5058/review';
         if (handleValidation()) {
