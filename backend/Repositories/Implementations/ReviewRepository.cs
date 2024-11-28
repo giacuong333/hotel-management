@@ -37,6 +37,28 @@ namespace Repositories.Implementations
                 }
             }
         }
+        public async Task<IEnumerable<object>> GetAllByRoomIdAsync(int id)
+        {
+            return await _dbSet.Where(r => r.DeletedAt == null && r.RoomId==id)
+                     .Join(_context.User,
+                 review => review.UserId,
+                   user => user.Id,
+                    (review, user) => new
+                    {
+                        review.Id,
+                        review.Comment,
+                        review.CreatedAt,
+                        Image=user.Avatar,
+            
+                        UserName = user.Name,
+
+
+                    })
+
+                      .OrderBy(r => r.CreatedAt)
+                     .ToListAsync();
+        }
+     
 
         public async Task<IEnumerable<ReviewModel>> GetAllAsync()
         {
@@ -44,6 +66,7 @@ namespace Repositories.Implementations
                       .Include(r => r.Users).Include(r => r.Rooms)
                       .ToListAsync();
         }
+
 
         public async Task<ReviewModel> GetByIdAsync(object id)
         {

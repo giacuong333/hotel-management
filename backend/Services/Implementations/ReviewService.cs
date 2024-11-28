@@ -18,6 +18,10 @@ public class ReviewService : IReviewService
         await _unitOfWork.CompleteAsync();
 
     }
+    public async Task<IEnumerable<object>> GetReviewsByRoomIdAsync(int id)
+    {
+        return await _unitOfWork.Reviews.GetAllByRoomIdAsync(id);
+    }
 
 
 

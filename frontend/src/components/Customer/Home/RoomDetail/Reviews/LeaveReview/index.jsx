@@ -12,7 +12,7 @@ import {
     isVerifyPassword,
     isNumberAndGreaterThanOrEqual,
 } from '~/utils/formValidation';
-const LeaveReview = ({}) => {
+const LeaveReview = ({ onReviewSubmitted }) => {
     const { user } = useUser();
     const [comment, setComment] = useState('');
     const { id } = useParams();
@@ -47,6 +47,8 @@ const LeaveReview = ({}) => {
                 const response = await axios.post(`${apiUrl}/`, payload);
                 if (response?.status === 201) {
                     showToast('Comment successfully', 'success');
+                    setComment('');
+                    if (onReviewSubmitted) onReviewSubmitted();
                 } else if (response?.status === 202) {
                     showToast(response?.data?.message || 'You must stay in this room before leaving a review', 'error');
                 }
@@ -72,6 +74,7 @@ const LeaveReview = ({}) => {
                 placeholder="Share your thoughts"
                 style={{ outline: 'none' }}
                 onChange={(e) => setComment(e.target.value)}
+                value={comment}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();

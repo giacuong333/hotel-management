@@ -494,3 +494,11 @@ D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\obj\Debug\net8.0\backe
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\obj\Debug\net8.0\backend.genruntimeconfig.cache
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\obj\Debug\net8.0\ref\backend.dll
 >>>>>>> 7eba89d55c33ee28ee3b2cbf12bc9825fa2dcb55
+C:\HocReact\hotel-management\backend\bin\Debug\net8.0\Google.Apis.dll
+C:\HocReact\hotel-management\backend\bin\Debug\net8.0\Google.Apis.Auth.PlatformServices.dll
+C:\HocReact\hotel-management\backend\bin\Debug\net8.0\Google.Apis.Auth.dll
+C:\HocReact\hotel-management\backend\bin\Debug\net8.0\Google.Apis.Core.dll
+C:\HocReact\hotel-management\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
+C:\HocReact\hotel-management\backend\bin\Debug\net8.0\System.Management.dll
+C:\HocReact\hotel-management\backend\bin\Debug\net8.0\System.Security.Permissions.dll
+C:\HocReact\hotel-management\backend\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
