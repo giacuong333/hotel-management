@@ -8,22 +8,30 @@ using Microsoft.IdentityModel.Tokens;
 using Repositories.Interfaces;
 using Services.Interfaces;
 
-public class AuthService : IAuthService
+public class AuthService(IConfiguration configuration, IUnitOfWork unitOfWork) : IAuthService
 {
-      private readonly IUserRepository _userRepository;
-      private readonly IConfiguration _configuration;
-      private readonly ILogger<AuthService> _logger;
+      private readonly IUnitOfWork _unitOfWork = unitOfWork;
+      private readonly IConfiguration _configuration = configuration;
 
-      public AuthService(IUserRepository userRepository, IConfiguration configuration, ILogger<AuthService> logger)
+      public async Task<(UserModel, string)> CreateUserByEmailAndNameAsync(string name, string email)
       {
-            _userRepository = userRepository;
-            _configuration = configuration;
-            _logger = logger;
+            var user = await _unitOfWork.Users.GetUserByEmailAsync(email);
+
+            if (user == null)
+            {
+                  user = new UserModel { Name = name, Email = email, RoleId = 4 };
+                  await _unitOfWork.Users.CreateAsync(user);
+                  await _unitOfWork.CompleteAsync();
+                  user = await _unitOfWork.Users.GetUserByEmailAsync(email);
+            }
+
+            var token = GenerateJwtToken(user);
+            return (user, token);
       }
 
       public async Task<UserModel> GetProfile(int id)
       {
-            var user = await _userRepository.GetUserByIdAsync(id) ?? throw new UnauthorizedAccessException("User not found");
+            var user = await _unitOfWork.Users.GetUserByIdAsync(id) ?? throw new UnauthorizedAccessException("User not found");
             return user;
       }
 
@@ -31,7 +39,7 @@ public class AuthService : IAuthService
       {
             try
             {
-                  var user = await _userRepository.GetUserByEmailAsync(request.Email) ??
+                  var user = await _unitOfWork.Users.GetUserByEmailAsync(request.Email) ??
                         throw new NotFoundException("Email does not exist");
                   bool isPasswordValid = Crypto.VerifyHashedPassword(user.Password, request.Password);
                   if (!isPasswordValid)
@@ -44,52 +52,48 @@ public class AuthService : IAuthService
                   return new AuthResponse
                   {
                         Token = token,
-                        RoleId = (int)user.Roles.Id
+                        RoleId = user.Roles!.Id
                   };
             }
             catch (Exception ex)
             {
-                  _logger.LogError(ex, "Error during login process");
+                  Console.WriteLine("Error occurs while signing in" + ex.Message);
                   throw;
             }
       }
 
       private string GenerateJwtToken(UserModel user)
       {
-            var jwtKey = _configuration["JwtKey:Key"]; // Get the key in the settings file
+            var jwtKey = _configuration["JwtKey:Key"];
             if (string.IsNullOrEmpty(jwtKey))
-            {
                   throw new ArgumentNullException("JWT signing key is not configured in appsettings.json.");
-            }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(jwtKey);
-            if (key.Length < 32)
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+            var claims = new List<Claim>
             {
-                  throw new ArgumentOutOfRangeException(nameof(key), "JWT signing key must be at least 256 bits (32 bytes) long.");
-            }
+                  new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                  new Claim(ClaimTypes.Name, user.Name),
+                  new Claim(ClaimTypes.Email, user.Email),
+                  new Claim(ClaimTypes.Role, user.Roles.Name ?? "Customer")
+            };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                  Subject = new ClaimsIdentity(new[]
-                  {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Name, user.Name),
-                        new Claim(ClaimTypes.Email, user.Email),
-                        new Claim(ClaimTypes.Role, user.Roles.Name),
-            }),
+                  Subject = new ClaimsIdentity(claims),
                   Expires = DateTime.UtcNow.AddHours(1),
-                  SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature)
+                  SigningCredentials = credentials,
+                  Issuer = _configuration["Jwt:Issuer"],
+                  Audience = _configuration["Jwt:Audience"]
             };
 
+            var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
       }
 }
 
-// Custom Exceptions
 public class NotFoundException : Exception
 {
       public NotFoundException(string message) : base(message) { }

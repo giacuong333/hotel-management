@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Web.Helpers;
 using backend.Models;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
@@ -9,11 +10,12 @@ namespace backend.Controllers
 {
       [Route("[controller]")]
       [ApiController]
-      public class UserController(IAuthService authService, IUserService userService, IRoleService roleService) : ControllerBase
+      public class UserController(IAuthService authService, IUserService userService, IRoleService roleService, IConfiguration configuration) : ControllerBase
       {
             private readonly IAuthService _authService = authService;
             private readonly IUserService _userService = userService;
             private readonly IRoleService _roleService = roleService;
+            private readonly IConfiguration _configuration = configuration;
 
             // [POST] user/login
             [HttpPost("login")]
@@ -24,6 +26,10 @@ namespace backend.Controllers
                   {
                         if (!ModelState.IsValid)
                               return BadRequest(ModelState);
+
+                        var email = await _userService.GetUserByEmailAsync(request.Email);
+                        if (email == null)
+                              return NotFound("Email does not exist");
 
                         var response = await _authService.LoginAsync(request);
                         return Ok(response);
@@ -42,6 +48,58 @@ namespace backend.Controllers
                   catch (Exception ex)
                   {
                         return StatusCode(500, "Internal server error");
+                  }
+            }
+
+            // [POST] /user/login/google
+            [HttpPost("login/google")]
+            [Produces("application/json")]
+            public async Task<ActionResult> LoginByGoogle([FromBody] GoogleLoginRequest request)
+            {
+                  try
+                  {
+                        if (string.IsNullOrEmpty(request.IdToken))
+                              return BadRequest(new { message = "Invalid Google ID token" });
+
+                        GoogleJsonWebSignature.Payload payload;
+                        try
+                        {
+                              // Step 1: Validate the Google token
+                              var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+                              {
+                                    Audience = new[] { _configuration["Authentication:Google:ClientId"] }
+                              };
+
+                              payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken, validationSettings);
+                        }
+                        catch (Exception validationEx)
+                        {
+                              return BadRequest(new { message = "Invalid Google token", details = validationEx.Message });
+                        }
+
+                        try
+                        {
+                              // Step 2: Check if the user exists
+                              var (user, token) = await _authService.CreateUserByEmailAndNameAsync(payload.Name, payload.Email);
+
+                              return Ok(new AuthResponse { Token = token, RoleId = user.RoleId });
+                        }
+                        catch (Exception ex)
+                        {
+                              // Log the exception for debugging
+                              Console.WriteLine("Error in CreateUserByEmailAndNameAsync: " + ex.Message);
+                              return StatusCode(500, new { message = "Error during user creation", details = ex.Message });
+                        }
+
+                  }
+                  catch (Exception ex)
+                  {
+                        Console.WriteLine("Error during login by Google: " + ex.Message);
+                        return StatusCode(500, new
+                        {
+                              message = "Internal server error after creating the user.",
+                              details = ex.Message
+                        });
                   }
             }
 
@@ -82,9 +140,17 @@ namespace backend.Controllers
                               }
                         });
                   }
-                  catch (UnauthorizedAccessException ex)
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (UnauthorizedException ex)
                   {
                         return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        return StatusCode(500, "Internal server error");
                   }
             }
 
@@ -202,12 +268,12 @@ namespace backend.Controllers
                         // Check if the email already exists
                         var emailExists = await _userService.GetUserByEmailAsync(request.Email);
                         if (emailExists != null)
-                              return Conflict(new { message = "Email already exists" });
+                              return Conflict("Email already exists");
 
                         // Check if the phone number already exists
                         var phoneExists = await _userService.GetUserByPhoneAsync(request.PhoneNumber);
                         if (phoneExists != null)
-                              return Conflict(new { message = "Phone number already exists" }); // 409 Conflict
+                              return Conflict("Phone number already exists"); // 409 Conflict
 
                         // Check if the role exists
                         int defaultRoleId = 4;
@@ -245,13 +311,13 @@ namespace backend.Controllers
                   {
                         return NotFound(new { message = ex.Message });
                   }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
                   catch (Exception ex)
                   {
-                        // Log the exception details
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+                        return StatusCode(500, "Internal server error");
                   }
             }
 

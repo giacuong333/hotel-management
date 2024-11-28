@@ -23,6 +23,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Cross-Origin-Opener-Policy", "same-origin");
+    context.Response.Headers.Add("Cross-Origin-Embedder-Policy", "require-corp");
+    await next.Invoke();
+});
+
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();

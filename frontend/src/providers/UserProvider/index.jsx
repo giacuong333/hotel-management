@@ -14,24 +14,23 @@ const UserProvider = ({ children }) => {
     const [isLogginginAccount, setIsLogginginAccount] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const interceptor = axios.interceptors.response.use(
-            (response) => response,
-            (error) => {
-                if (error.response?.status === 401) {
-                    showToast('Session expired. Please log in again.', 'warning');
-                    localStorage.removeItem('jwtToken');
-                    delete axios.defaults.headers.common['Authorization'];
-                    setUser(null);
-                    navigate('/');
-                }
-                return Promise.reject(error);
-            },
-        );
-        return () => {
-            axios.interceptors.response.eject(interceptor);
-        };
-    }, [navigate]);
+    // useEffect(() => {
+    //     const interceptor = axios.interceptors.response.use(
+    //         (response) => response,
+    //         (error) => {
+    //             if (error.response?.status === 401) {
+    //                 localStorage.removeItem('jwtToken');
+    //                 delete axios.defaults.headers.common['Authorization'];
+    //                 setUser(null);
+    //                 navigate('/');
+    //             }
+    //             return Promise.reject(error);
+    //         },
+    //     );
+    //     return () => {
+    //         axios.interceptors.response.eject(interceptor);
+    //     };
+    // }, [navigate]);
 
     useEffect(() => {
         fetchUser();
@@ -64,6 +63,31 @@ const UserProvider = ({ children }) => {
             const url = 'http://localhost:5058/user/login';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             const response = await axios.post(url, payload, headers);
+            console.log('Response', response);
+            if (response?.status === 200) {
+                const { token } = response.data;
+                localStorage.setItem('jwtToken', token);
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                await fetchUser();
+                return response;
+            }
+        } catch (error) {
+            if (error?.status === 404) showToast('Email does not exist', 'error');
+            else if (error?.status === 401) showToast('Password is incorrect', 'error');
+        } finally {
+            setIsLogginginAccount(false);
+        }
+    };
+
+    const signInByGoogle = async (credentialResponse) => {
+        try {
+            setIsLogginginAccount(true);
+            const url = 'http://localhost:5058/user/login/google';
+            const headers = { headers: { 'Content-Type': 'application/json', Accept: 'application/json' } };
+            const payload = { idToken: credentialResponse.credential };
+
+            const response = await axios.post(url, payload, headers);
+
             if (response?.status === 200) {
                 const { token } = response.data;
                 localStorage.setItem('jwtToken', token);
@@ -114,12 +138,13 @@ const UserProvider = ({ children }) => {
 
     // Helper to handle API errors and show corresponding toast messages
     const handleAuthError = (error) => {
+        console.log('Error', error);
         if (error.response?.status === 404) {
             showToast('User not found.', 'error');
         } else if (error.response?.status === 401) {
             showToast('Invalid credentials.', 'error');
         } else if (error.response?.status === 409) {
-            showToast(error.response.data?.message || 'Email or phone number already exists.', 'error');
+            showToast('Email or phone number already exists.', 'error');
         } else if (error.response?.status === 500) {
             showToast('Server error, please try again later.', 'error');
         } else {
@@ -136,6 +161,7 @@ const UserProvider = ({ children }) => {
                 loading,
                 error,
                 signIn,
+                signInByGoogle,
                 signUp,
                 signOut,
                 isCreatingAccount,

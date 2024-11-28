@@ -1,10 +1,13 @@
+using System.ComponentModel.DataAnnotations;
 using backend.Models;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Services.Interfaces
 {
       public interface IAuthService
       {
             Task<AuthResponse> LoginAsync(LoginRequest request);
+            Task<(UserModel, string)> CreateUserByEmailAndNameAsync(string name, string email);
             Task<UserModel> GetProfile(int id);
       }
 
@@ -12,6 +15,12 @@ namespace Services.Interfaces
       {
             public string? Email { get; set; }
             public string? Password { get; set; }
+      }
+
+      public class GoogleLoginRequest
+      {
+            [Required]
+            public string IdToken { get; set; }
       }
 
       public class AuthResponse

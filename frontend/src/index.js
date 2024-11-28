@@ -18,16 +18,19 @@ import 'tippy.js/animations/scale.css';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import ServiceProvider from './providers/Service';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <ServiceProvider>
-            <UserProvider>
-                <CheckPermissionProvider>
-                    <App />
-                </CheckPermissionProvider>
-            </UserProvider>
-        </ServiceProvider>
+        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+            <ServiceProvider>
+                <UserProvider>
+                    <CheckPermissionProvider>
+                        <App />
+                    </CheckPermissionProvider>
+                </UserProvider>
+            </ServiceProvider>
+        </GoogleOAuthProvider>
     </BrowserRouter>,
 );

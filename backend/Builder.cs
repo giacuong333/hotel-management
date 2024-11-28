@@ -29,9 +29,14 @@ class Builder
                         ValidateAudience = false,
                         ClockSkew = TimeSpan.Zero // Optional: to avoid clock skew issues
                   };
+            })
+            .AddGoogle(googleOptions =>
+            {
+                  googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+                  googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
             });
 
-            // Connect MySQL + Migration
+            // Connect MySQL
             builder.Services.AddDbContext<DatabaseContext>(options =>
                   options.UseMySql(builder.Configuration.GetConnectionString("MySQLConnection"),
                   ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("MySQLConnection"))));
@@ -45,7 +50,9 @@ class Builder
                   options.AddPolicy("AllowReactApp", builder => builder
                   .WithOrigins("http://localhost:3000") // React app URL
                   .AllowAnyMethod()
-                  .AllowAnyHeader());
+                  .AllowAnyHeader()
+                  .AllowCredentials() // Allow cookies and authorization headers if neede
+                  );
             });
 
             // Add services to the container.
