@@ -1,4 +1,4 @@
-using backend.Models;
+﻿using backend.Models;
 
 public class BookingService(IUnitOfWork unitOfWork) : IBookingService
 {
@@ -44,4 +44,41 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
       {
            return await _unitOfWork.Bookings.GetBookingsByRoomIdAsync(roomId);
       }
+
+        public async Task CreateBookingAsync(BookingModel booking, ServiceUsageModel[] services)
+        {
+            // Bắt đầu một giao dịch để đảm bảo tính toàn vẹn dữ liệu
+            using var transaction = await _unitOfWork.BeginTransactionAsync();
+
+            try
+            {
+                // Tạo booking và lưu vào database
+                await _unitOfWork.Bookings.CreateAsync(booking);
+                await _unitOfWork.CompleteAsync();
+
+                // Nếu có danh sách dịch vụ, liên kết chúng với booking
+                if (services != null && services.Length > 0)
+                {
+                    foreach (var service in services)
+                    {
+                        // Gắn BookingId vào từng dịch vụ
+                        service.BookingId = booking.Id;
+                        await _unitOfWork.ServicesUsage.CreateAsync(service);
+                    }
+
+                    // Lưu thay đổi sau khi thêm các dịch vụ
+                    await _unitOfWork.CompleteAsync();
+                }
+
+                // Xác nhận giao dịch thành công
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                // Rollback nếu có lỗi
+                await transaction.RollbackAsync();
+                Console.WriteLine($"Error while creating booking: {ex.Message}");
+                throw; // Re-throw exception để xử lý bên trên
+            }
+        }
 }

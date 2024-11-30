@@ -1,4 +1,5 @@
 using backend.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 using Repositories.Interfaces;
 
 public interface IUnitOfWork : IDisposable
@@ -19,4 +20,7 @@ public interface IUnitOfWork : IDisposable
     IFeedBackRepository FeedBacks { get; }
     IStatisticsRepository Statistics { get; }
     Task<int> CompleteAsync();
+    Task<IDbContextTransaction> BeginTransactionAsync();
+    Task CommitTransactionAsync();
+    Task RollbackTransactionAsync();
 }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -280,5 +280,50 @@ namespace backend.Controllers
                 }
             }
 
+
+        [HttpPost]
+        public async Task<ActionResult> CreateBooking([FromBody] CreateBookingRequest request)
+        {
+            try
+            {
+                if (request == null || !ModelState.IsValid)
+                {
+                    return BadRequest("Invalid request data.");
+                }
+
+                var booking = request.Booking;
+                var services = request.Services;
+
+                // Kiểm tra nếu booking hoặc services null
+                if (booking == null)
+                {
+                    return BadRequest("Booking information is missing.");
+                }
+
+                if (services == null || services.Length == 0)
+                {
+                    return BadRequest("Service information is missing.");
+                }
+
+                // Gọi phương thức xử lý logic để tạo booking
+                await _bookingService.CreateBookingAsync(booking, services);
+
+                return StatusCode(200, new { message = "Booking created successfully", booking });
+            }
+            catch (Exception ex)
+            {
+                // Ghi lại chi tiết lỗi để kiểm tra thêm
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, new { message = "Error creating booking", error = ex.Message });
+            }
+        }
+
+
+        // Lớp dùng để nhận dữ liệu
+        public class CreateBookingRequest
+            {
+                public BookingModel Booking { get; set; }
+                public ServiceUsageModel[] Services { get; set; }
+            }
     }
 }

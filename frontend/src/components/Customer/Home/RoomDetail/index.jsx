@@ -163,7 +163,7 @@ const RoomDetail = () => {
               checkInDate: checkInDate, 
               checkOutDate: checkOutDate,  
               totalPrice: totalPrice,
-              services: selectedServices.filter(service => service.checked).map(({ checked, ...rest }) => rest)
+              services: selectedServices.map(({ checked, ...rest }) => rest)
             } });
     };
 
