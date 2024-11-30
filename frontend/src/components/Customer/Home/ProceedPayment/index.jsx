@@ -100,7 +100,7 @@ const ProccedPayment = () => {
                         <label htmlFor="username" class="form-label">Username</label>
                         <input type="text" class="form-control" id="username"
                             value={username}
-                            onChange={(value) => setUsername(value)}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
                     <div class="mb-3">
@@ -108,14 +108,14 @@ const ProccedPayment = () => {
                         data-mdb-input-mask-init data-mdb-input-mask="+84 999-999-999">Phone number</label>
                         <input type="text" class="form-control" id="phonenumber"
                             value={phoneNumber}
-                            onChange={(value) => setPhoneNumber(value)}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
                         />
                     </div>
                     <div class="mb-3">
                         <label htmlFor="email" class="form-label">Email</label>
                         <input type="email" class="form-control" id="email"
                             value={email}
-                            onChange={(value) => setEmail(value)}
+                            onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
                 </div>
