@@ -58,64 +58,72 @@ const Room = ({ room }) => {
     };
 
     return (
-        <div>
-            <div className="position-relative w-full h-full">
-                <Slider {...carouselSettings} ref={slideRef}>
-                    {gallery.map((item) => {
-                        return (
-                            <img
-                                key={item?.id}
-                                src={convertByteArrayToBase64(item.image)}
-                                alt="Room Thumbnail Is Not Available"
-                                className="w-full h-full"
-                            />
-                        );
-                    })}
-                </Slider>
+        <div style={{ height: '800px' }} className="d-flex flex-column">
+            <div className="position-relative w-full">
+                {/* Images */}
+                <div className="position-relative">
+                    <Slider {...carouselSettings} ref={slideRef}>
+                        {gallery.map((item) => {
+                            return (
+                                <img
+                                    key={item?.id}
+                                    src={convertByteArrayToBase64(item.image)}
+                                    alt="Room Thumbnail Is Not Available"
+                                    className="w-full h-full"
+                                />
+                            );
+                        })}
+                    </Slider>
 
-                {/* Arrows */}
-                <div
-                    className="cursor-pointer"
-                    style={{
-                        position: 'absolute',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        left: 20,
-                    }}
-                    onClick={() => slideRef.current.slickPrev()}
-                >
-                    <img src={LeftArrow} alt="Left Arrow" />
-                </div>
-                <div
-                    className="cursor-pointer"
-                    style={{
-                        position: 'absolute',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        right: 20,
-                    }}
-                    onClick={() => slideRef.current.slickNext()}
-                >
-                    <img src={RightArrow} alt="Right Arrow" />
-                </div>
+                    {/* Price */}
+                    <div
+                        className="bg-white d-inline-flex align-items-center gap-2 p-3 shadow border"
+                        style={{
+                            position: 'absolute',
+                            bottom: '1rem',
+                            left: '1rem',
+                            zIndex: 10,
+                        }}
+                    >
+                        <span className="text-uppercase">From </span>
+                        <span className="d-flex align-items-center">
+                            <p className="font-weight-bold">{formatCurrency(room?.price)}</p>
+                        </span>
+                    </div>
+                    {/* Price */}
 
-                <div
-                    className="bg-white d-inline-flex align-items-center gap-2 px-4 py-3 shadow border"
-                    style={{
-                        position: 'absolute',
-                        bottom: '1rem',
-                        left: '1rem',
-                        zIndex: 10,
-                    }}
-                >
-                    <span className="text-uppercase">From </span>
-                    <span className="d-flex align-items-center">
-                        <p className="font-weight-bold">{formatCurrency(room?.price)}</p>
-                    </span>
+                    {/* Arrows */}
+                    <div
+                        className="cursor-pointer"
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            left: 20,
+                        }}
+                        onClick={() => slideRef.current.slickPrev()}
+                    >
+                        <img src={LeftArrow} alt="Left Arrow" />
+                    </div>
+                    <div
+                        className="cursor-pointer"
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            right: 20,
+                        }}
+                        onClick={() => slideRef.current.slickNext()}
+                    >
+                        <img src={RightArrow} alt="Right Arrow" />
+                    </div>
+                    {/* Arrows */}
                 </div>
+                {/* Images */}
             </div>
 
-            <div className="border-bottom py-5">
+            {/* Content */}
+            <div className="py-5 h-full flex-grow-1 d-flex flex-column">
                 <div className="d-flex align-items-center justify-content-start gap-4">
                     <span className="d-flex flex-nowrap align-items-center gap-2">
                         <BiArea size={24} /> {room?.area}m2
@@ -125,21 +133,30 @@ const Room = ({ room }) => {
                     </span>
                 </div>
 
-                <div className="mt-3 d-flex flex-column gap-4">
+                <div className="mt-3 d-flex flex-column gap-4 mb-auto">
                     <h3>{room?.name}</h3>
-                    <p style={{ letterSpacing: '1px', lineHeight: '2rem' }}>{room?.description}</p>
+                    <p
+                        style={{
+                            letterSpacing: '1px',
+                            lineHeight: '2rem',
+                            maxHeight: '200px',
+                        }}
+                        className="room-description"
+                    >
+                        {room?.description}
+                    </p>
                 </div>
 
                 <button
                     className="text-capitalize text-center py-1 secondary-button-hover mt-3 bg-transparent"
                     style={{
                         fontSize: '1rem',
-                        width: 'fit-content',
                     }}
                 >
                     Explore more
                 </button>
             </div>
+            {/* Content */}
         </div>
     );
 };

@@ -4,8 +4,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 
+const roomsPerPage = 6;
+
 const Rooms = () => {
-    const roomsPerPage = 6;
     const [rooms, setRooms] = useState([]);
     const [paginationRooms, setPaginationRooms] = useState([]);
     const [totalOfPages, setTotalOfPages] = useState(null);
@@ -63,6 +64,7 @@ const Rooms = () => {
                         <div
                             key={room?.id}
                             className="col-lg-4 col-md-6 col-xs-1 cursor-pointer"
+                            style={{ height: 'fit-content' }}
                             onClick={() => handleRoomClick(room?.id)}
                         >
                             <Room room={room} />

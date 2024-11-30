@@ -58,6 +58,15 @@ h4 {
     background-color: var(--fourth-color);
 }
 
+.room-description {
+    overflow-y: scroll;
+    text-overflow: ellipsis;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
 .secondary-bg-color-hover {
     background-color: var(--fourth-color);
 
