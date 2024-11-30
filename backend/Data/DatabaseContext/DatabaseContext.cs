@@ -62,6 +62,13 @@ namespace backend.Database
                 .HasForeignKey(b => b.RoomId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // Gallery - Room
+            // modelBuilder.Entity<GalleryModel>()
+            //     .HasOne(g => g.Image)
+            //     .WithMany()
+            //     .HasForeignKey(g => g.RoomId)
+            //     .OnDelete(DeleteBehavior.Cascade);
+
             // Feedback - User
             modelBuilder.Entity<FeedBackModel>()
                 .HasOne(f => f.User)  // Assuming FeedBackModel has a navigation property 'User'

@@ -314,6 +314,72 @@ public static class Seed
                     Status = 1,
                     Price = 300000,
                     Area = 30
+                },
+                new RoomModel
+                {
+                    Id = 7,
+                    Name = "Classic Room",
+                    Type = "CLASSIC",
+                    Description = "Basic room with essential amenities (e.g., bed, TV, bathroom).",
+                    BedNum = 1,
+                    Status = 1,
+                    Price = 400000,
+                    Area = 50
+                },
+                new RoomModel
+                {
+                    Id = 8,
+                    Name = "Superior Room",
+                    Type = "CLASSIC",
+                    Description = "A step up from the standard, often with better views, more space, or additional amenities.",
+                    BedNum = 1,
+                    Status = 1,
+                    Price = 4500000,
+                    Area = 52
+                },
+                new RoomModel
+                {
+                    Id = 9,
+                    Name = "Deluxe Room",
+                    Type = "CLASSIC",
+                    Description = "More luxurious than a superior room, often with high-end furnishings, more space, and premium amenities.",
+                    BedNum = 1,
+                    Status = 1,
+                    Price = 5900000,
+                    Area = 60
+                },
+                new RoomModel
+                {
+                    Id = 10,
+                    Name = "Executive Room",
+                    Type = "CLASSIC",
+                    Description = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.",
+                    BedNum = 1,
+                    Status = 1,
+                    Price = 7000000,
+                    Area = 90
+                },
+                new RoomModel
+                {
+                    Id = 11,
+                    Name = "Garden View Room",
+                    Type = "CLASSIC",
+                    Description = "A Garden View Room typically refers to a hotel or resort room that offers a view of the property’s gardens or landscaped areas. These rooms often provide a peaceful and scenic outlook, making them a desirable choice for guests who appreciate nature and a tranquil environment.",
+                    BedNum = 1,
+                    Status = 1,
+                    Price = 3500000,
+                    Area = 50
+                },
+                new RoomModel
+                {
+                    Id = 12,
+                    Name = "Family Suit",
+                    Type = "CLASSIC",
+                    Description = "A family suite in a hotel typically refers to a spacious room or a set of connected rooms designed to accommodate families. These suites often include multiple beds, a separate living area, and additional amenities to make the stay more comfortable for both parents and children.",
+                    BedNum = 1,
+                    Status = 1,
+                    Price = 6700000,
+                    Area = 60
                 }
             );
             await context.SaveChangesAsync();
@@ -407,14 +473,14 @@ public static class Seed
                 new() { Id = 2, UserId = 3, RoomId = 2, Description = "Good service", CreatedAt = new DateTime(2024, 11, 20) },
                 new() { Id = 3, UserId = 4, RoomId = 3, Description = "Good service", CreatedAt = new DateTime(2024, 11, 21) },
                 new() { Id = 4, UserId = 2, RoomId = 4, Description = "Good service", CreatedAt = new DateTime(2024, 12, 29) }
-                
+
             );
         }
         //Seed Review
         if (!context.Review.Any())
         {
             context.Review.AddRange(
-                new() { Id = 1, UserId = 3, RoomId = 1, Comment = "The room was comfortable and clean. I had a great stay!", CreatedAt = new DateTime(2024, 11, 20),Status =0 ,DeletedAt=null},
+                new() { Id = 1, UserId = 3, RoomId = 1, Comment = "The room was comfortable and clean. I had a great stay!", CreatedAt = new DateTime(2024, 11, 20), Status = 0, DeletedAt = null },
                 new() { Id = 2, UserId = 4, RoomId = 2, Comment = "The service was excellent, and the staff were very friendly and helpful.", CreatedAt = new DateTime(2024, 7, 23), Status = 0, DeletedAt = null },
                 new() { Id = 3, UserId = 5, RoomId = 3, Comment = "Great experience! The room was spacious and had all the necessary amenities.", CreatedAt = new DateTime(2024, 1, 19), Status = 0, DeletedAt = null },
                 new() { Id = 4, UserId = 6, RoomId = 4, Comment = "The hotel was clean, and the staff made me feel very welcome. Would definitely return.", CreatedAt = new DateTime(2024, 2, 23), Status = 0, DeletedAt = null }

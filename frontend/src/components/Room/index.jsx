@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-
 import { convertByteArrayToBase64 } from '../../utils/handleByteArray';
-
 import { BiArea } from 'react-icons/bi';
 import { IoBedOutline } from 'react-icons/io5';
 import formatCurrency from '~/utils/currencyPipe';
@@ -39,6 +37,8 @@ const Room = ({ room }) => {
     const slideRef = useRef(null);
     const [gallery, setGallery] = useState([]);
 
+    console.log('Room', room);
+
     useEffect(() => {
         fetchGallery();
     }, [room.id]);
@@ -64,6 +64,7 @@ const Room = ({ room }) => {
                     {gallery.map((item) => {
                         return (
                             <img
+                                key={item?.id}
                                 src={convertByteArrayToBase64(item.image)}
                                 alt="Room Thumbnail Is Not Available"
                                 className="w-full h-full"
