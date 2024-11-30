@@ -147,6 +147,16 @@ const RoomDetail = () => {
     };
 
     const handleBookNow = () => {
+        if (!checkInDate || !checkOutDate) {
+            alert("Please choose your check-in and check-out dates.");
+            return;
+        }
+
+        if (invalidDates) {
+            alert("The dates have been booked, please choose another date.");
+            return;
+        }
+            
         navigate('/proceed-payment');
     };
 

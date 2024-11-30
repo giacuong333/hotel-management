@@ -78,7 +78,7 @@ function App() {
                     <Route index element={<CustomerHome />} />
                     <Route path="/rooms" element={<Rooms />} />
                     <Route path="/room/:id" element={<RoomDetail />} />
-                    {isAuthenticated && isCustomer && <Route path="/proceed-payment" element={<Payments />} />}
+                    <Route path="/proceed-payment" element={<ProceedPayment />} />
                     <Route path="/contact" element={<Contacts />} />
                 </Route>
             ) : (
