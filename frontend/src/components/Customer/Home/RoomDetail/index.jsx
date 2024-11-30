@@ -156,6 +156,9 @@ const RoomDetail = () => {
             alert("The dates have been booked, please choose another date.");
             return;
         }
+
+        console.log(roomDetail);
+        
             
         navigate('/proceed-payment');
     };
@@ -220,6 +223,9 @@ const RoomDetail = () => {
         // Nếu check-in bằng hoặc sau check-out thì trả về 0
         return days > 0 ? days + 1 : 0;
     };
+
+    const totalPrice = roomDetail.price * calculateDays(checkInDate, checkOutDate) + 
+    selectedServices.reduce((total, service) => total + service.price * service.quantity, 0);
 
     return (
         <section>
@@ -394,7 +400,7 @@ const RoomDetail = () => {
                                     <p className="fs-5">Your Price</p>
                                     <p className="fs-5 fw-bold">
                                         {formatCurrency(
-                                            roomDetail.price * calculateDays(checkInDate, checkOutDate) + selectedServices.reduce((total, service) => total + service.price * service.quantity, 0)
+                                            totalPrice
                                         )}
                                     </p>
                                 </div>
