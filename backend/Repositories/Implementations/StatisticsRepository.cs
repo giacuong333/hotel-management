@@ -63,7 +63,7 @@ namespace Repositories.Implementations
 
 
             return await _dbSetBooking
-               .Where(bk => bk.UpdatedAt >= start && bk.UpdatedAt <= end && bk.Status == 1 && bk.DeletedAt== null)
+               .Where(bk => bk.UpdatedAt >= start && bk.UpdatedAt <= end && bk.Status != 0 && bk.DeletedAt== null)
                .ToListAsync();
 
         }
