@@ -33,7 +33,7 @@ const Top = () => {
         { ...itemList[0], quantity: availablesQuanlity },
         { ...itemList[1], quantity: checkouts },
         { ...itemList[2], quantity: cancellations },
-        { ...itemList[3], quantity: pending },
+        // { ...itemList[3], quantity: pending },
     ];
     return (
         <div>
