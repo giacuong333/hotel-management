@@ -2,17 +2,19 @@
 using backend.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using backend.Services.Interfaces;
 
 namespace backend.Controllers
 {
       [Route("[controller]")]
       [ApiController]
-      public class BookingController(IBookingService bookingService) : ControllerBase
+      public class BookingController(IBookingService bookingService, IVNPayService vnpayService) : ControllerBase
       {
             private readonly IBookingService _bookingService = bookingService;
+            private readonly IVNPayService _vnpayService = vnpayService;
 
-            // [GET] /booking
-            [HttpGet]
+        // [GET] /booking
+        [HttpGet]
             public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookings()
             {
                   try
@@ -291,18 +293,20 @@ namespace backend.Controllers
                     return BadRequest("Invalid request data.");
                 }
 
+                var vnpayModel = new VNPayRequestModel
+                {
+
+                };
+
+                Redirect(_vnpayService.CreatePaymentUrl(HttpContext, vnpayModel));
+
                 var booking = request.Booking;
                 var services = request.Services;
 
-                // Kiểm tra nếu booking hoặc services null
+                // Kiểm tra nếu booking null
                 if (booking == null)
                 {
                     return BadRequest("Booking information is missing.");
-                }
-
-                if (services == null || services.Length == 0)
-                {
-                    return BadRequest("Service information is missing.");
                 }
 
                 // Gọi phương thức xử lý logic để tạo booking
