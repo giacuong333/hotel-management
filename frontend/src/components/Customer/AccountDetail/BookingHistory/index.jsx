@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import FormGroup from '~/components/FormGroup';
 import Bookings from './Bookings';
-import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
-import { MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 
 const BookingHistory = () => {
     const [month, setMonth] = useState(null);
@@ -72,25 +70,7 @@ const BookingHistory = () => {
                 </div>
 
                 {/* data & pagination*/}
-                <div>
-                    <Bookings type={type} />
-                    <div className="mt-4 d-flex align-items-center justify-content-end gap-2">
-                        <button className="p-2 px-3 rounded-2 cursor-pointer shadow-sm border">
-                            <MdOutlineKeyboardArrowLeft />
-                        </button>
-                        <button
-                            className="p-2 px-3 rounded-2 cursor-pointer text-white shadow-sm border"
-                            style={{ backgroundColor: '#35776d' }}
-                        >
-                            1
-                        </button>
-                        <button className="p-2 px-3 rounded-2 cursor-pointer shadow-sm border">2</button>
-                        <button className="p-2 px-3 rounded-2 cursor-pointer shadow-sm border">3</button>
-                        <button className="p-2 px-3 rounded-2 cursor-pointer shadow-sm border">
-                            <MdOutlineKeyboardArrowRight />
-                        </button>
-                    </div>
-                </div>
+                <Bookings type={type} />
             </div>
         </main>
     );

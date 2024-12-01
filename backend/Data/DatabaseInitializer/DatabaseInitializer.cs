@@ -404,7 +404,6 @@ public static class Seed
                 {
                     Id = 1,
                     CustomerId = 2,  // Use actual ID
-                    StaffCheckInId = 2,
                     RoomId = 1,
                     CheckIn = new DateTime(2024, 11, 20),
                     CheckOut = new DateTime(2024, 11, 29),
@@ -414,7 +413,6 @@ public static class Seed
                 {
                     Id = 2,
                     CustomerId = 3,  // Use actual ID
-                    StaffCheckInId = 2,
                     RoomId = 2,
                     CheckIn = new DateTime(2024, 11, 20),
                     CheckOut = new DateTime(2024, 11, 29),
@@ -424,7 +422,7 @@ public static class Seed
                 {
                     Id = 3,
                     CustomerId = 4,  // Use actual ID
-                    StaffCheckInId = 2,
+                    StaffCheckInId = 8,
                     RoomId = 3,
                     CheckIn = new DateTime(2024, 11, 21),
                     CheckOut = new DateTime(2024, 11, 29),
@@ -434,10 +432,35 @@ public static class Seed
                 {
                     Id = 4,
                     CustomerId = 2,  // Use actual ID
-                    StaffCheckInId = 2,
-                    RoomId = 4,
+                    RoomId = 8,
                     CheckIn = new DateTime(2024, 12, 29),
                     CheckOut = new DateTime(2024, 1, 3),
+                    Status = 1
+                },
+                new()
+                {
+                    Id = 5,
+                    CustomerId = 2,  // Use actual ID
+                    CheckIn = new DateTime(2025, 01, 25),
+                    CheckOut = new DateTime(2025, 01, 30),
+                    Status = 1
+                },
+                new()
+                {
+                    Id = 6,
+                    CustomerId = 2,  // Use actual ID
+                    RoomId = 9,
+                    CheckIn = new DateTime(2025, 04, 25),
+                    CheckOut = new DateTime(2025, 04, 28),
+                    Status = 1
+                },
+                new()
+                {
+                    Id = 7,
+                    CustomerId = 2,  // Use actual ID
+                    RoomId = 10,
+                    CheckIn = new DateTime(2025, 04, 29),
+                    CheckOut = new DateTime(2025, 05, 01),
                     Status = 1
                 }
             );

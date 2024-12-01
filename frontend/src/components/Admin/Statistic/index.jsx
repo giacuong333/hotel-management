@@ -253,9 +253,9 @@ const Statistics = () => {
                 <Col md={7} className="">
                     {' '}
                 </Col>
-                <Col md={2} className="d-flex ">
+                <Col md={2} className="d-flex">
                     <Form.Group controlId="formDate">
-                        <Form.Label>Start: </Form.Label>
+                        <Form.Label className="d-block">Start: </Form.Label>
                         <DatePicker
                             selected={selectedDate}
                             onChange={(date) => setSelectedDate(date)}
@@ -264,9 +264,9 @@ const Statistics = () => {
                         />
                     </Form.Group>
                 </Col>
-                <Col md={2} className="d-flex ">
+                <Col md={2} className="d-flex">
                     <Form.Group controlId="formDateEnd">
-                        <Form.Label>End: </Form.Label>
+                        <Form.Label className="d-block">End: </Form.Label>
                         <DatePicker
                             selected={selectedDateEnd}
                             onChange={(date) => setSelectedDateEnd(date)}
@@ -274,9 +274,6 @@ const Statistics = () => {
                             className="form-control"
                         />
                     </Form.Group>
-                </Col>
-                <Col md={1} className="">
-                    {' '}
                 </Col>
             </Row>
 

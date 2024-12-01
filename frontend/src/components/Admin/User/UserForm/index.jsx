@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
 import FormGroup from '~/components/FormGroup';
 import Overlay from '~/components/Overlay';
 import Button from 'react-bootstrap/Button';
 import ToastContainer, { showToast } from '~/utils/showToast';
-
-import { FaGalacticSenate, FaRegUser } from 'react-icons/fa6';
+import { FaRegUser } from 'react-icons/fa6';
 import { MdOutlineEmail } from 'react-icons/md';
 import { MdLockOutline } from 'react-icons/md';
 import { FiPhone } from 'react-icons/fi';
 import { IoClose } from 'react-icons/io5';
-
 import { useRole } from '~/providers/RoleProvider';
 import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
 import { RotatingLines } from 'react-loader-spinner';
@@ -75,6 +72,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
         e.preventDefault();
 
         if (handleValidation()) {
+            let timeoutId;
             const payload = {
                 ...fields,
                 dob: fields.dob ? fields.dob.toISOString().split('.')[0] : null, // Converting to YYYY-MM-DD format
@@ -87,7 +85,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                     const response = await axios.post(`${url}/register`, payload, headers);
                     if (response?.status === 201) {
                         showToast('User created successfully', 'success');
-                        setTimeout(handleClose, 4000);
+                        timeoutId = setTimeout(handleClose, 4000);
                         onUserAdded(response?.data?.newUser);
                     }
                 } else if (type === 'edit') {
@@ -95,7 +93,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                     const response = await axios.put(`${url}/${data?.id}`, payload, headers);
                     if (response?.status === 200) {
                         showToast('User updated successfully', 'success');
-                        setTimeout(handleClose, 4000);
+                        timeoutId = setTimeout(handleClose, 4000);
                         onUserUpdated(response?.data?.currentUser);
                     }
                 }
@@ -109,6 +107,10 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
             } finally {
                 setPendingSubmit(false);
             }
+
+            return () => {
+                timeoutId && clearTimeout(timeoutId);
+            };
         }
     };
 

@@ -187,6 +187,7 @@ namespace backend.Controllers
 
                         foreach (var booking in bookings)
                         {
+                              Console.WriteLine("Booking ID: " + booking.Id);
                               var bookingFromDb = await _bookingService.GetBookingByIdAsync(booking.Id);
                               if (bookingFromDb == null)
                                     return NotFound("Booking not found");
@@ -197,6 +198,8 @@ namespace backend.Controllers
 
                               await _bookingService.DeleteBookingAsync(booking.Id);
                         }
+
+                        await _bookingService.SaveAsync();
 
                         var updatedBookings = await _bookingService.GetBookingsAsync();
 
@@ -257,28 +260,28 @@ namespace backend.Controllers
             [HttpGet("room/{roomId}")]
             public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingsByRoomIdAsync(int roomId)
             {
-                try
-                {
-                    var bookings = await _bookingService.GetBookingsByRoomIdAsync(roomId);
+                  try
+                  {
+                        var bookings = await _bookingService.GetBookingsByRoomIdAsync(roomId);
 
-                    return Ok(bookings);
-                }
-                catch (UnauthorizedException ex)
-                {
-                    return Unauthorized(new { message = ex.Message });
-                }
-                catch (NotFoundException ex)
-                {
-                    return NotFound(new { message = ex.Message });
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                    Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                    return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                }
+                        return Ok(bookings);
+                  }
+                  catch (UnauthorizedException ex)
+                  {
+                        return Unauthorized(new { message = ex.Message });
+                  }
+                  catch (NotFoundException ex)
+                  {
+                        return NotFound(new { message = ex.Message });
+                  }
+                  catch (Exception ex)
+                  {
+                        // Log the exception
+                        Console.WriteLine($"An error occurred: {ex.Message}");
+                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+                  }
             }
 
-    }
+      }
 }

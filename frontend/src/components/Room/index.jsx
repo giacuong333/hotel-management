@@ -69,7 +69,7 @@ const Room = ({ room }) => {
                                     key={item?.id}
                                     src={convertByteArrayToBase64(item.image)}
                                     alt="Room Thumbnail Is Not Available"
-                                    className="w-full h-full"
+                                    className="w-full h-full shadow border"
                                 />
                             );
                         })}

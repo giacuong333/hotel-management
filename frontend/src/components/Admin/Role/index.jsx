@@ -281,22 +281,6 @@ const Role = () => {
         setShowDeleteConfirm(true);
     };
 
-    // const handleTrashClicked1 = useCallback(async (id) => {
-    //     try {
-    //         const response = await axios.delete(`http://localhost:5058/role/${id}`);
-    //         if (response.status === 200) {
-    //             showToast(response?.data?.message, 'success');
-    //             setRoles((prev) => prev.filter((role) => role.id !== id));
-    //         }
-    //     } catch (error) {
-    //         console.error('Error deleting role:', error);
-    //         showToast(
-    //             error?.response?.data?.message || 'Unable to delete.This role has been assigned to the user.',
-    //             'error',
-    //         );
-    //     }
-    // }, []);
-
     const deleteRole_del = async (id) => {
         try {
             const response = await axios.delete(`http://localhost:5058/role/${id}`); // Thêm await vào đây
@@ -659,27 +643,6 @@ const Role = () => {
             console.error('Error fetching role permissions:', error);
         }
     }, []);
-
-    function handleUpdate(id) {
-        const url = `http://localhost:5058/rolepermission/${id}`;
-        // const data = {
-        //     id: id,
-        //     name: editName,
-        //     age: editAge,
-        //     isActive: editIsActive,
-        // };
-        // axios
-        //     .put(url, data)
-        //     .then((result) => {
-        //         handleClose();
-        //         getData();
-        //         clear();
-        //         toast.success('Update success');
-        //     })
-        //     .catch((error) => {
-        //         toast.error(error);
-        //     });
-    }
 
     const handleEditClicked = (role) => {
         setSelectedRole(role);
@@ -1367,10 +1330,18 @@ const Role = () => {
                             </Container>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="secondary" onClick={handleClosePermission}>
+                            <Button
+                                variant="secondary"
+                                className="primary-bg-color primary-bd-color primary-bd-color-hover text-black"
+                                onClick={handleClosePermission}
+                            >
                                 Close
                             </Button>
-                            <Button variant="primary" onClick={handleSave}>
+                            <Button
+                                variant="primary"
+                                className="secondary-bg-color-hover secondary-bd-color text-white"
+                                onClick={handleSave}
+                            >
                                 Save
                             </Button>
                         </Modal.Footer>

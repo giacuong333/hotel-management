@@ -5,13 +5,9 @@ import { IoClose } from 'react-icons/io5';
 import FormGroup from '~/components/FormGroup';
 import Overlay from '~/components/Overlay';
 
-import { FaRegUser } from 'react-icons/fa6';
-import { MdOutlineEmail } from 'react-icons/md';
-import { MdLockOutline } from 'react-icons/md';
-import { FiPhone } from 'react-icons/fi';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import Button from 'react-bootstrap/Button';
-import { isEmail, isEmpty, isPhoneNumber, isValidDate, isVerifyPassword } from '~/utils/formValidation';
+import { isEmpty } from '~/utils/formValidation';
 
 const PopupPanel = ({ data, type, onClose, onRoleAdded, onRoleUpdated, isShowed }) => {
     const [fields, setFields] = useState({
@@ -101,6 +97,7 @@ const PopupPanel = ({ data, type, onClose, onRoleAdded, onRoleUpdated, isShowed 
 
     return (
         <>
+            {ToastContainer}
             <Overlay isShow={isShowed} onClose={onClose} />
             <div
                 style={{

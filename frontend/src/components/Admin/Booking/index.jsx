@@ -8,7 +8,6 @@ import BookingForm from './BookingForm';
 import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
-import formatCurrency from '~/utils/currencyPipe';
 import { RotatingLines } from 'react-loader-spinner';
 import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 import Tippy from '@tippyjs/react';
@@ -60,6 +59,19 @@ const Booking = () => {
                 }
             } catch (error) {
                 console.log(error);
+                if (error?.response?.status === 403) {
+                    showToast(
+                        error?.response?.data?.message ||
+                            'You can not delete bookings that is not checked-out or canceled',
+                        'error',
+                    );
+                } else if (error?.response?.status === 401) {
+                    showToast('You need to log in', 'error');
+                } else if (error?.response?.status === 409) {
+                    showToast(error?.response?.data?.message, 'error');
+                } else {
+                    showToast(error?.response?.data?.obj?.message || 'Error deleting booking', 'error');
+                }
             }
         };
 
@@ -150,7 +162,10 @@ const Booking = () => {
         } catch (error) {
             console.log(error);
             if (error?.response?.status === 403) {
-                showToast(error?.response?.data?.message, 'error');
+                showToast(
+                    error?.response?.data?.message || 'You can not delete bookings that is not checked-out or canceled',
+                    'error',
+                );
             } else if (error?.response?.status === 401) {
                 showToast('You need to log in', 'error');
             } else if (error?.response?.status === 409) {

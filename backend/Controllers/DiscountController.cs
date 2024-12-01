@@ -17,7 +17,7 @@ namespace backend.Controllers
         {
             this.context = context;
             this._logger = logger;
-            this.configuration = configuration; 
+            this.configuration = configuration;
         }
 
         // GET: /discount
@@ -71,11 +71,11 @@ namespace backend.Controllers
             try
             {
                 bool discountNameExist = await context.Discount.AnyAsync(d => d.Name == discount.Name);
-                bool discountValueExist = await context.Discount.AnyAsync(d => d.Value== discount.Value);
+                bool discountValueExist = await context.Discount.AnyAsync(d => d.Value == discount.Value);
 
                 if (discountNameExist && discountValueExist)
                 {
-                    return Conflict(new {message = "Discount already exists" });
+                    return Conflict(new { message = "Discount already exists" });
                 }
 
                 await context.Discount.AddAsync(discount);
@@ -92,11 +92,12 @@ namespace backend.Controllers
 
         // POST /discount/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<DiscountModel>> UpdateDiscount(int id,[FromBody] DiscountModel discount)
+        public async Task<ActionResult<DiscountModel>> UpdateDiscount(int id, [FromBody] DiscountModel discount)
         {
             try
             {
-                if(!ModelState.IsValid) {
+                if (!ModelState.IsValid)
+                {
                     return BadRequest("Missing data");
                 }
                 var IdDiscount = await context.Discount.FindAsync(id);
@@ -104,7 +105,7 @@ namespace backend.Controllers
                 {
                     return NotFound("Discount not found.");
                 }
-                
+
                 IdDiscount.Name = discount?.Name;
                 IdDiscount.Value = discount?.Value;
                 IdDiscount.Status = discount?.Status;
@@ -148,8 +149,8 @@ namespace backend.Controllers
             }
         }
 
-                [HttpDelete]
-        
+        [HttpDelete]
+
         [HttpDelete("deleteall")]
         public async Task<IActionResult> DeleteAllDiscounts([FromBody] List<int> discountIds)
         {
@@ -184,6 +185,6 @@ namespace backend.Controllers
         {
             return View();
         }
-        
+
     }
 }

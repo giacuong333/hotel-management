@@ -13,12 +13,12 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
       public async Task DeleteBookingAsync(object id)
       {
             await _unitOfWork.Bookings.DeleteAsync(id);
-            await _unitOfWork.CompleteAsync();
+            // await _unitOfWork.CompleteAsync();
       }
-    public async Task<BookingModel> CheckCustomerCheckedOutAsync(int userId, int roomId)
-    {
-        return await _unitOfWork.Bookings.CheckCustomerCheckedOutAsync(userId, roomId);
-    }
+      public async Task<BookingModel> CheckCustomerCheckedOutAsync(int userId, int roomId)
+      {
+            return await _unitOfWork.Bookings.CheckCustomerCheckedOutAsync(userId, roomId);
+      }
 
       public async Task<IEnumerable<BookingModel>> GetAuthorizedBookingsAsync(int id)
       {
@@ -42,6 +42,11 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
 
       public async Task<IEnumerable<BookingModel>> GetBookingsByRoomIdAsync(int roomId)
       {
-           return await _unitOfWork.Bookings.GetBookingsByRoomIdAsync(roomId);
+            return await _unitOfWork.Bookings.GetBookingsByRoomIdAsync(roomId);
+      }
+
+      public async Task SaveAsync()
+      {
+            await _unitOfWork.CompleteAsync();
       }
 }
