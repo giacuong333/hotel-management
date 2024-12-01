@@ -30,6 +30,7 @@ import RoomProvider from './providers/RoomProvider';
 import BookingDetails from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/BookingDetails';
 import Invoice from './components/Customer/AccountDetail/BookingHistory/Bookings/Booking/Invoice';
 import ProceedPayment from './components/Customer/Home/ProceedPayment';
+import PaymentCallBack from './components/Customer/Home/ProceedPayment/PaymentCallBack';
 import Contacts from './components/Customer/Contact';
 import NotFoundPage from './components/404page';
 

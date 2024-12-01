@@ -6,281 +6,281 @@ using backend.Services.Interfaces;
 
 namespace backend.Controllers
 {
-      [Route("[controller]")]
-      [ApiController]
-      public class BookingController(IBookingService bookingService, IVNPayService vnpayService) : ControllerBase
-      {
-            private readonly IBookingService _bookingService = bookingService;
-            private readonly IVNPayService _vnpayService = vnpayService;
+    [Route("[controller]")]
+    [ApiController]
+    public class BookingController(IBookingService bookingService, IVNPayService vnpayService) : ControllerBase
+    {
+        private readonly IBookingService _bookingService = bookingService;
+        private readonly IVNPayService _vnpayService = vnpayService;
 
         // [GET] /booking
         [HttpGet]
-            public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookings()
+        public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookings()
+        {
+            try
             {
-                  try
-                  {
-                        var bookings = await _bookingService.GetBookingsAsync();
-                        if (bookings == null || !bookings.Any())
-                              return NotFound("Bookings not found");
+                var bookings = await _bookingService.GetBookingsAsync();
+                if (bookings == null || !bookings.Any())
+                    return NotFound("Bookings not found");
 
-                        return Ok(bookings);
-                  }
-                  catch (UnauthorizedException ex)
-                  {
-                        return Unauthorized(new { message = ex.Message });
-                  }
-                  catch (NotFoundException ex)
-                  {
-                        return NotFound(new { message = ex.Message });
-                  }
-                  catch (Exception ex)
-                  {
-                        // Log the exception
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                  }
+                return Ok(bookings);
             }
-
-            private static int GetUserIdFromClaims(HttpContext httpContext)
+            catch (UnauthorizedException ex)
             {
-                  var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-                  if (userIdClaim != null)
-                        return int.Parse(userIdClaim!.Value);
-
-                  throw new UnauthorizedAccessException("User ID not found in claims.");
+                return Unauthorized(new { message = ex.Message });
             }
-
-            [HttpGet("customer_booking")]
-            [Authorize]
-            public async Task<ActionResult<IEnumerable<BookingModel>>> GetAuthorizedBookings()
+            catch (NotFoundException ex)
             {
-                  try
-                  {
-                        var userId = GetUserIdFromClaims(HttpContext);
-                        var bookings = await _bookingService.GetAuthorizedBookingsAsync(userId);
-                        if (bookings == null)
-                              return NotFound("Bookings not found");
-
-                        return Ok(bookings);
-
-                  }
-                  catch (UnauthorizedException ex)
-                  {
-                        return Unauthorized(new { message = ex.Message });
-                  }
-                  catch (NotFoundException ex)
-                  {
-                        return NotFound(new { message = ex.Message });
-                  }
-                  catch (Exception ex)
-                  {
-                        // Log the exception
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                  }
+                return NotFound(new { message = ex.Message });
             }
-
-            [HttpGet("customer_cancelled_booking")]
-            [Authorize]
-            public async Task<ActionResult<IEnumerable<BookingModel>>> GetAuthorizedCancalledBookings()
+            catch (Exception ex)
             {
-                  try
-                  {
-                        var userId = GetUserIdFromClaims(HttpContext);
-                        var bookings = await _bookingService.GetAuthorizedCancelledBookingsAsync(userId);
-                        if (bookings == null)
-                              return NotFound("Cancelled Bookings not found");
-
-                        return Ok(bookings);
-
-                  }
-                  catch (UnauthorizedException ex)
-                  {
-                        return Unauthorized(new { message = ex.Message });
-                  }
-                  catch (NotFoundException ex)
-                  {
-                        return NotFound(new { message = ex.Message });
-                  }
-                  catch (Exception ex)
-                  {
-                        // Log the exception
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                  }
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
+        }
 
-            // [GET] /booking/{id}
-            [HttpGet("{id}")]
-            public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingById(int id)
+        private static int GetUserIdFromClaims(HttpContext httpContext)
+        {
+            var userIdClaim = httpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim != null)
+                return int.Parse(userIdClaim!.Value);
+
+            throw new UnauthorizedAccessException("User ID not found in claims.");
+        }
+
+        [HttpGet("customer_booking")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<BookingModel>>> GetAuthorizedBookings()
+        {
+            try
             {
-                  try
-                  {
-                        var booking = await _bookingService.GetBookingByIdAsync(id);
-                        if (booking == null)
-                              return NotFound("Booking not found");
+                var userId = GetUserIdFromClaims(HttpContext);
+                var bookings = await _bookingService.GetAuthorizedBookingsAsync(userId);
+                if (bookings == null)
+                    return NotFound("Bookings not found");
 
-                        return Ok(booking);
-                  }
-                  catch (UnauthorizedException ex)
-                  {
-                        return Unauthorized(new { message = ex.Message });
-                  }
-                  catch (NotFoundException ex)
-                  {
-                        return NotFound(new { message = ex.Message });
-                  }
-                  catch (Exception ex)
-                  {
-                        // Log the exception
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                  }
+                return Ok(bookings);
+
             }
-
-            // [DELETE] /booking/{id}
-            [HttpDelete("{id}")]
-            public async Task<ActionResult> DeleteBookingById(int id)
+            catch (UnauthorizedException ex)
             {
-                  try
-                  {
-                        var booking = await _bookingService.GetBookingByIdAsync(id);
-                        if (booking == null)
-                              return NotFound("Booking not found.");
-
-                        if (booking.Status != 0 && booking.Status != 3)
-                              return StatusCode(403, new { message = "You only delete the booking that is canceled or checked-out" });
-
-                        // booking.DeletedAt = DateTime.UtcNow;
-
-                        await _bookingService.DeleteBookingAsync(id);
-
-                        return Ok("Booking delete successfully");
-                  }
-                  catch (UnauthorizedException ex)
-                  {
-                        return Unauthorized(new { message = ex.Message });
-                  }
-                  catch (NotFoundException ex)
-                  {
-                        return NotFound(new { message = ex.Message });
-                  }
-                  catch (Exception ex)
-                  {
-                        // Log the exception
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                  }
+                return Unauthorized(new { message = ex.Message });
             }
-
-            // [DELETE] /booking
-            [HttpDelete]
-            public async Task<ActionResult> DeleteBookings([FromBody] List<UserModel> bookings)
+            catch (NotFoundException ex)
             {
-                  try
-                  {
-                        if (bookings == null || bookings.Count == 0)
-                              return BadRequest("No bookings provided for deletion.");
-
-                        foreach (var booking in bookings)
-                        {
-                              var bookingFromDb = await _bookingService.GetBookingByIdAsync(booking.Id);
-                              if (bookingFromDb == null)
-                                    return NotFound("Booking not found");
-
-                              // Canceled or Checked-out 
-                              if (bookingFromDb.Status != 0 && bookingFromDb.Status != 3)
-                                    return StatusCode(403, new { message = "You only can delete bookings that is canceled or checked-out" });
-
-                              await _bookingService.DeleteBookingAsync(booking.Id);
-                        }
-
-                        var updatedBookings = await _bookingService.GetBookingsAsync();
-
-                        return Ok(new { message = "Bookings deleted successfully.", updatedBookings });
-                  }
-                  catch (UnauthorizedException ex)
-                  {
-                        return Unauthorized(new { message = ex.Message });
-                  }
-                  catch (NotFoundException ex)
-                  {
-                        return NotFound(new { message = ex.Message });
-                  }
-                  catch (Exception ex)
-                  {
-                        // Log the exception
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                  }
+                return NotFound(new { message = ex.Message });
             }
-
-            // [PUT] /booking/status
-            [HttpPut("status/{id}")]
-            [Produces("application/json")]
-            public async Task<ActionResult> ChangeStatus(int id, [FromBody] int statusCode)
+            catch (Exception ex)
             {
-                  try
-                  {
-                        var booking = await _bookingService.GetBookingByIdAsync(id);
-                        var staffId = GetUserIdFromClaims(HttpContext);
-                        Console.WriteLine("Staff ID" + staffId);
-                        if (booking == null)
-                              return NotFound("Booking not found");
-
-                        await _bookingService.ChangeStatusAsync(booking, statusCode, staffId);
-
-                        return Ok("Status changed successfully");
-                  }
-                  catch (UnauthorizedException ex)
-                  {
-                        return Unauthorized(new { message = ex.Message });
-                  }
-                  catch (NotFoundException ex)
-                  {
-                        return NotFound(new { message = ex.Message });
-                  }
-                  catch (Exception ex)
-                  {
-                        // Log the exception
-                        Console.WriteLine($"An error occurred: {ex.Message}");
-                        Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                        return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                  }
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
+        }
 
-            // [GET] /booking/room/{roomId}
-            [HttpGet("room/{roomId}")]
-            public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingsByRoomIdAsync(int roomId)
+        [HttpGet("customer_cancelled_booking")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<BookingModel>>> GetAuthorizedCancalledBookings()
+        {
+            try
             {
-                try
+                var userId = GetUserIdFromClaims(HttpContext);
+                var bookings = await _bookingService.GetAuthorizedCancelledBookingsAsync(userId);
+                if (bookings == null)
+                    return NotFound("Cancelled Bookings not found");
+
+                return Ok(bookings);
+
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        // [GET] /booking/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingById(int id)
+        {
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(id);
+                if (booking == null)
+                    return NotFound("Booking not found");
+
+                return Ok(booking);
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        // [DELETE] /booking/{id}
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteBookingById(int id)
+        {
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(id);
+                if (booking == null)
+                    return NotFound("Booking not found.");
+
+                if (booking.Status != 0 && booking.Status != 3)
+                    return StatusCode(403, new { message = "You only delete the booking that is canceled or checked-out" });
+
+                // booking.DeletedAt = DateTime.UtcNow;
+
+                await _bookingService.DeleteBookingAsync(id);
+
+                return Ok("Booking delete successfully");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        // [DELETE] /booking
+        [HttpDelete]
+        public async Task<ActionResult> DeleteBookings([FromBody] List<UserModel> bookings)
+        {
+            try
+            {
+                if (bookings == null || bookings.Count == 0)
+                    return BadRequest("No bookings provided for deletion.");
+
+                foreach (var booking in bookings)
                 {
-                    var bookings = await _bookingService.GetBookingsByRoomIdAsync(roomId);
+                    var bookingFromDb = await _bookingService.GetBookingByIdAsync(booking.Id);
+                    if (bookingFromDb == null)
+                        return NotFound("Booking not found");
 
-                    return Ok(bookings);
+                    // Canceled or Checked-out 
+                    if (bookingFromDb.Status != 0 && bookingFromDb.Status != 3)
+                        return StatusCode(403, new { message = "You only can delete bookings that is canceled or checked-out" });
+
+                    await _bookingService.DeleteBookingAsync(booking.Id);
                 }
-                catch (UnauthorizedException ex)
-                {
-                    return Unauthorized(new { message = ex.Message });
-                }
-                catch (NotFoundException ex)
-                {
-                    return NotFound(new { message = ex.Message });
-                }
-                catch (Exception ex)
-                {
-                    // Log the exception
-                    Console.WriteLine($"An error occurred: {ex.Message}");
-                    Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                    return StatusCode(500, new { message = "Internal server error", error = ex.Message });
-                }
+
+                var updatedBookings = await _bookingService.GetBookingsAsync();
+
+                return Ok(new { message = "Bookings deleted successfully.", updatedBookings });
             }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        // [PUT] /booking/status
+        [HttpPut("status/{id}")]
+        [Produces("application/json")]
+        public async Task<ActionResult> ChangeStatus(int id, [FromBody] int statusCode)
+        {
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(id);
+                var staffId = GetUserIdFromClaims(HttpContext);
+                Console.WriteLine("Staff ID" + staffId);
+                if (booking == null)
+                    return NotFound("Booking not found");
+
+                await _bookingService.ChangeStatusAsync(booking, statusCode, staffId);
+
+                return Ok("Status changed successfully");
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        // [GET] /booking/room/{roomId}
+        [HttpGet("room/{roomId}")]
+        public async Task<ActionResult<IEnumerable<BookingModel>>> GetBookingsByRoomIdAsync(int roomId)
+        {
+            try
+            {
+                var bookings = await _bookingService.GetBookingsByRoomIdAsync(roomId);
+
+                return Ok(bookings);
+            }
+            catch (UnauthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
 
 
         [HttpPost]
@@ -302,6 +302,7 @@ namespace backend.Controllers
 
                 var booking = request.Booking;
                 var services = request.Services;
+                var receipt = request.Receipt;
 
                 // Kiểm tra nếu booking null
                 if (booking == null)
@@ -310,7 +311,7 @@ namespace backend.Controllers
                 }
 
                 // Gọi phương thức xử lý logic để tạo booking
-                await _bookingService.CreateBookingAsync(booking, services);
+                await _bookingService.CreateBookingAsync(booking, services, receipt);
 
                 return StatusCode(200, new { message = "Booking created successfully", booking });
             }
@@ -325,9 +326,10 @@ namespace backend.Controllers
 
         // Lớp dùng để nhận dữ liệu
         public class CreateBookingRequest
-            {
-                public BookingModel Booking { get; set; }
-                public ServiceUsageModel[] Services { get; set; }
-            }
+        {
+            public BookingModel Booking { get; set; }
+            public ServiceUsageModel[] Services { get; set; }
+            public ReceiptModel Receipt { get; set; }
+        }
     }
 }
