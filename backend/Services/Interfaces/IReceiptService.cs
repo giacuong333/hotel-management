@@ -1,5 +1,6 @@
 public interface IReceiptService
 {
+    Task CreateReceiptAsync(ReceiptModel receipt);
     Task<IEnumerable<object>> GetReceiptsAsync();
     Task<ReceiptModel> GetReceiptByIdAsync(int id);
     Task DeleteReceiptByIdAsync(int id);

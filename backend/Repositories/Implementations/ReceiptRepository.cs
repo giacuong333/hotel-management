@@ -1,4 +1,4 @@
-using backend.Database;
+﻿using backend.Database;
 using backend.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -211,6 +211,25 @@ namespace Repositories.Implementations
                 }).FirstOrDefaultAsync();
 
             return receipts;
+        }
+
+        public async Task CreateReceiptAsync(ReceiptModel receipt)
+        {
+            if (receipt == null)
+            {
+                throw new ArgumentNullException(nameof(receipt), "Receipt cannot be null.");
+            }
+
+            try
+            {
+                await _context.Receipt.AddAsync(receipt);
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi (nếu cần) và rethrow để xử lý bên ngoài
+                Console.WriteLine($"Error while creating receipt: {ex.Message}");
+                throw;
+            }
         }
     }
 }

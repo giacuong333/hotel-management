@@ -79,6 +79,7 @@ function App() {
                     <Route path="/rooms" element={<Rooms />} />
                     <Route path="/room/:id" element={<RoomDetail />} />
                     <Route path="/proceed-payment" element={<ProceedPayment />} />
+                    <Route path="/proceed-payment/payment-callback" element={<PaymentCallBack />} />
                     <Route path="/contact" element={<Contacts />} />
                 </Route>
             ) : (

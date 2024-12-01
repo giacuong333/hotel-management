@@ -34,4 +34,9 @@ public class ReceiptService(IUnitOfWork unitOfWork) : IReceiptService
     {
         return await _unitOfWork.Receipts.GetReceiptsByIdAsync(receiptId);
     }
+
+    public async Task CreateReceiptAsync(ReceiptModel receipt)
+    {
+        await _unitOfWork.Receipts.CreateReceiptAsync(receipt);
+    }
 }
