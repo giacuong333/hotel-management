@@ -42,11 +42,16 @@ const ProccedPayment = () => {
                 serviceId: service.id,
                 quantity: service.quantity
             }));
+
+            const receiptData = {
+                total: totalPrice
+            }
     
             // Gửi request đến API bằng Axios
             const response = await axios.post('http://localhost:5058/booking', {
                 booking: bookingData, // Gửi booking và services dưới dạng JSON
-                services: servicesData
+                services: servicesData,
+                receipt: receiptData
             }, {
                 headers: {
                     'Content-Type': 'application/json', // Đảm bảo API nhận JSON
