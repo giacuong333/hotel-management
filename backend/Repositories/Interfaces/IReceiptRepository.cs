@@ -11,5 +11,6 @@ namespace backend.Repositories.Interfaces
         Task<object> GetReceiptByBookingIdAsync(int bookingId);
         Task DeleteReceiptByIdAsync(int id);
         Task DeleteReceiptsAsync(ICollection<ReceiptModel> receiptIds);
+        Task CreateReceiptAsync(ReceiptModel receipt);
     }
 }
