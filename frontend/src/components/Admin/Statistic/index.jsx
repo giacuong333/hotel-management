@@ -40,6 +40,7 @@ const Statistics = () => {
     useEffect(() => {
         if (selectedDate && selectedDateEnd) {
             if (selectedDate > selectedDateEnd) {
+                return;
             } else {
                 setDisplayType(getDisplayType());
             }
@@ -261,6 +262,7 @@ const Statistics = () => {
                             onChange={(date) => setSelectedDate(date)}
                             dateFormat="yyyy/MM/dd"
                             className="form-control"
+                            maxDate={selectedDateEnd || endOfYear}
                         />
                     </Form.Group>
                 </Col>
@@ -272,6 +274,8 @@ const Statistics = () => {
                             onChange={(date) => setSelectedDateEnd(date)}
                             dateFormat="yyyy/MM/dd"
                             className="form-control"
+                            minDate={selectedDate}
+                            maxDate={endOfYear}
                         />
                     </Form.Group>
                 </Col>
