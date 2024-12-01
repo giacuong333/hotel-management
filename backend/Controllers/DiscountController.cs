@@ -2,28 +2,21 @@
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Repositories.Interfaces;
 
 namespace backend.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class DiscountController : Controller
+    public class DiscountController : ControllerBase
     {
-        private readonly DatabaseContext context;
-        private readonly ILogger<DiscountController> _logger;
-        private readonly IConfiguration configuration;
-        private readonly IDiscountService _discountService;
+        private readonly IDiscountRepository _discountRepository;
 
-        public DiscountController(DatabaseContext context, ILogger<DiscountController> logger, IConfiguration configuration, IDiscountService discountService)
+        public DiscountController(IDiscountRepository discountRepository)
         {
-            this.context = context;
-            this._logger = logger;
-            this.configuration = configuration;
-<<<<<<< HEAD
-=======
-            _discountService = discountService;
->>>>>>> 6a95901db4df8ca164e3d9e7e643827f49d801d7
+            _discountRepository = discountRepository;
         }
+        
 
         // GET: /discount
         [HttpGet]
@@ -31,7 +24,7 @@ namespace backend.Controllers
         {
             try
             {
-                var discounts = await context.Discount.ToListAsync();
+                var discounts = await _discountRepository.GetListDiscounts();
 
                 if (discounts == null)
                 {
@@ -42,7 +35,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving discounts");
+                
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -53,7 +46,7 @@ namespace backend.Controllers
         {
             try
             {
-                var discount = await context.Discount.FindAsync(id);
+                var discount = await _discountRepository.GetDiscount(id);
 
                 if (discount == null)
                 {
@@ -64,29 +57,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving discount");
-                return StatusCode(500, "Internal server error");
-            }
-        }
-
-        // GET: /discount/active}
-        [HttpGet("active")]
-        public async Task<ActionResult<DiscountModel>> GetActiveDiscounts()
-        {
-            try
-            {
-                var discounts = await _discountService.GetListActiveDiscounts();
-
-                if (discounts == null)
-                {
-                    return NotFound(new { message = "Active discounts not found." });
-                }
-
-                return Ok(discounts);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error retrieving discount");
+                
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -97,56 +68,29 @@ namespace backend.Controllers
         {
             try
             {
-                bool discountNameExist = await context.Discount.AnyAsync(d => d.Name == discount.Name);
-                bool discountValueExist = await context.Discount.AnyAsync(d => d.Value == discount.Value);
-
-                if (discountNameExist && discountValueExist)
-                {
-                    return Conflict(new { message = "Discount already exists" });
-                }
-
-                await context.Discount.AddAsync(discount);
-
-                await context.SaveChangesAsync();
-                return Ok(discount);
+                var newDiscount = await _discountRepository.CreateDiscount(discount);
+                return Ok(newDiscount);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error creating discount");
+               
                 return StatusCode(500, "Internal server error");
             }
         }
 
         // POST /discount/{id}
         [HttpPut("{id}")]
-        public async Task<ActionResult<DiscountModel>> UpdateDiscount(int id, [FromBody] DiscountModel discount)
+        public async Task<ActionResult<DiscountModel>> UpdateDiscount(int id,[FromBody] DiscountModel discount)
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest("Missing data");
-                }
-                var IdDiscount = await context.Discount.FindAsync(id);
-                if (discount == null)
-                {
-                    return NotFound("Discount not found.");
-                }
-
-                IdDiscount.Name = discount?.Name;
-                IdDiscount.Value = discount?.Value;
-                IdDiscount.Status = discount?.Status;
-                IdDiscount.StartAt = discount?.StartAt;
-                IdDiscount.EndAt = discount?.EndAt;
-
-                context.Discount.Update(IdDiscount);
-                await context.SaveChangesAsync();
+                var IdDiscount = await _discountRepository.UpdateDiscount(id, discount);
 
                 return Ok(IdDiscount);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error updating discount");
+                
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -157,27 +101,19 @@ namespace backend.Controllers
         {
             try
             {
-                var discount = await context.Discount.FindAsync(id);
-
-                if (discount == null)
-                {
-                    return NotFound(new { message = "Discount not found" });
-                }
-
-                context.Discount.Remove(discount);
-                await context.SaveChangesAsync();
+                var discount = await _discountRepository.DeleteDiscount(id);
 
                 return Ok(discount);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error deleting discount");
+                
                 return StatusCode(500, "Internal server error");
             }
         }
 
-        [HttpDelete]
-
+                [HttpDelete]
+        
         [HttpDelete("deleteall")]
         public async Task<IActionResult> DeleteAllDiscounts([FromBody] List<int> discountIds)
         {
@@ -188,30 +124,15 @@ namespace backend.Controllers
 
             try
             {
-                var discountsToDelete = await context.Discount
-                    .Where(d => discountIds.Contains((int)d.Id))
-                    .ToListAsync();
+               await _discountRepository.DeleteAllDiscounts(discountIds);
 
-                if (!discountsToDelete.Any())
-                {
-                    return NotFound(new { message = "No discounts found to delete" });
-                }
-
-                context.Discount.RemoveRange(discountsToDelete);
-                await context.SaveChangesAsync();
-
-                return Ok(new { message = "Discounts deleted successfully", newDiscounts = context.Discount.ToList() });
+                return Ok(new { message = "Discounts deleted successfully", newDiscounts = _discountRepository.GetListDiscounts() });
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error deleting discounts");
+               
                 return StatusCode(500, "Internal server error");
             }
         }
-        public IActionResult Index()
-        {
-            return View();
-        }
-
     }
 }

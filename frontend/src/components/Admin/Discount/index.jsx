@@ -222,8 +222,8 @@ const Discount = () => {
                 console.log('Delete response', response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
-                    setDiscounts(response?.data?.newDiscounts?.$values);
-                    setSearchedDiscounts(response?.data?.newDiscounts?.$values);
+                    setDiscounts(response?.data?.newDiscounts?.result?.$values);
+                    setSearchedDiscounts(response?.data?.newDiscounts?.result?.$values);
                     reset();
                 }
             } catch (error) {
