@@ -99,7 +99,7 @@ namespace Repositories.Implementations
         {
             var today = DateTime.Today;
             return await _dbSetBooking.Where(bk => bk.DeletedAt == null &&
-            bk.Status == 3 && bk.CheckOut >= today && bk.CheckOut < today.AddDays(1))
+            bk.Status == 3 && bk.UpdatedAt >= today && bk.UpdatedAt < today.AddDays(1))
                     .ToListAsync();
         }
     }
