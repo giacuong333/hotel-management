@@ -68,7 +68,21 @@ public class UnitOfWork(
     // Xác nhận giao dịch
     public async Task CommitTransactionAsync()
     {
-        
+        if (_transaction == null)
+        {
+            throw new InvalidOperationException("No transaction in progress.");
+        }
+
+        try
+        {
+            // Xác nhận giao dịch hiện tại
+            await _transaction.CommitAsync();
+        }
+        finally
+        {
+            // Giải phóng tài nguyên giao dịch
+            await DisposeTransactionAsync();
+        }
     }
 
     // Hủy giao dịch
