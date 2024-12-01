@@ -25,13 +25,13 @@ const itemList = [
         quantity: 0,
         path: '/admin/room',
     },
-    {
-        id: 4,
-        title: 'Pending Payments',
-        Icon: MdOutlinePayments,
-        quantity: 0,
-        path: '/admin/receipt',
-    },
+    // {
+    //     id: 4,
+    //     title: 'Pending Payments',
+    //     Icon: MdOutlinePayments,
+    //     quantity: 0,
+    //     path: '/admin/receipt',
+    // },
 ];
 
 export default itemList;

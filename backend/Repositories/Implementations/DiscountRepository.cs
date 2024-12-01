@@ -33,4 +33,10 @@ public async Task DeleteAllDiscounts(List<int> discountIds)
         {
             await DeleteAllDiscounts(discountIds);
         }
+
+    public async Task<IEnumerable<DiscountModel>> GetListActiveDiscounts()
+    {
+        var now = DateTime.Today;
+        return await _context.Discount.Where(d => d.Status == true && d.EndAt >= now).ToListAsync();
+    }
 }

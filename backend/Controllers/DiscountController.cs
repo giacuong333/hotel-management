@@ -12,12 +12,17 @@ namespace backend.Controllers
         private readonly DatabaseContext context;
         private readonly ILogger<DiscountController> _logger;
         private readonly IConfiguration configuration;
+        private readonly IDiscountService _discountService;
 
-        public DiscountController(DatabaseContext context, ILogger<DiscountController> logger, IConfiguration configuration)
+        public DiscountController(DatabaseContext context, ILogger<DiscountController> logger, IConfiguration configuration, IDiscountService discountService)
         {
             this.context = context;
             this._logger = logger;
             this.configuration = configuration;
+<<<<<<< HEAD
+=======
+            _discountService = discountService;
+>>>>>>> 6a95901db4df8ca164e3d9e7e643827f49d801d7
         }
 
         // GET: /discount
@@ -56,6 +61,28 @@ namespace backend.Controllers
                 }
 
                 return Ok(discount);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error retrieving discount");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        // GET: /discount/active}
+        [HttpGet("active")]
+        public async Task<ActionResult<DiscountModel>> GetActiveDiscounts()
+        {
+            try
+            {
+                var discounts = await _discountService.GetListActiveDiscounts();
+
+                if (discounts == null)
+                {
+                    return NotFound(new { message = "Active discounts not found." });
+                }
+
+                return Ok(discounts);
             }
             catch (Exception e)
             {

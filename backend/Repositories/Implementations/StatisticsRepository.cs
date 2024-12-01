@@ -49,22 +49,22 @@ namespace Repositories.Implementations
             return await _dbSetUser.Where(u => u.RoleId == 4 && u.DeletedAt == null).ToListAsync();
         }
 
-        public async Task<IEnumerable<ReceiptModel>> GetReceiptsAsync(DateTime start, DateTime end)
+        public async Task<IEnumerable<BookingModel>> GetBookingCanelsAsync(DateTime start, DateTime end)
         {
 
 
-            return await _dbSetReceipt
-                .Where(rc => rc.CreatedAt >= start && rc.CreatedAt <= end)
+            return await _dbSetBooking
+                .Where(bk => bk.UpdatedAt >= start && bk.UpdatedAt <= end && bk.Status==0)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<ReceiptModel>> GetReceiptSuccesssAsync(DateTime start, DateTime end)
+        public async Task<IEnumerable<BookingModel>> GetBookingSuccesssAsync(DateTime start, DateTime end)
         {
 
 
-            return await _dbSetReceipt
-                .Where(rc => rc.CreatedAt >= start && rc.CreatedAt <= end && rc.DeletedAt == null)
-                .ToListAsync();
+            return await _dbSetBooking
+               .Where(bk => bk.UpdatedAt >= start && bk.UpdatedAt <= end && bk.Status != 0 && bk.DeletedAt== null)
+               .ToListAsync();
 
         }
 

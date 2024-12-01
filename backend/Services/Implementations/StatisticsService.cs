@@ -25,15 +25,14 @@ public class StatisticsService : IStatisticsService
             end = new DateTime(DateTime.Now.Year, 12, 31);
         }
 
-        var receipts = await _unitOfWork.Statistics.GetReceiptsAsync(start.Value, end.Value);
-        var receiptSuccesss = await _unitOfWork.Statistics.GetReceiptSuccesssAsync(start.Value, end.Value);
+        var bookingCanels = await _unitOfWork.Statistics.GetBookingCanelsAsync(start.Value, end.Value);
+        var bookingSuccesss = await _unitOfWork.Statistics.GetBookingSuccesssAsync(start.Value, end.Value);
 
         List<int> pie = new List<int>();
 
 
-        int recieptFails = receipts.Count() - receiptSuccesss.Count();
-        pie.Add(receiptSuccesss.Count());
-        pie.Add(recieptFails);
+        pie.Add(bookingSuccesss.Count());
+        pie.Add(bookingCanels.Count());
         return pie;
     }
     public async Task<List<int>> GetDataPieCustomerAsync(DateTime? start, DateTime? end)

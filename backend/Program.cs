@@ -1,6 +1,10 @@
 using backend.Database;
+using backend.Services.Implementations;
+using backend.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<IVNPayService, VNPayService>();
 
 Builder.Build(builder);
 

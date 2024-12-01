@@ -12,7 +12,8 @@ import formatCurrency from '~/utils/currencyPipe';
 import { convertByteArrayToBase64 } from '~/utils/handleByteArray';
 import { useUser } from '../../../../providers/UserProvider';
 import ToastContainer, { showToast } from '~/utils/showToast';
-import formatDate from '~/utils/formatDate';
+import {formatDate} from '~/utils/formatDate';
+
 import { BiArea } from 'react-icons/bi';
 import { IoBedOutline } from 'react-icons/io5';
 import { TbAirConditioning } from 'react-icons/tb';
@@ -54,10 +55,10 @@ const RoomDetail = () => {
     const { id } = useParams();
     const [roomDetail, setRoomDetail] = useState({});
     const [gallery, setGallery] = useState([]);
-    const [bookedDates, setBookedDates] = useState([]);
-    const [checkInDate, setCheckInDate] = useState();
-    const [checkOutDate, setCheckOutDate] = useState();
-    const [selectedServices, setSelectedServices] = useState([]);
+    const [ bookedDates, setBookedDates ] = useState([]);
+    const [ checkInDate, setCheckInDate ] = useState();
+    const [ checkOutDate, setCheckOutDate ] = useState();
+    const [ selectedServices, setSelectedServices ] = useState([]);
 
     const { user } = useUser();
     const isAuthenticated = user !== null;
@@ -75,24 +76,25 @@ const RoomDetail = () => {
         fetchBookedDates();
     }, [id]);
 
-    useEffect(() => {
+    useEffect(()=>{
         console.log(bookedDates);
-    }, [bookedDates]);
+    },[bookedDates]);
 
-    useEffect(() => {
-        console.log('Check-in: ', checkInDate);
-        console.log('Check-out: ', checkOutDate);
-        console.log('Booking dates: ', getDatesInRange(checkInDate, checkOutDate));
+    useEffect(()=>{
+        console.log("Check-in: ", checkInDate);
+        console.log("Check-out: ", checkOutDate);
+        console.log("Booking dates: ", getDatesInRange(checkInDate, checkOutDate));
+        console.log(invalidDates ? 'Invalid dates' : 'Valid dates');
+        
     }, [checkInDate, checkOutDate]);
 
-    useEffect(() => {
+    useEffect(()=>{
         console.log('Selected Services:', selectedServices);
     }, [selectedServices]);
 
     const fetchGallery = async () => {
         try {
             const response = await axios.get(`http://localhost:5058/gallery/${id}`);
-
             if (response?.status === 200) {
                 const gallery = response?.data?.$values || null;
                 roomDetail.thumbnail && gallery.unshift({ image: roomDetail?.thumbnail });
@@ -122,18 +124,18 @@ const RoomDetail = () => {
     const fetchBookedDates = async () => {
         try {
             const response = await axios.get(`http://localhost:5058/booking/room/${id}`);
-            console.log('Reponse: ', response);
-
+            console.log("Reponse: ", response);
+            
             if (response?.status === 200) {
-                const bookingsData = response?.data?.$values || response?.data?.obj;
-                console.log('Bookings data: ', bookingsData);
-
+                const bookingsData = response?.data?.$values || response?.data?.obj;;
+                console.log("Bookings data: ", bookingsData);
+                
                 if (bookingsData) {
                     const allBookedDates = bookingsData.map((booking) => {
                         return getDatesInRange(booking.checkIn, booking.checkOut);
-                    });
-
-                    // Dùng flatMap để chuyển đổi mảng 2 chiều thành mảng 1 chiều
+                      });
+            
+                      // Dùng flatMap để chuyển đổi mảng 2 chiều thành mảng 1 chiều
                     setBookedDates(allBookedDates.flat());
                 } else {
                     console.error('Undefined value:', response.data);
@@ -145,7 +147,24 @@ const RoomDetail = () => {
     };
 
     const handleBookNow = () => {
-        navigate('/proceed-payment');
+        if (!checkInDate || !checkOutDate) {
+            alert("Please choose your check-in and check-out dates.");
+            return;
+        }
+
+        if (invalidDates) {
+            alert("The dates have been booked, please choose another date.");
+            return;
+        }
+
+        navigate('/proceed-payment', {
+            state: { 
+              room: roomDetail, 
+              checkInDate: checkInDate, 
+              checkOutDate: checkOutDate,  
+              totalPrice: totalPrice,
+              services: selectedServices.map(({ checked, ...rest }) => rest)
+            } });
     };
 
     const getDatesInRange = (startDate, endDate) => {
@@ -161,16 +180,20 @@ const RoomDetail = () => {
         return dates;
     };
 
+    const invalidDates = checkInDate && checkOutDate && getDatesInRange(checkInDate, checkOutDate).some(date => 
+        bookedDates.map(formatDate).includes(formatDate(date))
+    );
+
     const handleCheckInDateChange = (date) => {
         setCheckInDate(date);
-
+        
         // Đảm bảo ngày check-out lớn hơn ngày check-in ít nhất 1 ngày
         if (date) {
             const nextDay = new Date(date);
             nextDay.setDate(nextDay.getDate() + 1); // Thêm 1 ngày vào check-in
             setCheckOutDate(nextDay); // Đặt check-out là ngày hôm sau check-in
         }
-    };
+    }
 
     const handleCheckOutDateChange = (date) => {
         // Kiểm tra nếu ngày check-out nhỏ hơn ngày check-in, đặt lại giá trị
@@ -181,36 +204,37 @@ const RoomDetail = () => {
         } else {
             setCheckOutDate(date); // Cập nhật check-out bình thường nếu hợp lệ
         }
-    };
+    }
 
     const handleServicesChange = (services) => {
         setSelectedServices(services);
     };
 
     const calculateDays = (checkInDate, checkOutDate) => {
-        if (!checkInDate || !checkOutDate) {
-            return 0;
+        if(!checkInDate || !checkOutDate) {
+            return 0
         }
         // Chuyển chuỗi ngày thành đối tượng Date
         const checkIn = new Date(checkInDate);
         const checkOut = new Date(checkOutDate);
-
+    
         // Tính chênh lệch thời gian (millisecond)
         const timeDifference = checkOut - checkIn;
-
+    
         // Tính số ngày (chênh lệch thời gian chia cho số milliseconds trong 1 ngày)
         const days = timeDifference / (24 * 60 * 60 * 1000);
-
+    
         // Nếu check-in bằng hoặc sau check-out thì trả về 0
         return days > 0 ? days + 1 : 0;
     };
 
+    const totalPrice = roomDetail.price * calculateDays(checkInDate, checkOutDate) + 
+    selectedServices.reduce((total, service) => total + service.price * service.quantity, 0);
+
     return (
         <section>
             <div className="container mx-auto">
-                {/* Toast */}
                 {ToastContainer}
-
                 <div className="row">
                     <div className="col-lg-8 px-lg-0">
                         <div className="px-2 pt-4">
@@ -227,7 +251,7 @@ const RoomDetail = () => {
                                     })}
                                 </Slider>
                                 <div
-                                    className="bg-white d-inline-flex align-items-center gap-2 px-4 py-3 shadow border"
+                                    className="bg-white d-inline-flex align-items-center gap-2 px-4 py-3"
                                     style={{
                                         position: 'absolute',
                                         bottom: '1rem',
@@ -340,17 +364,17 @@ const RoomDetail = () => {
                     </div>
 
                     <div className="col-lg-4 pt-4">
-                        <div className="customer-third-bg-color p-4 border shadow-sm">
+                        <div className="customer-third-bg-color p-4">
                             <p className="text-center fs-3 p-2 pt-0">Your Reservation</p>
                             <div className="py-3 d-flex flex-column gap-4">
                                 <span className="d-flex flex-column gap-2">
                                     <p>Check-in</p>
                                     <DatePicker
-                                        selected={checkInDate}
-                                        onChange={handleCheckInDateChange}
-                                        dateFormat="yyyy-MM-dd"
-                                        className="customer-datetime-picker room-detail"
-                                        placeholderText="Choose check-in date"
+                                        selected={checkInDate} 
+                                        onChange={handleCheckInDateChange} 
+                                        dateFormat="yyyy-MM-dd" 
+                                        className="customer-datetime-picker room-detail" 
+                                        placeholderText="Choose check-in date" 
                                         excludeDates={bookedDates}
                                         minDate={new Date()}
                                     />
@@ -358,21 +382,19 @@ const RoomDetail = () => {
                                 <span className="d-flex flex-column gap-2">
                                     <p>Check-out</p>
                                     <DatePicker
-                                        selected={checkOutDate}
-                                        onChange={handleCheckOutDateChange}
-                                        dateFormat="yyyy-MM-dd"
-                                        className="customer-datetime-picker room-detail"
-                                        placeholderText="Choose check-out date"
+                                        selected={checkOutDate} 
+                                        onChange={handleCheckOutDateChange} 
+                                        dateFormat="yyyy-MM-dd" 
+                                        className="customer-datetime-picker room-detail" 
+                                        placeholderText="Choose check-out date" 
                                         excludeDates={bookedDates}
                                         minDate={checkInDate ? new Date(checkInDate.getDate() + 1) : new Date()} // Đảm bảo Check-out phải lớn hơn Check-in ít nhất 1 ngày
                                     />
-                                    {/* {getDatesInRange(checkInDate, checkOutDate).some(date => bookedDates.includes(date)) && 
-                                    <span className='text-danger'>The dates have been booked, please choose another date.</span>} */}
+                                    {invalidDates === true && 
+                                    <span className='text-danger'>The dates have been booked, please choose another date.</span>}
                                 </span>
                                 <span className="d-flex flex-column gap-2">
-                                    <p className="fs-5 fw-bold">
-                                        Total days booked: {calculateDays(checkInDate, checkOutDate)}
-                                    </p>
+                                    <p className="fs-5 fw-bold">Total days booked: {calculateDays(checkInDate, checkOutDate)}</p>
                                 </span>
                             </div>
                             <div className="d-flex flex-column gap-4">
@@ -382,11 +404,7 @@ const RoomDetail = () => {
                                     <p className="fs-5">Your Price</p>
                                     <p className="fs-5 fw-bold">
                                         {formatCurrency(
-                                            roomDetail.price * calculateDays(checkInDate, checkOutDate) +
-                                                selectedServices.reduce(
-                                                    (total, service) => total + service.price * service.quantity,
-                                                    0,
-                                                ),
+                                            totalPrice
                                         )}
                                     </p>
                                 </div>
@@ -403,7 +421,6 @@ const RoomDetail = () => {
                     </div>
                 </div>
 
-                {/* Review */}
                 <div className="row my-5">
                     <div className="col-lg-8 px-lg-0 px-4">
                         <Reviews />
