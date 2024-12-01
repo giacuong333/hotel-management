@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import { useUser } from '../../../../providers/UserProvider';
@@ -85,8 +85,8 @@ const ProccedPayment = () => {
             });
     
             if (response.status === 200) {
-                alert(`Booking created successfully! Booking ID: ${response.data.booking.id}`);
-            } else {
+                window.location.href = response.data;
+                } else {
                 alert("Failed to create booking." + response.status);
             }
         } catch (error) {

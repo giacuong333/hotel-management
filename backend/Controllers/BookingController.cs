@@ -284,6 +284,7 @@ namespace backend.Controllers
 
 
         [HttpPost]
+
         public async Task<ActionResult> CreateBooking([FromBody] CreateBookingRequest request)
         {
             try
@@ -295,10 +296,14 @@ namespace backend.Controllers
 
                 var vnpayModel = new VNPayRequestModel
                 {
-
+                    Amount = request.Receipt.Total,
+                    CreatedDate = DateTime.Now,
+                    Description = $"Khách hàng {request.Booking.CustomerName ?? request.Booking.CustomerId.ToString()} thanh toán đơn hàng.",
+                    OrderId = new Random().Next(1000, 10000)
                 };
 
-                Redirect(_vnpayService.CreatePaymentUrl(HttpContext, vnpayModel));
+                //Redirect(_vnpayService.CreatePaymentUrl(HttpContext, vnpayModel));
+                return Ok(_vnpayService.CreatePaymentUrl(HttpContext, vnpayModel));
 
                 var booking = request.Booking;
                 var services = request.Services;
@@ -331,5 +336,48 @@ namespace backend.Controllers
             public ServiceUsageModel[] Services { get; set; }
             public ReceiptModel Receipt { get; set; }
         }
+
+        [Authorize]
+        public IActionResult PaymentFail()
+        {
+            return null;
+        }
+
+        [Authorize]
+        public IActionResult PaymentSuccess()
+        {
+            return null;
+        }
+
+        [HttpGet("proceed-payment/payment-callback")]
+        [Produces("application/json")]
+        public async Task<ActionResult> PaymentCallBack()
+        {
+            // Xử lý dữ liệu từ query params
+            var response = _vnpayService.PaymentExecute(Request.Query);
+
+            Console.WriteLine("Response: " + response);
+
+            // Nếu response null hoặc mã phản hồi không phải "00", trả về lỗi
+            if (response == null || response.VnPayResponseCode != "00")
+            {
+                var messageFail = $"VNPay payment error: {response?.VnPayResponseCode ?? "unknown"}";
+                return BadRequest(new
+                {
+                    status = "fail",
+                    message = messageFail,
+                });
+            }
+
+            // Trả về thành công nếu mã phản hồi là "00"
+            var messageSuccess = $"VNPay payment success: {response.VnPayResponseCode}";
+            return Ok(new
+            {
+                status = "success",
+                message = messageSuccess,
+                data = response // Gửi thêm thông tin chi tiết nếu cần
+            });
+        }
+
     }
 }
