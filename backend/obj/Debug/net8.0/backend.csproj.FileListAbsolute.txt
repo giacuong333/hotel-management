@@ -371,7 +371,6 @@ C:\HocReact\hotel-management\backend\bin\Debug\net8.0\Google.Apis.Auth.dll
 C:\HocReact\hotel-management\backend\bin\Debug\net8.0\Google.Apis.Core.dll
 C:\HocReact\hotel-management\backend\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.Google.dll
 C:\HocReact\hotel-management\backend\bin\Debug\net8.0\System.Management.dll
-C:\HocReact\hotel-management\backend\bin\Debug\net8.0\System.Security.Permissions.dll
 C:\HocReact\hotel-management\backend\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\appsettings.Development.json
 D:\ReactJS\Projects\ReactJS-.NET\hotel-management\backend\bin\Debug\net8.0\appsettings.json
