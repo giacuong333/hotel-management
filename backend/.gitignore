@@ -2,6 +2,6 @@ appsettings.Development.json
 appsettings.json
 backend.csproj
 backend.csproj.user
-/bin
-/obj
-/wwwroot
+/bin/
+/obj/
+/wwwroot/
