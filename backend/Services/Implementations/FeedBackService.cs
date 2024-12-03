@@ -7,13 +7,13 @@ public class FeedBackService(IUnitOfWork unitOfWork) : IFeedBackService{
         return await _unitOfWork.FeedBacks.GetListFeedBacks();
     }
 
-    public async Task<FeedBackModel> GetFeedBack(int id)
+    public async Task<object> GetFeedBack(int id)
     {
         return await _unitOfWork.FeedBacks.GetFeedBack(id);
     }
-    public async Task<FeedBackModel> DeleteFeedBack(int id)
+    public async Task<object> DeleteFeedBack(int id)
     {
-        var feedBack = await _unitOfWork.FeedBacks.GetFeedBack(id);
+        var feedBack = await _unitOfWork.FeedBacks.GetFeedBack(id) ;
         if (feedBack == null)
         {
             return null;

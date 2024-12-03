@@ -9,12 +9,12 @@ namespace backend.Controllers
     public class DiscountController : ControllerBase
     {
         private readonly IDiscountService _discountService;
-        private readonly IDiscountRepository _discountRepository;
+       
 
-        public DiscountController(IDiscountService discountService, IDiscountRepository discountRepository)
+        public DiscountController(IDiscountService discountService)
         {
             _discountService = discountService;
-            _discountRepository = discountRepository;
+            
         }
 
         // GET: /discount
@@ -23,7 +23,7 @@ namespace backend.Controllers
         {
             try
             {
-                var discounts = await _discountRepository.GetListDiscounts();
+                var discounts = await _discountService.GetListDiscounts();
 
                 if (discounts == null)
                 {
@@ -44,7 +44,7 @@ namespace backend.Controllers
         {
             try
             {
-                var discount = await _discountRepository.GetDiscount(id);
+                var discount = await _discountService.GetDiscount(id);
 
                 if (discount == null)
                 {
@@ -66,7 +66,7 @@ namespace backend.Controllers
         {
             try
             {
-                var newDiscount = await _discountRepository.CreateDiscount(discount);
+                var newDiscount = await _discountService.CreateDiscount(discount);
                 return Ok(newDiscount);
             }
             catch (Exception e)
@@ -82,7 +82,7 @@ namespace backend.Controllers
         {
             try
             {
-                var IdDiscount = await _discountRepository.UpdateDiscount(id, discount);
+                var IdDiscount = await _discountService.UpdateDiscount(id, discount);
 
                 return Ok(IdDiscount);
             }
@@ -99,7 +99,7 @@ namespace backend.Controllers
         {
             try
             {
-                var discount = await _discountRepository.DeleteDiscount(id);
+                var discount = await _discountService.DeleteDiscount(id);
 
                 return Ok(discount);
             }
@@ -122,9 +122,9 @@ namespace backend.Controllers
 
             try
             {
-                await _discountRepository.DeleteAllDiscounts(discountIds);
+                await _discountService.DeleteAllDiscounts(discountIds);
 
-                return Ok(new { message = "Discounts deleted successfully", newDiscounts = _discountRepository.GetListDiscounts() });
+                return Ok(new { message = "Discounts deleted successfully", newDiscounts = _discountService.GetListDiscounts() });
             }
             catch (Exception e)
             {

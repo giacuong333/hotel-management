@@ -5,11 +5,12 @@ import { FaBlenderPhone } from 'react-icons/fa';
 const CardTimeContact = () => {
     return (
         <div>
-            <div className="p-lg-5" style={{ backgroundColor: '#E8BF96' }}>
-                <div class="row">
-                    <div class="col-sm-4" style={{borderLeft:"1px,solid"}}>
-                        <div className="row ">
-                            <div className="col-sm-2">
+            <div className='container pb-5'>
+            <div className="p-lg-5 " style={{ backgroundColor: '#E8BF96' }}>
+                <div class="row ">
+                    <div class="col-sm-4" >
+                        <div className="row " style={{borderRight:"1px solid"}}>
+                            <div className="col-sm-3 px-lg-4">
                                 <FaCalendarAlt size={70} />
                             </div>
                             <div className="col-sm-8" style={{ lineHeight: '3rem', fontFamily: 'Nanum Myeongjo' }}>
@@ -19,8 +20,8 @@ const CardTimeContact = () => {
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <div className="row">
-                            <div className="col-sm-2">
+                        <div className="row" style={{borderRight:"1px solid"}}>
+                            <div className="col-sm-3 px-lg-4">
                                 <GoClock size={68} />
                             </div>
                             <div className="col-sm-8" style={{ lineHeight: '3rem', fontFamily: 'Nanum Myeongjo' }}>
@@ -31,7 +32,7 @@ const CardTimeContact = () => {
                     </div>
                     <div class="col-sm-4">
                         <div className="row">
-                            <div className="col-sm-2">
+                            <div className="col-sm-3 px-lg-4" >
                                 <FaBlenderPhone size={70} />
                             </div>
                             <div className="col-sm-8" style={{ lineHeight: '3rem', fontFamily: 'Nanum Myeongjo' }}>
@@ -42,6 +43,8 @@ const CardTimeContact = () => {
                     </div>
                 </div>
             </div>
+            </div>
+           
         </div>
     );
 };

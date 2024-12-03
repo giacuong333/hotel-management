@@ -1,5 +1,6 @@
 using backend.Database;
 using backend.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Implementations;
 using Repositories.Interfaces;
@@ -25,17 +26,44 @@ public class FeedBackRepository(DatabaseContext context) : GenericRepository<Fee
                 })
             .ToListAsync();
     }
-    public async Task<FeedBackModel> GetFeedBack(int id)
+   public async Task<object> GetFeedBack(int id)
+{
+    var feedbackData = await _context.Feedback
+        .Where(feedback => feedback.Id == id)
+        .Join(_context.User,
+            feedback => feedback.UserId,
+            user => user.Id,
+            (feedback, user) => new { feedback, user })
+        .Join(_context.Room,
+            feedbackUser => feedbackUser.feedback.RoomId,
+            room => room.Id,
+            (feedbackUser, room) => new 
+            {
+                feedbackUser.feedback.Id,
+                feedbackUser.feedback.Description,
+                feedbackUser.feedback.CreatedAt,
+                UserName = feedbackUser.user.Name,
+                RoomName = room.Name,
+                RoomId = feedbackUser.feedback.RoomId
+            })
+        .FirstOrDefaultAsync();
+
+    if (feedbackData == null)
     {
-        
-    
-        return await _context.Feedback
-            .Where(feedback => feedback.Id == id)
-            .FirstOrDefaultAsync();
-    
-       
+        return null;
     }
-    public async Task<FeedBackModel> DeleteFeedBack(int id)
+
+    return new 
+    {
+        feedbackData.Id,
+        feedbackData.Description,
+        feedbackData.CreatedAt,
+        feedbackData.UserName,
+        feedbackData.RoomName,
+        feedbackData.RoomId
+    };
+}
+    public async Task<object> DeleteFeedBack(int id)
     {
        var feedback = await context.Feedback.FindAsync(id);
                 
