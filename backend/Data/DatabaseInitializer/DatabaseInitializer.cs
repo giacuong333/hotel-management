@@ -460,8 +460,8 @@ public static class Seed
                     Id = 7,
                     CustomerId = 2,  // Use actual ID
                     RoomId = 10,
-                    CheckIn = new DateTime(2025, 04, 29),
-                    CheckOut = new DateTime(2025, 05, 01),
+                    CheckIn = new DateTime(2024, 12, 03),
+                    CheckOut = new DateTime(2024, 12, 05),
                     Status = 1
                 }
             );

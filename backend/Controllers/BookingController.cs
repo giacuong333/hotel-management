@@ -234,12 +234,11 @@ namespace backend.Controllers
                 var booking = await _bookingService.GetBookingByIdAsync(id);
                 var staffId = GetUserIdFromClaims(HttpContext);
 
-                var isOnTimeCheckIn = statusCode == 2 && booking.CheckIn == DateTime.Today;
-                if (!isOnTimeCheckIn)
-                    return Conflict("Your check-in time is not today.");
-
                 if (booking == null)
                     return NotFound("Booking not found");
+
+                if (statusCode == 2 && booking.CheckIn!.Value.Date != DateTime.Today.Date)
+                    return Conflict("Your check-in time is not today.");
 
                 await _bookingService.ChangeStatusAsync(booking, statusCode, staffId);
 
