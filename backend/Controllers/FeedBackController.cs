@@ -10,10 +10,10 @@ namespace backend.Controllers
     [ApiController]
     public class FeedBackController : Controller
     {
-        private readonly IFeedBackRepository _feedBackRepository;
-        public FeedBackController(IFeedBackRepository feedBackRepository)
+        private readonly IFeedBackService _feedBackService;
+        public FeedBackController(IFeedBackService feedBackService)
         {
-            _feedBackRepository = feedBackRepository;
+            _feedBackService = feedBackService;
         }
         
 
@@ -23,7 +23,7 @@ namespace backend.Controllers
         {
             try
             {
-                var feedbacks = await _feedBackRepository.GetListFeedBacks();
+                var feedbacks = await _feedBackService.GetListFeedBacks();
                 return Ok(feedbacks);
             }
             catch (Exception e)
@@ -37,7 +37,7 @@ namespace backend.Controllers
         {
             try
             {
-                var feedback = await _feedBackRepository.GetFeedBack(id);
+                var feedback = await _feedBackService.GetFeedBack(id);
 
                 if (feedback == null)
                 {
@@ -58,7 +58,7 @@ namespace backend.Controllers
         {
             try
             {
-                var feedback = await _feedBackRepository.DeleteFeedBack(id);
+                var feedback = await _feedBackService.DeleteFeedBack(id);
                 return Ok(feedback);
             }
             catch (Exception e)
@@ -73,9 +73,9 @@ namespace backend.Controllers
         {
             try
             {
-                await _feedBackRepository.DeleteAllFeedBacks(feedbackIds);
+                await _feedBackService.DeleteAllFeedBacks(feedbackIds);
 
-                return Ok(new { message = "Feedbacks deleted successfully", newFeedback = _feedBackRepository.GetListFeedBacks() });
+                return Ok(new { message = "Feedbacks deleted successfully", newFeedback = _feedBackService.GetListFeedBacks() });
             }
             catch (Exception e)
             {
