@@ -1,6 +1,7 @@
 {
   "format": 1,
   "restore": {
+<<<<<<< HEAD
     "D:\\ReactJS\\Projects\\ReactJS-.NET\\hotel-management\\backend\\backend.csproj": {}
   },
   "projects": {
@@ -15,11 +16,33 @@
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Cuong\\AppData\\Roaming\\NuGet\\NuGet.Config"
+=======
+    "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj": {}
+  },
+  "projects": {
+    "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj",
+        "projectName": "backend",
+        "projectPath": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\dinhv\\.nuget\\packages\\",
+        "outputPath": "D:\\SGU-VODINHVAN-2021\\.NET\\hotel-management\\backend\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\dinhv\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+>>>>>>> ed4500093ad5b7c93f0dc73155e62159e18c9e98
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+<<<<<<< HEAD
+=======
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+>>>>>>> ed4500093ad5b7c93f0dc73155e62159e18c9e98
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -99,7 +122,11 @@
               "privateAssets": "all"
             }
           },
+<<<<<<< HEAD
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+=======
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
+>>>>>>> ed4500093ad5b7c93f0dc73155e62159e18c9e98
         }
       }
     }

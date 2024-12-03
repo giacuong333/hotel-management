@@ -2,6 +2,7 @@
 using backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Repositories.Interfaces;
 
 namespace backend.Controllers
 {
@@ -9,15 +10,12 @@ namespace backend.Controllers
     [ApiController]
     public class FeedBackController : Controller
     {
-        private readonly DatabaseContext context;
-        private readonly ILogger<DiscountController> _logger;
-        private readonly IConfiguration configuration;
-        public FeedBackController(DatabaseContext context, ILogger<DiscountController> logger, IConfiguration configuration)
+        private readonly IFeedBackRepository _feedBackRepository;
+        public FeedBackController(IFeedBackRepository feedBackRepository)
         {
-            this.context = context;
-            this._logger = logger;
-            this.configuration = configuration;
+            _feedBackRepository = feedBackRepository;
         }
+        
 
         // GET: /feedback
         [HttpGet]
@@ -25,29 +23,12 @@ namespace backend.Controllers
         {
             try
             {
-                var feedbacks = await context.Feedback
-                    .Join(context.User,
-                        feedback => feedback.UserId,
-                        user => user.Id,
-                        (feedback, user) => new { feedback, user })
-                    .Join(context.Room,
-                        feedbackUser => feedbackUser.feedback.RoomId,
-                        room => room.Id,
-                        (feedbackUser, room) => new
-                        {
-                            feedbackUser.feedback.Id,
-                            feedbackUser.feedback.Description,
-                            feedbackUser.feedback.CreatedAt,
-                            UserName = feedbackUser.user.Name,
-                            RoomName = room.Name
-                        })
-                    .ToListAsync();
-
+                var feedbacks = await _feedBackRepository.GetListFeedBacks();
                 return Ok(feedbacks);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving feedbacks");
+                
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -56,23 +37,7 @@ namespace backend.Controllers
         {
             try
             {
-                var feedback = await context.Feedback
-            .Join(context.User,
-                feedback => feedback.UserId,
-                user => user.Id,
-                (feedback, user) => new { feedback, user })
-            .Join(context.Room,
-                feedbackUser => feedbackUser.feedback.RoomId,
-                room => room.Id,
-                (feedbackUser, room) => new
-                {
-                    feedbackUser.feedback.Id,
-                    feedbackUser.feedback.Description,
-                    feedbackUser.feedback.CreatedAt,
-                    UserName = feedbackUser.user.Name,
-                    RoomName = room.Name
-                })
-            .FirstOrDefaultAsync(f => f.Id == id);
+                var feedback = await _feedBackRepository.GetFeedBack(id);
 
                 if (feedback == null)
                 {
@@ -83,7 +48,7 @@ namespace backend.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error retrieving discount");
+                
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -93,18 +58,12 @@ namespace backend.Controllers
         {
             try
             {
-                var feedback = await context.Feedback.FindAsync(id);
-                if (feedback == null)
-                {
-                    return NotFound(new { message = "Feedback not found" });
-                }
-                context.Feedback.Remove(feedback);
-                await context.SaveChangesAsync();
+                var feedback = await _feedBackRepository.DeleteFeedBack(id);
                 return Ok(feedback);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error deleting feedback");
+                
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -114,23 +73,13 @@ namespace backend.Controllers
         {
             try
             {
-                var feedbacksToDelete = await context.Feedback
-                    .Where(f => feedbackIds.Contains((int)f.Id))
-                    .ToListAsync();
+                await _feedBackRepository.DeleteAllFeedBacks(feedbackIds);
 
-                if (!feedbacksToDelete.Any())
-                {
-                    return NotFound(new { message = "No feedbacks found to delete" });
-                }
-
-                context.Feedback.RemoveRange(feedbacksToDelete);
-                await context.SaveChangesAsync();
-
-                return Ok(new { message = "Feedbacks deleted successfully", newFeedback = context.Feedback.ToList() });
+                return Ok(new { message = "Feedbacks deleted successfully", newFeedback = _feedBackRepository.GetListFeedBacks() });
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error deleting feedbacks");
+               
                 return StatusCode(500, "Internal server error");
             }
         }
