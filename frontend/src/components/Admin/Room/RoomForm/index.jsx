@@ -61,12 +61,12 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
         return Object.keys(validationErrors).length === 0;
     };
 
-    console.log('Payload', fields);
-
     const handleSubmitClicked = async (e) => {
         e.preventDefault();
 
         const apiUrl = 'http://localhost:5058/room';
+
+        console.log('Payload', fields);
 
         if (handleValidation()) {
             const formData = new FormData();
@@ -163,7 +163,7 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                     />
                     <button
                         size={30}
-                        className="p-2 rounded-pill cursor-pointer text-white customer-primary-button bg-hover-white text-hover-black"
+                        className="p-2 rounded-3 cursor-pointer text-white customer-primary-button bg-hover-white text-hover-black"
                         style={{
                             position: 'absolute',
                             top: 0,

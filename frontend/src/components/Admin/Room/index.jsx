@@ -43,7 +43,6 @@ const Room = () => {
                 // Create payload for deletion (id list)
                 const payload = deleteAll.payload.map((room) => ({ id: room.id }));
                 const response = await axios.delete('http://localhost:5058/room', { data: payload });
-                console.log(response);
                 if (response?.status === 200) {
                     const data = response?.data?.updatedRooms?.$values.map((room) => {
                         room.statusName = room.status === 1 ? 'Empty' : room.status === 2 ? 'Booked' : 'Staying';
@@ -118,9 +117,9 @@ const Room = () => {
     // Delete a room
     const deleteRoom = async (payload) => {
         try {
-            const url = 'http://localhost:5058/room';
+            const url = `http://localhost:5058/room/${payload}`;
             const headers = { headers: { 'Content-Type': 'application/json' } };
-            const response = await axios.delete(`${url}/${payload}`, headers);
+            const response = await axios.delete(url, headers);
             if (response?.status === 200) {
                 showToast('Room deleted successfully', 'success');
                 setRooms((prev) => prev.filter((room) => room.id !== payload));
@@ -150,12 +149,11 @@ const Room = () => {
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
         try {
-            const url = 'http://localhost:5058/room';
+            const url = `http://localhost:5058/room/${id}`;
             const headers = {
                 headers: { 'Content-Type': 'application/json' },
             };
-            const response = await axios.get(`${url}/${id}`, headers);
-            console.log('Response', response);
+            const response = await axios.get(url, headers);
             if (response?.status === 200) {
                 setShowPanel('see');
                 setSelectedRoom(response?.data);
