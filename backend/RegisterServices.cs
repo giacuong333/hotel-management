@@ -31,6 +31,7 @@ class RegisterServices
         builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
         builder.Services.AddScoped<IFeedBackRepository, FeedBackRepository>();
         builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
+
         // Register Services
         builder.Services.AddScoped<IAuthService, AuthService>();
         builder.Services.AddScoped<IUserService, UserService>();

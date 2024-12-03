@@ -19,10 +19,7 @@ namespace backend.Controllers
             this.context = context;
             this._logger = logger;
             this.configuration = configuration;
-<<<<<<< HEAD
-=======
             _discountService = discountService;
->>>>>>> 6a95901db4df8ca164e3d9e7e643827f49d801d7
         }
 
         // GET: /discount
