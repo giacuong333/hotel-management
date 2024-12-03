@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 import { useUser } from '../../../../providers/UserProvider';
-import { formatDate } from '~/utils/formatDate';
+import { formatDate, convertToISO } from '~/utils/formatDate';
 import formatCurrency from '~/utils/currencyPipe';
 
 const ProccedPayment = () => {
@@ -55,8 +55,8 @@ const ProccedPayment = () => {
                 customerName: username?.trim() ? username : null,
                 customerPhoneNumber: phoneNumber?.trim() ? phoneNumber : null,
                 customerEmail: email?.trim() ? email : null,
-                checkIn: checkInDate,
-                checkOut: checkOutDate,
+                checkIn: convertToISO(formatDate(checkInDate)),
+                checkOut: convertToISO(formatDate(checkOutDate)),
                 roomId: room?.id,
                 customerId: isAuthenticated ? user.id : null, // Nếu cần gửi ID khách hàng
                 status: 1, // Trạng thái mặc định là 1
