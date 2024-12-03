@@ -72,6 +72,10 @@ const ProccedPayment = () => {
                 total: selectedDiscount ? applyDiscount(selectedDiscount.value) : totalPrice,
                 discountId: selectedDiscount?.id ?? null
             }
+
+            sessionStorage.setItem("bookingData", JSON.stringify(bookingData));
+            sessionStorage.setItem("servicesData", JSON.stringify(servicesData));
+            sessionStorage.setItem("receiptData", JSON.stringify(receiptData));
     
             // Gửi request đến API bằng Axios
             const response = await axios.post('http://localhost:5058/booking', {

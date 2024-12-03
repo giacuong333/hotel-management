@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 
 const PaymentCallback = () => {
     const [status, setStatus] = useState("pending"); // pending, success, fail
@@ -8,14 +9,28 @@ const PaymentCallback = () => {
     const fetchCallback = async () => {
         try {
             const queryParams = new URLSearchParams(window.location.search); // Lấy query params từ URL
-            const response = await fetch(`http://localhost:5058/booking/proceed-payment/payment-callback?${queryParams.toString()}`, {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-            });
+            const bookingData = JSON.parse(sessionStorage.getItem("bookingData"));
+            const servicesData = JSON.parse(sessionStorage.getItem("servicesData"));
+            const receiptData = JSON.parse(sessionStorage.getItem("receiptData"));
+
+            const dataToSend = {
+                booking: bookingData,
+                services: servicesData,
+                receipt: receiptData
+            };
+            
+            const response = await axios.post(
+                `http://localhost:5058/booking/proceed-payment/payment-callback`,
+                dataToSend,
+                {
+                    params: Object.fromEntries(queryParams.entries()),
+                    headers: { "Content-Type": "application/json" },
+                }
+            );
     
-            console.log('Params: ', Object.fromEntries(queryParams.entries())); // In ra các query params gửi đi
+            console.log('Params: ', Object.fromEntries(queryParams.entries())); 
     
-            const data = await response.json(); // Chuyển đổi phản hồi thành JSON
+            const data = response.data;
     
             if (data?.status === "success") {
                 setStatus("success"); // Cập nhật trạng thái thành công
@@ -24,6 +39,10 @@ const PaymentCallback = () => {
                 setStatus("fail"); // Cập nhật trạng thái thất bại
                 setMessage(data.message || "Thanh toán thất bại."); // Hiển thị thông báo lỗi
             }
+            
+            sessionStorage.removeItem("bookingData");
+            sessionStorage.removeItem("servicesData");
+            sessionStorage.removeItem("receiptData");
         } catch (err) {
             setStatus("fail"); // Xử lý lỗi
             setMessage(err.message); // Thông báo lỗi nếu xảy ra lỗi trong fetch

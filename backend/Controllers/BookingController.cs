@@ -3,6 +3,7 @@ using backend.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using backend.Services.Interfaces;
+using Newtonsoft.Json;
 
 namespace backend.Controllers
 {
@@ -303,27 +304,12 @@ namespace backend.Controllers
                 {
                     Amount = request.Receipt.Total,
                     CreatedDate = DateTime.Now,
-                    Description = $"Khách hàng {request.Booking.CustomerName ?? request.Booking.CustomerId.ToString()} thanh toán đơn hàng.",
+                    Description = $"Khách hàng {request.Booking.CustomerId?.ToString() ?? request.Booking.CustomerName } thanh toán đơn hàng.",
                     OrderId = new Random().Next(1000, 10000)
                 };
 
                 //Redirect(_vnpayService.CreatePaymentUrl(HttpContext, vnpayModel));
                 return Ok(_vnpayService.CreatePaymentUrl(HttpContext, vnpayModel));
-
-                //var booking = request.Booking;
-                //var services = request.Services;
-                //var receipt = request.Receipt;
-
-                //// Kiểm tra nếu booking null
-                //if (booking == null)
-                //{
-                //    return BadRequest("Booking information is missing.");
-                //}
-
-                //// Gọi phương thức xử lý logic để tạo booking
-                //await _bookingService.CreateBookingAsync(booking, services, receipt);
-
-                //return StatusCode(200, new { message = "Booking created successfully", booking });
             }
             catch (Exception ex)
             {
@@ -341,10 +327,14 @@ namespace backend.Controllers
             public ReceiptModel Receipt { get; set; }
         }
 
-        [HttpGet("proceed-payment/payment-callback")]
+        [HttpPost("proceed-payment/payment-callback")]
         [Produces("application/json")]
-        public async Task<ActionResult> PaymentCallBack()
+        public async Task<ActionResult> PaymentCallBack([FromBody] CreateBookingRequest dataToSend)
         {
+            var booking = dataToSend.Booking;
+            var services = dataToSend.Services;
+            var receipt = dataToSend.Receipt;
+
             // Xử lý dữ liệu từ query params
             var response = _vnpayService.PaymentExecute(Request.Query);
 
@@ -363,6 +353,16 @@ namespace backend.Controllers
 
             // Trả về thành công nếu mã phản hồi là "00"
             var messageSuccess = $"VNPay payment success: {response.VnPayResponseCode}";
+
+            // Kiểm tra nếu booking null
+            if (booking == null)
+            {
+                return BadRequest("Booking information is missing.");
+            }
+
+            // Gọi phương thức xử lý logic để tạo booking
+            await _bookingService.CreateBookingAsync(booking, services, receipt);
+
             return Ok(new
             {
                 status = "success",
@@ -370,6 +370,5 @@ namespace backend.Controllers
                 data = response // Gửi thêm thông tin chi tiết nếu cần
             });
         }
-
     }
 }
