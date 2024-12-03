@@ -79,6 +79,15 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
             await _unitOfWork.Receipts.CreateReceiptAsync(receipt);
             await _unitOfWork.CompleteAsync();
 
+            //Thay đổi status phòng
+            var room = await _unitOfWork.Rooms.GetByIdAsync(booking.RoomId);
+            if (room.Status == 1)
+            {
+                room.Status = 2;
+            }
+            await _unitOfWork.Rooms.UpdateAsync(room);
+            await _unitOfWork.CompleteAsync();
+
             // Xác nhận giao dịch thành công
             await transaction.CommitAsync();
         }

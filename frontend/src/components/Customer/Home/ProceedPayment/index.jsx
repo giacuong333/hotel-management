@@ -134,7 +134,7 @@ const ProccedPayment = () => {
             <h3>Discount</h3>
             <div>
                 {discounts.map((discount, index) => (
-                    <div className="form-check">
+                    <div className="form-check" key={index}>
                         <input className="form-check-input" type="radio" name="flexRadioDefault" id={discount.id} onChange={()=>handleChooseDiscount(discount)}/>
                         <label className="form-check-label" for={discount.id}>
                             {discount.name}: {discount.value}%
