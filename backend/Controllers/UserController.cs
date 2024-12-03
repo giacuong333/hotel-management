@@ -486,7 +486,7 @@ namespace backend.Controllers
                   return Ok(new { message = "Users deleted successfully.", newUsers });
             }
 
-            // [PUT] /user
+            // [PUT] /user/{id}
             [HttpPut("{id}")]
             [Produces("application/json")]
             public async Task<ActionResult<ICollection<UserModel>>> EditUser([FromBody] UserModel request, int id)
@@ -520,12 +520,14 @@ namespace backend.Controllers
                         }
 
                         // Check if the role exists
-                        int defaultRoleId = 4;
                         if (request.RoleId != null)
                         {
                               var roleExists = await _roleService.GetRoleByIdAsync((int)request.RoleId);
                               if (roleExists != null)
-                                    defaultRoleId = (int)roleExists.Id; // Default role ID, can be moved to a config setting
+                              {
+                                    currentUser.RoleId = (int)roleExists.Id;
+                                    currentUser.Roles = roleExists;
+                              }
                         }
 
                         // Hash the password
@@ -537,19 +539,20 @@ namespace backend.Controllers
 
                         // Set FirstBook flagservice
                         request.FirstBook = true;
-                        currentUser.Id = id;
+                        currentUser.Id = currentUser.Id;
                         currentUser.Name = request.Name;
                         currentUser.Email = request.Email;
                         currentUser.PhoneNumber = request.PhoneNumber;
                         currentUser.Gender = request.Gender;
                         currentUser.Dob = request.Dob;
-                        currentUser.RoleId = defaultRoleId;
                         currentUser.FirstBook = request.FirstBook;
                         currentUser.UpdatedAt = DateTime.UtcNow;
 
                         await _userService.UpdateUserAsync(currentUser);
 
-                        return Ok(new { message = "User updated successfully", currentUser });
+                        var user = await _userService.GetUserByIdAsync(currentUser.Id);
+
+                        return Ok(new { message = "User updated successfully", currentUser = user });
                   }
                   catch (UnauthorizedException ex)
                   {

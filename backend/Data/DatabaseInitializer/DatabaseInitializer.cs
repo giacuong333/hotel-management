@@ -496,8 +496,8 @@ public static class Seed
                 new() { Id = 2, UserId = 3, RoomId = 2, Description = "Good service", CreatedAt = new DateTime(2024, 11, 20) },
                 new() { Id = 3, UserId = 4, RoomId = 3, Description = "Good service", CreatedAt = new DateTime(2024, 11, 21) },
                 new() { Id = 4, UserId = 2, RoomId = 4, Description = "Good service", CreatedAt = new DateTime(2024, 12, 29) }
-
             );
+            await context.SaveChangesAsync();
         }
         //Seed Review
         if (!context.Review.Any())
@@ -507,9 +507,10 @@ public static class Seed
                 new() { Id = 2, UserId = 4, RoomId = 2, Comment = "The service was excellent, and the staff were very friendly and helpful.", CreatedAt = new DateTime(2024, 7, 23), Status = 0, DeletedAt = null },
                 new() { Id = 3, UserId = 5, RoomId = 3, Comment = "Great experience! The room was spacious and had all the necessary amenities.", CreatedAt = new DateTime(2024, 1, 19), Status = 0, DeletedAt = null },
                 new() { Id = 4, UserId = 6, RoomId = 4, Comment = "The hotel was clean, and the staff made me feel very welcome. Would definitely return.", CreatedAt = new DateTime(2024, 2, 23), Status = 0, DeletedAt = null }
-
             );
+            await context.SaveChangesAsync();
         }
+
         // Seed Receipts
         if (!context.Receipt.Any())
         {

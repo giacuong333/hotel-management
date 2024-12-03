@@ -16,13 +16,10 @@ public class RoomModel
       public int? Status { get; set; }
       public float? Price { get; set; }
       public int? Area { get; set; }
-
       [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
       [BindNever]
       public DateTime? CreatedAt { get; set; }
-
       [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
       public DateTime? UpdatedAt { get; set; }
-
       public DateTime? DeletedAt { get; set; }
 }

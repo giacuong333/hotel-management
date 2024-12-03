@@ -12,7 +12,7 @@ public class ReceiptModel
     public int? DiscountId { get; set; }
     public float? Total { get; set; }
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public DateTime CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
     [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
     public DateTime? UpdatedAt { get; set; }
     public DateTime? DeletedAt { get; set; } = null;

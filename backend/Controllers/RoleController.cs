@@ -1,10 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using backend.Models;
-using backend.Database;
-using Microsoft.Extensions.Logging;
-using System.Web.Helpers;
 
 namespace backend.Controllers
 {
@@ -16,8 +11,6 @@ namespace backend.Controllers
         private readonly IRoleService _roleService;
         private readonly IUserService _userService;
         private readonly IRolePermissionService _rolePermissionService;
-
-
 
         public RoleController(ILogger<RoleController> logger, IRoleService roleService, IUserService userService, IRolePermissionService rolePermissionService)
         {
@@ -58,6 +51,9 @@ namespace backend.Controllers
             try
             {
                 var role = await _roleService.GetRoleByIdAsync(id);
+                if (role == null)
+                    return NotFound("Role not found.");
+
                 return Ok(role);
             }
             catch (Exception e)

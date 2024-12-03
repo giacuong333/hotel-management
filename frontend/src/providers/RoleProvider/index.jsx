@@ -11,11 +11,6 @@ const RoleProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // For fetching
-    useEffect(() => {
-        fetchRoles();
-    }, []);
-
     const fetchRoles = useCallback(async () => {
         const token = localStorage.getItem('jwtToken');
         if (!token) return;
@@ -33,7 +28,7 @@ const RoleProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    });
+    }, [roles]);
 
     // Helper to handle API errors and show corresponding toast messages
     const handleAuthError = (error) => {

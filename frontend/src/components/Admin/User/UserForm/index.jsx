@@ -77,6 +77,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                 ...fields,
                 dob: fields.dob ? fields.dob.toISOString().split('.')[0] : null, // Converting to YYYY-MM-DD format
             };
+            console.log('Payload: ', payload);
             const url = 'http://localhost:5058/user';
             const headers = { headers: { 'Content-Type': 'application/json' } };
             try {
@@ -91,6 +92,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                 } else if (type === 'edit') {
                     setPendingSubmit(true);
                     const response = await axios.put(`${url}/${data?.id}`, payload, headers);
+                    console.log('User edit response: ', response);
                     if (response?.status === 200) {
                         showToast('User updated successfully', 'success');
                         timeoutId = setTimeout(handleClose, 4000);
@@ -198,7 +200,6 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                             customParentParentInputStyle="mt-2"
                             onChange={(e) => handleFieldChange('name', e.target.value)}
                             onInput={() => handleFieldInput('name')}
-                            // onBlur={() => handleValidation()}
                         />
                         <FormGroup
                             label="Email"
@@ -213,7 +214,6 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                             customParentParentInputStyle="mt-2"
                             onChange={(e) => handleFieldChange('email', e.target.value)}
                             onInput={() => handleFieldInput('email')}
-                            // onBlur={handleInputBlured}
                         />
                         <FormGroup
                             label="Phone number"
@@ -228,7 +228,6 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                             customParentParentInputStyle="mt-2"
                             onChange={(e) => handleFieldChange('phoneNumber', e.target.value)}
                             onInput={() => handleFieldInput('phoneNumber')}
-                            // onBlur={handleInputBlured}
                         />
                         {type !== 'see' && (
                             <FormGroup
@@ -244,7 +243,6 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                                 customParentParentInputStyle="mt-2"
                                 onChange={(e) => handleFieldChange('password', e.target.value)}
                                 onInput={() => handleFieldInput('password')}
-                                // onBlur={handleInputBlured}
                             />
                         )}
                         {(type === 'add' || isPasswordChanged) && (
@@ -261,7 +259,6 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                                 customParentParentInputStyle="mt-2"
                                 onChange={(e) => handleFieldChange('retypePassword', e.target.value)}
                                 onInput={() => handleFieldInput('retypePassword')}
-                                // onBlur={handleInputBlured}
                             />
                         )}
                         <FormGroup
@@ -284,8 +281,6 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                                 handleFieldChange('gender', e.target.value);
                                 handleFieldInput('gender');
                             }}
-                            // onSelect={() => handleFieldInput('gender')}
-                            // onBlur={handleInputBlured}
                         />
                         <FormGroup
                             label="Date of birth"
@@ -303,8 +298,6 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                                 handleFieldChange('dob', date);
                                 handleFieldInput('dob');
                             }}
-                            // onSelect={() => handleFieldInput('dob')}
-                            // onBlur={handleInputBlured}
                         />
                         <FormGroup
                             label="Role"
@@ -316,6 +309,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                             value={fields?.roleId}
                             disabled={type === 'see'}
                             options={roles?.map((role) => {
+                                console.log('Roles: ', roles);
                                 return { label: role?.name, value: role?.id };
                             })}
                             customParentInputStyle="p-1 pe-3 rounded-2"

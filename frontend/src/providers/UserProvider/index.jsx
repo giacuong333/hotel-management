@@ -14,23 +14,23 @@ const UserProvider = ({ children }) => {
     const [isLogginginAccount, setIsLogginginAccount] = useState(false);
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const interceptor = axios.interceptors.response.use(
-    //         (response) => response,
-    //         (error) => {
-    //             if (error.response?.status === 401) {
-    //                 localStorage.removeItem('jwtToken');
-    //                 delete axios.defaults.headers.common['Authorization'];
-    //                 setUser(null);
-    //                 navigate('/');
-    //             }
-    //             return Promise.reject(error);
-    //         },
-    //     );
-    //     return () => {
-    //         axios.interceptors.response.eject(interceptor);
-    //     };
-    // }, [navigate]);
+    useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401) {
+                    localStorage.removeItem('jwtToken');
+                    delete axios.defaults.headers.common['Authorization'];
+                    setUser(null);
+                    navigate('/');
+                }
+                return Promise.reject(error);
+            },
+        );
+        return () => {
+            axios.interceptors.response.eject(interceptor);
+        };
+    }, [navigate]);
 
     useEffect(() => {
         fetchUser();
