@@ -1,18 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using backend.Models;
-using backend.Database;
-using Microsoft.Extensions.Logging;
-using System.Web.Helpers;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
@@ -57,32 +44,32 @@ namespace backend.Controllers
             }
         }
 
-            // [GET] /reviewbyroomid
-            [HttpGet("getReviewsByRoomId")]
-            [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<object>>> GetReviewsByRoomId(int roomId)
+        // [GET] /reviewbyroomid
+        [HttpGet("getReviewsByRoomId")]
+        [Produces("application/json")]
+        public async Task<ActionResult<IEnumerable<object>>> GetReviewsByRoomId(int roomId)
+        {
+            try
             {
-                try
+                var reviews = await _reviewService.GetReviewsByRoomIdAsync(roomId);
+
+                if (reviews == null)
                 {
-                    var reviews = await _reviewService.GetReviewsByRoomIdAsync(roomId);
-
-                    if (reviews == null)
-                    {
-                        return NotFound(new { message = "Reviews not found." });
-                    }
-
-                    return Ok(reviews);
+                    return NotFound(new { message = "Reviews not found." });
                 }
-                catch (Exception e)
-                {
 
-                    return StatusCode(500, "Internal server error");
-                }
+                return Ok(reviews);
             }
+            catch (Exception e)
+            {
+
+                return StatusCode(500, "Internal server error");
+            }
+        }
 
 
-            // [GET] /review/{id}
-            [HttpGet("{id}")]
+        // [GET] /review/{id}
+        [HttpGet("{id}")]
         [Produces("application/json")]
         public async Task<ActionResult<ReviewModel>> GetReviewById(int id)
         {
@@ -163,20 +150,20 @@ namespace backend.Controllers
         {
             try
             {
-         
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }
 
-         
+
                 var newReview = new ReviewModel
                 {
                     UserId = review.UserId,
                     RoomId = review.RoomId,
                     Comment = review.Comment,
                     CreatedAt = DateTime.UtcNow,
-                    Status = 0, 
+                    Status = 0,
                 };
 
 
@@ -190,14 +177,14 @@ namespace backend.Controllers
                 }
                 else
                 {
-                    
+
                     return StatusCode(202, new { message = "You must stay in this room before leaving a review" });
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-              
+
                 return StatusCode(500, new { message = "Internal server error" });
             }
         }

@@ -12,7 +12,6 @@ namespace backend.Controllers
     [ApiController]
     public class RoleController : ControllerBase
     {
-        private readonly DatabaseContext _context;
         private readonly ILogger<RoleController> _logger;
         private readonly IRoleService _roleService;
         private readonly IUserService _userService;
@@ -20,9 +19,8 @@ namespace backend.Controllers
 
 
 
-        public RoleController(DatabaseContext context, ILogger<RoleController> logger,IRoleService roleService, IUserService userService, IRolePermissionService rolePermissionService)
+        public RoleController(ILogger<RoleController> logger, IRoleService roleService, IUserService userService, IRolePermissionService rolePermissionService)
         {
-            _context = context;
             _logger = logger;
             _roleService = roleService;
             _userService = userService;
@@ -87,7 +85,7 @@ namespace backend.Controllers
 
 
                 await _roleService.CreateRoleAsync(newRole);
-                
+
 
                 return StatusCode(201, new { message = "Role added successfully", newRole });
             }
@@ -100,36 +98,36 @@ namespace backend.Controllers
 
 
         // [PUT] /role
-         [HttpPut("{id}")]
-         [Produces("application/json")]
+        [HttpPut("{id}")]
+        [Produces("application/json")]
         public async Task<ActionResult<ICollection<RoleModel>>> EditRole([FromBody] RoleModel payload, int id)
-         {
+        {
             try
-             {
-                 if (!ModelState.IsValid)
-                 {
+            {
+                if (!ModelState.IsValid)
+                {
                     return BadRequest(ModelState);
                 }
 
-                 var currentRole = await _roleService.GetRoleByIdAsync(id);
-                 if (currentRole == null)
-                 {
-                     return NotFound("Role not found");
-                 }
+                var currentRole = await _roleService.GetRoleByIdAsync(id);
+                if (currentRole == null)
+                {
+                    return NotFound("Role not found");
+                }
 
 
 
-                 currentRole.Name = payload.Name;
+                currentRole.Name = payload.Name;
 
 
-                 await _roleService.UpdateRoleAsync(currentRole);
-             
+                await _roleService.UpdateRoleAsync(currentRole);
 
-                 return Ok(new { message = "Role updated successfully", currentRole });
-             }
-             catch (Exception e)
-             {
-             
+
+                return Ok(new { message = "Role updated successfully", currentRole });
+            }
+            catch (Exception e)
+            {
+
                 return StatusCode(500, new { message = "Internal server error" });
             }
         }
@@ -156,19 +154,19 @@ namespace backend.Controllers
                 if (permissionsToDelete.Any())
                 {
                     await _rolePermissionService.DeleteRolePermissionsAsync(permissionsToDelete);
-                    
+
                 }
 
 
 
-             
-           
 
 
-                await   _roleService.DeleteRoleAsync(role.Id);
 
 
-              
+                await _roleService.DeleteRoleAsync(role.Id);
+
+
+
 
                 return Ok(new { message = "Role deleted successfully" });
             }
@@ -212,7 +210,7 @@ namespace backend.Controllers
                 if (permissionsToDelete.Any())
                 {
                     await _rolePermissionService.DeleteRolePermissionsAsync(permissionsToDelete);
-                    
+
                 }
 
 
@@ -223,7 +221,7 @@ namespace backend.Controllers
             }
 
 
-         
+
 
             var newRoles = await _roleService.GetRolesAsync();
 

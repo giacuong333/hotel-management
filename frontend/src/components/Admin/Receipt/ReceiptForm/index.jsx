@@ -96,6 +96,8 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
     const [subTotal, setSubTotal] = useState(null);
     const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(null);
 
+    console.log('Receipt detail: ', data);
+
     // Services used
     useEffect(() => {
         let totalOfServices = 0;
@@ -177,17 +179,19 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Name:</p>
                                         <small className="text-capitalize text-secondary">
-                                            {data?.booking?.customer?.name}
+                                            {data?.booking?.customer?.name || data?.booking?.customerName}
                                         </small>
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Email:</p>
-                                        <small className="text-secondary">{data?.booking?.customer?.email}</small>
+                                        <small className="text-secondary">
+                                            {data?.booking?.customer?.email || data?.booking?.customerEmail}
+                                        </small>
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Phone:</p>
                                         <small className="text-capitalize text-secondary">
-                                            {data?.booking?.customer?.phoneNumber}
+                                            {data?.booking?.customer?.phoneNumber || data?.booking?.customerPhoneNumber}
                                         </small>
                                     </span>
                                 </div>

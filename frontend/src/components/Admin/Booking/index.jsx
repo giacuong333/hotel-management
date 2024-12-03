@@ -278,8 +278,8 @@ const Booking = () => {
     const data = searchedBookings?.map((booking, index) => ({
         id: booking?.id,
         no: index + 1,
-        customer: booking?.customer?.name,
-        phoneNumber: booking?.customer?.phoneNumber,
+        customer: booking?.customer?.name || booking?.customerName,
+        phoneNumber: booking?.customer?.phoneNumber || booking?.customerPhoneNumber,
         checkIn: booking?.staffCheckIn?.name,
         checkOut: booking?.staffCheckOut?.name,
         statusName: (

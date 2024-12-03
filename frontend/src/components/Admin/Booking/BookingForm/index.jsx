@@ -177,18 +177,20 @@ const BookingForm = ({ data, onClose, isShowed }) => {
                                     <h5>BILL TO</h5>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Name:</p>
-                                        <small className="text-capitalize text-secondary">{data?.customer?.name}</small>
+                                        <small className="text-capitalize text-secondary">
+                                            {data?.customer?.name || data?.customerName}
+                                        </small>
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Email:</p>
                                         <small className="text-capitalize text-secondary">
-                                            {data?.customer?.email}
+                                            {data?.customer?.email || data?.customerEmail}
                                         </small>
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Phone:</p>
                                         <small className="text-capitalize text-secondary">
-                                            {data?.customer?.phoneNumber}
+                                            {data?.customer?.phoneNumber || data?.customerPhoneNumber}
                                         </small>
                                     </span>
                                 </div>

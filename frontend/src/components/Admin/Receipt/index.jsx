@@ -10,8 +10,6 @@ import ReceiptForm from './ReceiptForm';
 import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 import { RotatingLines } from 'react-loader-spinner';
 import formatCurrency from '~/utils/currencyPipe';
-import { BsThreeDots } from 'react-icons/bs';
-import Tippy from '@tippyjs/react';
 
 const Receipt = () => {
     const [showPanel, setShowPanel] = useState('');
@@ -50,6 +48,7 @@ const Receipt = () => {
             try {
                 const url = 'http://localhost:5058/receipt';
                 const response = await axios.get(url);
+                console.log('Receipt response: ', response);
                 setReceipts(response?.data?.$values);
             } catch (error) {
                 console.error(error);
@@ -126,8 +125,8 @@ const Receipt = () => {
         id: receipt?.id,
         no: index + 1,
         booking: receipt?.bookingId,
-        customer: receipt?.booking?.customer?.name,
-        phone: receipt?.booking?.customer?.phoneNumber,
+        customer: receipt?.booking?.customer?.name || receipt?.booking?.customerName,
+        phone: receipt?.booking?.customer?.phoneNumber || receipt?.booking?.customerPhoneNumber,
         total: formatCurrency(receipt?.total),
         createdAt: receipt?.createdAt,
         actions: hasPermissionDelete ? (
