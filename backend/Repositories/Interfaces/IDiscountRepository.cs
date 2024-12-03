@@ -11,5 +11,6 @@ namespace Repositories.Interfaces
        Task<DiscountModel> UpdateDiscount(int id, DiscountModel discount);
        Task<DiscountModel> DeleteDiscount(int id);
        Task DeleteAllDiscounts( List<int> discountIds);
+       Task<IEnumerable<DiscountModel>> GetListActiveDiscounts();
     }
 }
