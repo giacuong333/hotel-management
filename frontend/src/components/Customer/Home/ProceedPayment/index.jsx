@@ -108,79 +108,137 @@ const ProccedPayment = () => {
     }
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h2>Booking Details</h2>
-            <div style={{ marginBottom: '10px' }}>
-                <strong>Room:</strong> {room?.name} (ID: {room?.id})
-            </div>
-            <div style={{ marginBottom: '10px' }}>
-                <strong>Check-In Date:</strong> {formatDate(checkInDate)}
-            </div>
-            <div style={{ marginBottom: '10px' }}>
-                <strong>Check-Out Date:</strong> {formatDate(checkOutDate)}
-            </div>
-            <strong>Selected Services:</strong>
-            {services?.length > 0 ? (
-                services.map((service, index) => (
-                <div key={index}>{service.name} * {service.quantity}</div>
-                ))
-            ) : (
-                <div>No services selected</div>
-            )}
-            <div style={{ marginBottom: '10px' }}>
-                <h4>Total Price: {formatCurrency(totalPrice)}</h4> 
-            </div>
-
-            <h3>Discount</h3>
-            <div>
-                {discounts.map((discount, index) => (
-                    <div className="form-check" key={index}>
-                        <input className="form-check-input" type="radio" name="flexRadioDefault" id={discount.id} onChange={()=>handleChooseDiscount(discount)}/>
-                        <label className="form-check-label" for={discount.id}>
-                            {discount.name}: {discount.value}%
-                        </label>
-                    </div>
-                ))}
-            </div>
-
-            <h2>User Info</h2>
-            {isAuthenticated ? (
-                <div style={{ marginBottom: '10px' }}>
-                    <strong>User:</strong> {user?.name} (ID: {user?.id})
-                </div>
-            ) : (
-                <div style={{ marginBottom: '10px', maxWidth: '300px' }}>
-                    <div className="mb-3">
-                        <label htmlFor="username" className="form-label">Username</label>
-                        <input type="text" className="form-control" id="username"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="phonenumber" className="form-label" 
-                        data-mdb-input-mask-init data-mdb-input-mask="+84 999-999-999">Phone number</label>
-                        <input type="text" className="form-control" id="phonenumber"
-                            value={phoneNumber}
-                            onChange={(e) => setPhoneNumber(e.target.value)}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label">Email</label>
-                        <input type="email" className="form-control" id="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
+        <div className="container py-4">
+            <h2 className="mb-4">Booking Details</h2>
+            <div className="row">
+                {/* Room Details */}
+                <div className="col-md-6">
+                    <div className="card mb-4">
+                        <div className="card-body">
+                            <h5 className="card-title">Room Details</h5>
+                            <p className="card-text">
+                                <strong>Room:</strong> {room?.name} (ID: {room?.id})
+                            </p>
+                            <p className="card-text">
+                                <strong>Check-In Date:</strong> {formatDate(checkInDate)}
+                            </p>
+                            <p className="card-text">
+                                <strong>Check-Out Date:</strong> {formatDate(checkOutDate)}
+                            </p>
+                        </div>
                     </div>
                 </div>
-            )}
+    
+                {/* Selected Services and Discount */}
+                <div className="col-md-6">
+                    <div className="card mb-4">
+                        <div className="card-body">
+                            <h5 className="card-title">Selected Services</h5>
+                            {services?.length > 0 ? (
+                                <ul className="list-group mb-3">
+                                    {services.map((service, index) => (
+                                        <li key={index} className="list-group-item">
+                                            {service.name} x {service.quantity}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-muted mb-3">No services selected</p>
+                            )}
+    
+                            <h5 className="card-title">Discounts</h5>
+                            {discounts.length > 0 ? (
+                            discounts.map((discount, index) => (
+                                <div className="form-check" key={index}>
+                                    <input
+                                        className="form-check-input"
+                                        type="radio"
+                                        name="flexRadioDefault"
+                                        id={discount.id}
+                                        onChange={() => handleChooseDiscount(discount)}
+                                    />
+                                    <label className="form-check-label" htmlFor={discount.id}>
+                                        {discount.name}: {discount.value}%
+                                    </label>
+                                </div>
+                            ))) : (
+                                <p className="text-muted mb-3">No discount available.</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            {/* Total Price */}
+            <div className="row">
+                <div className="col-md-6 col-12">
+                    <div className="card">
+                        <div className="card-body text-start">
+                            <h4>Total Price: {formatCurrency(totalPrice)}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            {/* User Info */}
+            <h2 className="mt-5 mb-4">User Info</h2>
+            <div className="row g-3">
+                {isAuthenticated ? (
+                    <>
+                        <div className="col-12">
+                            <p>
+                                <strong>User:</strong> {user?.name} (ID: {user?.id})
+                            </p>
+                        </div>
+                    </>
+                ) : (
+                    <div className="col">
+                        <div className="col-md-6 col-12">
+                            <label htmlFor="username" className="form-label">Username</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
+                        </div>
+                        <div className="col-md-6 col-12">
+                            <label htmlFor="phonenumber" className="form-label">Phone number</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="phonenumber"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                            />
+                        </div>
+                        <div className="col-md-6 col-12">
+                            <label htmlFor="email" className="form-label">Email</label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
 
-            <button 
-                type="button" className="btn btn-primary"
-                onClick={handlePaymentClick}
-            >Pay</button>
+                        {/* Payment Button */}
+                        <div className="text-start mt-4">
+                            <button
+                                type="button"
+                                className="btn btn-primary fs-5"
+                                onClick={handlePaymentClick}
+                            >
+                                Pay
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
-    );
+    );      
 }
 
 export default ProccedPayment;
