@@ -52,9 +52,9 @@ const ProccedPayment = () => {
         try {
             // Tạo một đối tượng chứa dữ liệu
             const bookingData = {
-                customerName: username ?? null,
-                customerPhoneNumber: phoneNumber ?? null,
-                customerEmail: email ?? null,
+                customerName: username?.trim() ? username : null,
+                customerPhoneNumber: phoneNumber?.trim() ? phoneNumber : null,
+                customerEmail: email?.trim() ? email : null,
                 checkIn: checkInDate,
                 checkOut: checkOutDate,
                 roomId: room?.id,
