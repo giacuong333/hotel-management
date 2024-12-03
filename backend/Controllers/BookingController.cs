@@ -310,20 +310,20 @@ namespace backend.Controllers
                 //Redirect(_vnpayService.CreatePaymentUrl(HttpContext, vnpayModel));
                 return Ok(_vnpayService.CreatePaymentUrl(HttpContext, vnpayModel));
 
-                var booking = request.Booking;
-                var services = request.Services;
-                var receipt = request.Receipt;
+                //var booking = request.Booking;
+                //var services = request.Services;
+                //var receipt = request.Receipt;
 
-                // Kiểm tra nếu booking null
-                if (booking == null)
-                {
-                    return BadRequest("Booking information is missing.");
-                }
+                //// Kiểm tra nếu booking null
+                //if (booking == null)
+                //{
+                //    return BadRequest("Booking information is missing.");
+                //}
 
-                // Gọi phương thức xử lý logic để tạo booking
-                await _bookingService.CreateBookingAsync(booking, services, receipt);
+                //// Gọi phương thức xử lý logic để tạo booking
+                //await _bookingService.CreateBookingAsync(booking, services, receipt);
 
-                return StatusCode(200, new { message = "Booking created successfully", booking });
+                //return StatusCode(200, new { message = "Booking created successfully", booking });
             }
             catch (Exception ex)
             {
@@ -339,18 +339,6 @@ namespace backend.Controllers
             public BookingModel Booking { get; set; }
             public ServiceUsageModel[] Services { get; set; }
             public ReceiptModel Receipt { get; set; }
-        }
-
-        [Authorize]
-        public IActionResult PaymentFail()
-        {
-            return null;
-        }
-
-        [Authorize]
-        public IActionResult PaymentSuccess()
-        {
-            return null;
         }
 
         [HttpGet("proceed-payment/payment-callback")]

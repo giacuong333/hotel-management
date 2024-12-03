@@ -69,8 +69,8 @@ const ProccedPayment = () => {
             }));
 
             const receiptData = {
-                total: applyDiscount(selectedDiscount.value),
-                discountId: selectedDiscount.id
+                total: selectedDiscount ? applyDiscount(selectedDiscount.value) : totalPrice,
+                discountId: selectedDiscount?.id ?? null
             }
     
             // Gửi request đến API bằng Axios
@@ -86,7 +86,7 @@ const ProccedPayment = () => {
     
             if (response.status === 200) {
                 window.location.href = response.data;
-                } else {
+            } else {
                 alert("Failed to create booking." + response.status);
             }
         } catch (error) {
