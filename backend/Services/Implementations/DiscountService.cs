@@ -45,8 +45,8 @@ public class DiscountService(IUnitOfWork unitOfWork) : IDiscountService{
         await _unitOfWork.CompleteAsync();
     }
 
-    public async Task<IEnumerable<DiscountModel>> GetListActiveDiscounts()
-    {
-        return await _unitOfWork.Discounts.GetListActiveDiscounts();
-    }
+    // public async Task<IEnumerable<DiscountModel>> GetListActiveDiscounts()
+    // {
+    //     return await _unitOfWork.Discounts.GetListActiveDiscounts();
+    // }
 }

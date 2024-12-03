@@ -33,7 +33,7 @@ namespace backend.Controllers
             }
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<FeedBackModel>> GetFeedBack(int id)
+        public async Task<ActionResult<object>> GetFeedBack(int id)
         {
             try
             {
@@ -59,7 +59,8 @@ namespace backend.Controllers
             try
             {
                 var feedback = await _feedBackService.DeleteFeedBack(id);
-                return Ok(feedback);
+               return Ok(new { message = "Feedbacks deleted successfully"});
+
             }
             catch (Exception e)
             {

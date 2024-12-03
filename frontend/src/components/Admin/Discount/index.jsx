@@ -204,7 +204,7 @@ const Discount = () => {
             } else if (error?.response?.status === 401) {
                 showToast('You need to log in', 'error');
             } else {
-                showToast(error?.response?.data?.message || 'Error deleting Discount', 'error');
+                showToast(error?.response?.data?.message || '  Discount used', 'error');
             }
         } finally {
             reset();
@@ -227,7 +227,7 @@ const Discount = () => {
                     reset();
                 }
             } catch (error) {
-                showToast(error?.response?.data?.message || 'Error deleting Discount', 'error');
+                showToast(error?.response?.data?.message || 'One Or More Discount used', 'error');
             } finally {
                 setPendingDelete(false);
             }

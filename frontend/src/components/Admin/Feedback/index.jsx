@@ -68,7 +68,7 @@ const Feedback = () => {
 
                 const url = 'http://localhost:5058/feedback';
                 const response = await axios.delete(url, { data: payload });
-
+                console.log("response delete all:",response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     setFeedbacks((prev) => prev.filter((feedback) => !payload.includes(feedback.id)));
@@ -175,6 +175,7 @@ const Feedback = () => {
     const deleteFeedback = async (payload) => {
         try {
             const response = await axios.delete(`http://localhost:5058/feedback/${payload}`);
+            console.log("reponse:",response);
             if (response.status === 200) {
                 showToast(response?.data?.message, 'success');
                 setFeedbacks((prev) => prev.filter((feedback) => feedback.id !== payload));
