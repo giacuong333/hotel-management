@@ -52,9 +52,9 @@ const ProccedPayment = () => {
         try {
             // Tạo một đối tượng chứa dữ liệu
             const bookingData = {
-                customerName: username ?? null,
-                customerPhoneNumber: phoneNumber ?? null,
-                customerEmail: email ?? null,
+                customerName: username?.trim() ? username : null,
+                customerPhoneNumber: phoneNumber?.trim() ? phoneNumber : null,
+                customerEmail: email?.trim() ? email : null,
                 checkIn: checkInDate,
                 checkOut: checkOutDate,
                 roomId: room?.id,
@@ -69,9 +69,13 @@ const ProccedPayment = () => {
             }));
 
             const receiptData = {
-                total: applyDiscount(selectedDiscount.value),
-                discountId: selectedDiscount.id
+                total: selectedDiscount ? applyDiscount(selectedDiscount.value) : totalPrice,
+                discountId: selectedDiscount?.id ?? null
             }
+
+            sessionStorage.setItem("bookingData", JSON.stringify(bookingData));
+            sessionStorage.setItem("servicesData", JSON.stringify(servicesData));
+            sessionStorage.setItem("receiptData", JSON.stringify(receiptData));
     
             // Gửi request đến API bằng Axios
             const response = await axios.post('http://localhost:5058/booking', {
@@ -86,7 +90,7 @@ const ProccedPayment = () => {
     
             if (response.status === 200) {
                 window.location.href = response.data;
-                } else {
+            } else {
                 alert("Failed to create booking." + response.status);
             }
         } catch (error) {
@@ -130,7 +134,7 @@ const ProccedPayment = () => {
             <h3>Discount</h3>
             <div>
                 {discounts.map((discount, index) => (
-                    <div className="form-check">
+                    <div className="form-check" key={index}>
                         <input className="form-check-input" type="radio" name="flexRadioDefault" id={discount.id} onChange={()=>handleChooseDiscount(discount)}/>
                         <label className="form-check-label" for={discount.id}>
                             {discount.name}: {discount.value}%

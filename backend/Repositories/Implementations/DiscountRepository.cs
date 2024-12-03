@@ -57,4 +57,10 @@ public class DiscountRepository(DatabaseContext context) : GenericRepository<Dis
         _context.Discount.RemoveRange(discounts);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<IEnumerable<DiscountModel>> GetListActiveDiscounts()
+    { 
+        var now = DateTime.Today;
+        return await _context.Discount.Where(d => d.Status == true && d.EndAt >= now && d.StartAt < now).ToListAsync();
+    }
 }
