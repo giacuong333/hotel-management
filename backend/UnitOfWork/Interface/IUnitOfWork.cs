@@ -12,7 +12,6 @@ public interface IUnitOfWork : IDisposable
     IServiceUsageRepository ServicesUsage { get; }
     IReviewRepository Reviews { get; }
     IReceiptRepository Receipts { get; }
-    IAdditionalFeeRepository AdditionalFees { get; }
     IRoleRepository Roles { get; }
     IRolePermissionRepository RolePermissions { get; }
     IDashboardRepository Dashboards { get; }

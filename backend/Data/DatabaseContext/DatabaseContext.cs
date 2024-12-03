@@ -21,7 +21,6 @@ namespace backend.Database
         public DbSet<RolepermissionModel> Rolepermission { get; set; }
         public DbSet<ServiceModel> Service { get; set; }
         public DbSet<ServiceUsageModel> ServiceUsage { get; set; }
-        public DbSet<AdditionalFeeModel> AdditionalFee { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -103,13 +102,6 @@ namespace backend.Database
                 .WithMany() // One discount can be applied to many receipts
                 .HasForeignKey(r => r.DiscountId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // AdditionalFee - Receipt
-            modelBuilder.Entity<AdditionalFeeModel>()
-                .HasOne(af => af.Receipt)  // Each additional fee is tied to a receipt
-                .WithMany(r => r.AdditionalFees) // Receipt has many additional fees
-                .HasForeignKey(af => af.ReceiptId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // ServiceUsage - Booking
             modelBuilder.Entity<ServiceUsageModel>()

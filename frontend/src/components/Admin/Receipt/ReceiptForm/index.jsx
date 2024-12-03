@@ -89,27 +89,9 @@ const servicesUsedColumns = [
     },
 ];
 
-const additionalFeesColumns = [
-    {
-        name: 'ID',
-        selector: (row) => row.id,
-        center: true,
-    },
-    {
-        name: 'Name',
-        selector: (row) => row.name,
-    },
-    {
-        name: 'Price',
-        selector: (row) => row.formattedPrice,
-    },
-];
-
 const ReceiptForm = ({ data, onClose, isShowed }) => {
     const [servicesData, setServicesData] = useState([]);
     const [totalServicesUsed, setTotalServicesUsed] = useState(null);
-    const [additionalFees, setAdditionalFees] = useState([]);
-    const [totalAdditionalFees, setTotalAdditionalFees] = useState(null);
     const [differenceDate, setDifferenceData] = useState(null);
     const [subTotal, setSubTotal] = useState(null);
     const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(null);
@@ -123,17 +105,6 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
         });
         setTotalServicesUsed(totalOfServices);
         setServicesData(servicesData);
-    }, [data]);
-
-    // Additional Fees
-    useEffect(() => {
-        let totalOfFees = 0;
-        const additionalFees = data?.additionalFees?.$values.map((s) => {
-            totalOfFees += s?.price;
-            return { ...s, formattedPrice: formatCurrency(s?.price) };
-        });
-        setTotalAdditionalFees(totalOfFees);
-        setAdditionalFees(additionalFees);
     }, [data]);
 
     // Calculate stayed dates
@@ -211,9 +182,7 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Email:</p>
-                                        <small className="text-capitalize text-secondary">
-                                            {data?.booking?.customer?.email}
-                                        </small>
+                                        <small className="text-secondary">{data?.booking?.customer?.email}</small>
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Phone:</p>
@@ -273,15 +242,6 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
                                     customStyles={customStyles}
                                 />
                             </div>
-                            <div className="pt-2 d-flex flex-column gap-2">
-                                <h5 className="m-0">Additional Fees</h5>
-                                <DataTable
-                                    pagination
-                                    columns={additionalFeesColumns}
-                                    data={additionalFees}
-                                    customStyles={customStyles}
-                                />
-                            </div>
 
                             <div className="d-flex align-items-start justify-content-end pt-4">
                                 <div className="d-flex flex-column align-items-end gap-2">
@@ -294,14 +254,8 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
                                         <p>{formatCurrency(subTotalWithDiscount)}</p>
                                     </span>
                                     <span className="d-flex align-items-center justify-content-between gap-5">
-                                        <p>Additional Fees</p>
-                                        <p>{formatCurrency(totalAdditionalFees)}</p>
-                                    </span>
-                                    <span className="d-flex align-items-center justify-content-between gap-5">
                                         <h6 className="fw-bold">Total</h6>
-                                        <h6 className="fw-bold">
-                                            {formatCurrency(totalAdditionalFees + subTotalWithDiscount)}
-                                        </h6>
+                                        <h6 className="fw-bold">{formatCurrency(subTotalWithDiscount)}</h6>
                                     </span>
                                 </div>
                             </div>

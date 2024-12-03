@@ -22,6 +22,10 @@ const Booking = ({ booking }) => {
                         <small className="text-secondary">Check-in</small>
                         <p className="fw-semibold">{formatDate(booking.checkIn)}</p>
                     </span>
+                    <span className="d-flex flex-column gap-1">
+                        <small className="text-secondary">Check-out</small>
+                        <p className="fw-semibold">{formatDate(booking.checkOut)}</p>
+                    </span>
                 </div>
                 <div className="d-flex flex-column align-items-lg-end align-items-start gap-1">
                     <p className="fw-semibold">Booking #{booking.id}</p>
@@ -49,6 +53,7 @@ const Booking = ({ booking }) => {
                     <button
                         className="text-white p-2 px-3 rounded-3 border d-flex align-items-center gap-2 svg-rotate-half-circle"
                         style={{ backgroundColor: '#35776d' }}
+                        onClick={() => navigate(`/room/${booking?.room?.id}`)}
                     >
                         <TfiReload size={14} className="icon" />
                         <span>Book it again</span>

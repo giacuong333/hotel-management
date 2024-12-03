@@ -14,5 +14,4 @@ public class ReceiptModel
 
     public virtual BookingModel? Booking { get; set; }
     public virtual DiscountModel? Discount { get; set; }
-    public virtual IEnumerable<AdditionalFeeModel>? AdditionalFees { get; set; }
 }

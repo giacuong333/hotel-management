@@ -4,6 +4,3 @@ backend.csproj
 backend.csproj.user
 bin/
 obj/
-RegisterServices.cs
-Program.cs
-Startup.cs

@@ -441,6 +441,7 @@ public static class Seed
                 {
                     Id = 5,
                     CustomerId = 2,  // Use actual ID
+                    RoomId = 11,
                     CheckIn = new DateTime(2025, 01, 25),
                     CheckOut = new DateTime(2025, 01, 30),
                     Status = 1
@@ -477,7 +478,6 @@ public static class Seed
             );
             await context.SaveChangesAsync();
         }
-
         // Seed Discounts
         if (!context.Discount.Any())
         {
@@ -518,17 +518,6 @@ public static class Seed
                 new() { Id = 2, BookingId = 2, DiscountId = 2, Total = 10800000 },
                 new() { Id = 3, BookingId = 3, DiscountId = 3, Total = 240000 },
                 new() { Id = 4, BookingId = 4, DiscountId = 1, Total = 200000 }
-            );
-            await context.SaveChangesAsync();
-        }
-
-        // Seed AdditionalFees
-        if (!context.AdditionalFee.Any())
-        {
-            context.AdditionalFee.AddRange(
-                new AdditionalFeeModel { Id = 1, ReceiptId = 1, Name = "Renting Cars", Price = 300000 },
-                new AdditionalFeeModel { Id = 2, ReceiptId = 1, Name = "Renting Shoes", Price = 100000 },
-                new AdditionalFeeModel { Id = 3, ReceiptId = 1, Name = "5 bottles water", Price = 50000 }
             );
             await context.SaveChangesAsync();
         }

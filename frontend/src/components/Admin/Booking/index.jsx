@@ -214,16 +214,16 @@ const Booking = () => {
 
     const handleStatusChange = async (bookingId, statusCode) => {
         try {
-            const url = 'http://localhost:5058/booking/status';
+            const url = `http://localhost:5058/booking/status/${bookingId}`;
             const headers = { headers: { 'Content-Type': 'application/json' } };
-            const response = await axios.put(`${url}/${bookingId}`, statusCode, headers);
+            const response = await axios.put(url, statusCode, headers);
             if (response?.status === 200) {
                 await fetchBookings();
                 hideContext();
             }
         } catch (error) {
             showToast(
-                error?.repsonse?.data || error?.repsonse?.message || 'Something went wrong while changing status',
+                error?.response?.data || error?.response?.message || 'Something went wrong while changing status',
                 'error',
             );
             console.log(error);

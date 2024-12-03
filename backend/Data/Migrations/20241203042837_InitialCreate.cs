@@ -374,34 +374,6 @@ namespace backend.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.CreateTable(
-                name: "AdditionalFee",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ReceiptId = table.Column<int>(type: "int", nullable: true),
-                    Name = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Price = table.Column<float>(type: "float", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdditionalFee", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AdditionalFee_Receipt_ReceiptId",
-                        column: x => x.ReceiptId,
-                        principalTable: "Receipt",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdditionalFee_ReceiptId",
-                table: "AdditionalFee",
-                column: "ReceiptId");
-
             migrationBuilder.CreateIndex(
                 name: "IX_Booking_CustomerId",
                 table: "Booking",
@@ -483,13 +455,13 @@ namespace backend.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AdditionalFee");
-
-            migrationBuilder.DropTable(
                 name: "Feedback");
 
             migrationBuilder.DropTable(
                 name: "Gallery");
+
+            migrationBuilder.DropTable(
+                name: "Receipt");
 
             migrationBuilder.DropTable(
                 name: "Review");
@@ -501,19 +473,16 @@ namespace backend.Migrations
                 name: "ServiceUsage");
 
             migrationBuilder.DropTable(
-                name: "Receipt");
+                name: "Discount");
 
             migrationBuilder.DropTable(
                 name: "Permission");
 
             migrationBuilder.DropTable(
-                name: "Service");
-
-            migrationBuilder.DropTable(
                 name: "Booking");
 
             migrationBuilder.DropTable(
-                name: "Discount");
+                name: "Service");
 
             migrationBuilder.DropTable(
                 name: "Room");

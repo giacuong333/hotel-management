@@ -53,12 +53,6 @@ namespace Repositories.Implementations
                         r.Discount.Name,
                         r.Discount.Value
                     },
-                    AdditionalFees = r.AdditionalFees!.Select(af => new
-                    {
-                        af.Id,
-                        af.Name,
-                        af.Price,
-                    }).ToList()
                 }).Where(r => r.DeletedAt == null).ToListAsync();
 
             return receipts;
@@ -116,12 +110,6 @@ namespace Repositories.Implementations
                         r.Discount.Name,
                         r.Discount.Value
                     },
-                    AdditionalFees = r.AdditionalFees!.Select(af => new
-                    {
-                        af.Id,
-                        af.Name,
-                        af.Price,
-                    }).ToList()
                 }).Where(r => r.DeletedAt == null && r.Id == receiptId).FirstOrDefaultAsync();
 
             return receipts;
@@ -202,12 +190,6 @@ namespace Repositories.Implementations
                         r.Discount.Name,
                         r.Discount.Value
                     },
-                    AdditionalFees = r.AdditionalFees!.Select(af => new
-                    {
-                        af.Id,
-                        af.Name,
-                        af.Price,
-                    }).ToList()
                 }).FirstOrDefaultAsync();
 
             return receipts;
