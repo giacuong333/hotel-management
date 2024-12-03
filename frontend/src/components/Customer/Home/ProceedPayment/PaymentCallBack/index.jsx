@@ -9,6 +9,7 @@ const PaymentCallback = () => {
     const fetchCallback = async () => {
         try {
             const queryParams = new URLSearchParams(window.location.search); // Lấy query params từ URL
+            
             const bookingData = JSON.parse(sessionStorage.getItem("bookingData"));
             const servicesData = JSON.parse(sessionStorage.getItem("servicesData"));
             const receiptData = JSON.parse(sessionStorage.getItem("receiptData"));
@@ -55,23 +56,31 @@ const PaymentCallback = () => {
     },[])
     
 
-    if (loading) return <p>Đang xử lý kết quả thanh toán...</p>;
+    if (loading) {
+        return (
+            <div className="d-flex justify-content-center align-items-center min-vh-100">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Processing payment results...</span>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div>
+        <div className="d-flex justify-content-center align-items-center min-vh-100">
             {status === "success" ? (
-                <div style={{ color: "green" }}>
-                    <h1>Thanh toán thành công!</h1>
+                <div className="alert alert-success" style={{ width: "80%", maxWidth: "600px" }}>
+                    <h1 className="text-center">Payment successful!</h1>
                     <p>{message}</p>
                 </div>
             ) : (
-                <div style={{ color: "red" }}>
-                    <h1>Thanh toán thất bại</h1>
+                <div className="alert alert-danger" style={{ width: "80%", maxWidth: "600px" }}>
+                    <h1 className="text-center">Payment failed!</h1>
                     <p>{message}</p>
                 </div>
             )}
         </div>
-    );
+    );    
 };
 
 export default PaymentCallback;
