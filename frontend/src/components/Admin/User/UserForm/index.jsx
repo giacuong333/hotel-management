@@ -151,19 +151,21 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
 
     return (
         <>
+            {/* Toast */}
             {ToastContainer}
+
+            {/* Overlay */}
             <Overlay isShow={isShowed} onClose={handleClose} />
+
+            {/* Form */}
             <div
                 style={{
-                    width: '500px',
+                    maxWidth: '600px',
+                    width: '90%',
                     height: '550px',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: 20,
-                    transform: 'translate(-50%, -50%)',
                     padding: '0 1rem',
                 }}
+                className={`confirm-popup ${isShowed ? 'show' : 'hide'}`}
             >
                 <form
                     className="w-full h-full"
@@ -335,7 +337,7 @@ const UserForm = ({ data, type, onClose, onUserAdded, onUserUpdated, isShowed })
                                 customParentParentInputStyle="mt-2"
                             />
                         )}
-                        {type !== 'see' && (
+                        {(type === 'add' || type === 'edit') && (
                             <div className="d-flex align-items-center gap-2 mt-4">
                                 <Button
                                     type="submit"

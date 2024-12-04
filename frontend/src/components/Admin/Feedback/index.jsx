@@ -68,7 +68,7 @@ const Feedback = () => {
 
                 const url = 'http://localhost:5058/feedback';
                 const response = await axios.delete(url, { data: payload });
-                console.log("response delete all:",response);
+                console.log('response delete all:', response);
                 if (response?.status === 200) {
                     showToast(response?.data?.message, 'success');
                     setFeedbacks((prev) => prev.filter((feedback) => !payload.includes(feedback.id)));
@@ -175,7 +175,7 @@ const Feedback = () => {
     const deleteFeedback = async (payload) => {
         try {
             const response = await axios.delete(`http://localhost:5058/feedback/${payload}`);
-            console.log("reponse:",response);
+            console.log('reponse:', response);
             if (response.status === 200) {
                 showToast(response?.data?.message, 'success');
                 setFeedbacks((prev) => prev.filter((feedback) => feedback.id !== payload));
@@ -235,54 +235,48 @@ const Feedback = () => {
             />
             {/* Show a toast */}
             {ToastContainer}
-            {showPanel === 'see' && (
-                <FeedBackForm
-                    data={selectedFeedback}
-                    type={showPanel}
-                    isShowed={showPanel}
-                    onClose={() => setShowPanel('')}
-                />
-            )}
+            <FeedBackForm
+                data={selectedFeedback}
+                type={showPanel}
+                isShowed={showPanel}
+                onClose={() => setShowPanel('')}
+            />
 
-            {showDeleteAllConfirm && (
-                <ConfirmPopup
-                    header="Are you sure you want to delete all the selected Feedbacks?"
-                    message="This action cannot be undone."
-                    negativeChoice="Cancel"
-                    positiveChoice={
-                        pendingDelete ? (
-                            <RotatingLines
-                                visible={true}
-                                height="22"
-                                width="22"
-                                strokeColor="#ffffff"
-                                strokeWidth="5"
-                                animationDuration="0.75"
-                                ariaLabel="rotating-lines-loading"
-                                wrapperStyle={{}}
-                                wrapperClass=""
-                            />
-                        ) : (
-                            'Delete'
-                        )
-                    }
-                    isShow={showDeleteAllConfirm}
-                    onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                    onClose={() => setShowDeleteAllConfirm(false)}
-                />
-            )}
+            <ConfirmPopup
+                header="Are you sure you want to delete all the selected Feedbacks?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice={
+                    pendingDelete ? (
+                        <RotatingLines
+                            visible={true}
+                            height="22"
+                            width="22"
+                            strokeColor="#ffffff"
+                            strokeWidth="5"
+                            animationDuration="0.75"
+                            ariaLabel="rotating-lines-loading"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                        />
+                    ) : (
+                        'Delete'
+                    )
+                }
+                isShow={showDeleteAllConfirm}
+                onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                onClose={() => setShowDeleteAllConfirm(false)}
+            />
             {/* Show confirmation when clicking on delete a user*/}
-            {showDeleteConfirm && (
-                <ConfirmPopup
-                    header="Are you sure you want to delete the selected Feedback?"
-                    message="This action cannot be undone."
-                    negativeChoice="Cancel"
-                    positiveChoice="Delete"
-                    isShow={showDeleteConfirm}
-                    onYes={handleDeleteConfirm}
-                    onClose={reset}
-                />
-            )}
+            <ConfirmPopup
+                header="Are you sure you want to delete the selected Feedback?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice="Delete"
+                isShow={showDeleteConfirm}
+                onYes={handleDeleteConfirm}
+                onClose={reset}
+            />
         </div>
     );
 };

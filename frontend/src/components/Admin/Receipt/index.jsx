@@ -248,51 +248,45 @@ const Receipt = () => {
             {ToastContainer}
 
             {/* Receipt Form */}
-            {showPanel && (
-                <ReceiptForm data={selectedReceipt} isShowed={showPanel} onClose={() => setShowPanel(false)} />
-            )}
+            <ReceiptForm data={selectedReceipt} isShowed={showPanel} onClose={() => setShowPanel(false)} />
 
             {/* Show confirmation when clicking on delete receipts */}
-            {showDeleteAllConfirm && (
-                <ConfirmPopup
-                    header="Are you sure you want to delete all the selected Receipts?"
-                    message="This action cannot be undone."
-                    negativeChoice="Cancel"
-                    positiveChoice={
-                        pendingDelete ? (
-                            <RotatingLines
-                                visible={true}
-                                height="22"
-                                width="22"
-                                strokeColor="#ffffff"
-                                strokeWidth="5"
-                                animationDuration="0.75"
-                                ariaLabel="rotating-lines-loading"
-                                wrapperStyle={{}}
-                                wrapperClass=""
-                            />
-                        ) : (
-                            'Delete'
-                        )
-                    }
-                    isShow={showDeleteAllConfirm}
-                    onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                    onClose={() => setShowDeleteAllConfirm(false)}
-                />
-            )}
+            <ConfirmPopup
+                header="Are you sure you want to delete all the selected Receipts?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice={
+                    pendingDelete ? (
+                        <RotatingLines
+                            visible={true}
+                            height="22"
+                            width="22"
+                            strokeColor="#ffffff"
+                            strokeWidth="5"
+                            animationDuration="0.75"
+                            ariaLabel="rotating-lines-loading"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                        />
+                    ) : (
+                        'Delete'
+                    )
+                }
+                isShow={showDeleteAllConfirm}
+                onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                onClose={() => setShowDeleteAllConfirm(false)}
+            />
 
             {/* Show confirmation when clicking on delete a receipt*/}
-            {showDeleteConfirm && (
-                <ConfirmPopup
-                    header="Are you sure you want to delete the selected Receipt?"
-                    message="This action cannot be undone."
-                    negativeChoice="Cancel"
-                    positiveChoice="Delete"
-                    isShow={showDeleteConfirm}
-                    onYes={handleDeleteConfirm}
-                    onClose={reset}
-                />
-            )}
+            <ConfirmPopup
+                header="Are you sure you want to delete the selected Receipt?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice="Delete"
+                isShow={showDeleteConfirm}
+                onYes={handleDeleteConfirm}
+                onClose={reset}
+            />
         </div>
     );
 };

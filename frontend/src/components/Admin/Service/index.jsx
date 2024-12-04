@@ -267,38 +267,32 @@ const Service = () => {
                 />
                 <>
                     {ToastContainer}
-                    {showPanel && (
-                        <PopupPanel
-                            data={selectedService}
-                            type={showPanel}
-                            onClose={() => setShowPanel(false)}
-                            isShowed={showPanel}
-                            onServiceAdded={handleServiceAdded}
-                            onServiceUpdated={handleServiceUpdated}
-                        />
-                    )}
-                    {showDeleteAllConfirm && (
-                        <ConfirmPopup
-                            header="Are you sure you want to delete all the selected reviews?"
-                            message="This action cannot be undone."
-                            negativeChoice="Cancel"
-                            positiveChoice="Delete"
-                            isShow={showDeleteAllConfirm}
-                            onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                            onClose={() => setShowDeleteAllConfirm(false)}
-                        />
-                    )}
-                    {showDeleteConfirm && (
-                        <ConfirmPopup
-                            header="Are you sure you want to delete the selected Service?"
-                            message="This action cannot be undone."
-                            negativeChoice="Cancel"
-                            positiveChoice="Delete"
-                            isShow={showDeleteConfirm}
-                            onYes={() => deleteService_del(deleteOne)}
-                            onClose={reset}
-                        />
-                    )}
+                    <PopupPanel
+                        data={selectedService}
+                        type={showPanel}
+                        onClose={() => setShowPanel('')}
+                        isShowed={showPanel}
+                        onServiceAdded={handleServiceAdded}
+                        onServiceUpdated={handleServiceUpdated}
+                    />
+                    <ConfirmPopup
+                        header="Are you sure you want to delete all the selected reviews?"
+                        message="This action cannot be undone."
+                        negativeChoice="Cancel"
+                        positiveChoice="Delete"
+                        isShow={showDeleteAllConfirm}
+                        onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                        onClose={() => setShowDeleteAllConfirm(false)}
+                    />
+                    <ConfirmPopup
+                        header="Are you sure you want to delete the selected Service?"
+                        message="This action cannot be undone."
+                        negativeChoice="Cancel"
+                        positiveChoice="Delete"
+                        isShow={showDeleteConfirm}
+                        onYes={() => deleteService_del(deleteOne)}
+                        onClose={reset}
+                    />
                 </>
             </>
         </div>

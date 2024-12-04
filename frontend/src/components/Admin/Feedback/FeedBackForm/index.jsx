@@ -10,7 +10,7 @@ import { isEmpty } from '~/utils/formValidation';
 import { FaRegUser } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 
-const FeedBackForm = ({ data, type, onClose,isShowed }) => {
+const FeedBackForm = ({ data, type, onClose, isShowed }) => {
     const [fields, setFields] = useState({
         userName: data?.userName || '',
         roomName: data?.roomName || '',
@@ -18,7 +18,7 @@ const FeedBackForm = ({ data, type, onClose,isShowed }) => {
         creatAt: data?.createdAt || '',
     });
 
-    console.log("Data", data)
+    console.log('Data', data);
 
     // Reset form fields whenever `type` or `data` changes
     useEffect(() => {
@@ -46,15 +46,12 @@ const FeedBackForm = ({ data, type, onClose,isShowed }) => {
             <Overlay isShow={isShowed} onClose={handleClose} />
             <div
                 style={{
-                    width: '500px',
+                    maxWidth: '600px',
+                    width: '90%',
                     height: '550px',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: 20,
-                    transform: 'translate(-50%, -50%)',
                     padding: '0 1rem',
                 }}
+                className={`confirm-popup ${isShowed ? 'show' : 'hide'}`}
             >
                 <form
                     className="w-full h-full"
@@ -117,17 +114,6 @@ const FeedBackForm = ({ data, type, onClose,isShowed }) => {
                             customParentInputStyle="p-1 pe-3 rounded-2"
                             customParentParentInputStyle="mt-2"
                         />
-
-                        <div className="d-flex align-items-center gap-2 mt-4">
-                            <Button
-                                type="submit"
-                                variant="outline-secondary"
-                                className={`w-full p-2 primary-bg-color primary-bg-color-hover border`}
-                                onClick={handleClose}
-                            >
-                                Cancel
-                            </Button>
-                        </div>
                     </div>
                 </form>
             </div>

@@ -326,91 +326,83 @@ const User = () => {
                     onChange={(e) => setSearchInput(e.target.value)}
                 />
             </div>
-            <>
-                <DataTable
-                    columns={columns}
-                    data={data}
-                    selectableRows
-                    pointerOnHover
-                    striped
-                    highlightOnHover
-                    pagination
-                    sortIcon={<FaSortAlphaDownAlt />}
-                    onRowClicked={handleRowClicked}
-                    onSelectedRowsChange={handleSelectedRowsChanged}
-                    progressPending={pending}
-                    clearSelectedRows={clearSelectedRows}
-                    progressComponent={
+            <DataTable
+                columns={columns}
+                data={data}
+                selectableRows
+                pointerOnHover
+                striped
+                highlightOnHover
+                pagination
+                sortIcon={<FaSortAlphaDownAlt />}
+                onRowClicked={handleRowClicked}
+                onSelectedRowsChange={handleSelectedRowsChanged}
+                progressPending={pending}
+                clearSelectedRows={clearSelectedRows}
+                progressComponent={
+                    <RotatingLines
+                        visible={true}
+                        height="50"
+                        width="50"
+                        strokeColor="#e8bf96"
+                        strokeWidth="5"
+                        animationDuration="0.75"
+                        ariaLabel="rotating-lines-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                    />
+                }
+            />
+            {/* Show a toast */}
+            {ToastContainer}
+
+            {/* Show Form */}
+            <UserForm
+                data={selectedUser}
+                type={showPanel}
+                isShowed={showPanel}
+                onClose={() => setShowPanel('')}
+                onUserAdded={handleUserAdded}
+                onUserUpdated={handleUserUpdated}
+            />
+
+            {/* Show confirmation when clicking on delete all users */}
+            <ConfirmPopup
+                header="Are you sure you want to delete all the selected users?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice={
+                    pendingDelete ? (
                         <RotatingLines
                             visible={true}
-                            height="50"
-                            width="50"
-                            strokeColor="#e8bf96"
+                            height="22"
+                            width="22"
+                            strokeColor="#ffffff"
                             strokeWidth="5"
                             animationDuration="0.75"
                             ariaLabel="rotating-lines-loading"
                             wrapperStyle={{}}
                             wrapperClass=""
                         />
-                    }
-                />
-                {/* Show a toast */}
-                {ToastContainer}
+                    ) : (
+                        'Delete'
+                    )
+                }
+                isShow={showDeleteAllConfirm}
+                onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                onClose={reset}
+            />
 
-                {/* Show Form */}
-                {showPanel && (
-                    <UserForm
-                        data={selectedUser}
-                        type={showPanel}
-                        isShowed={showPanel}
-                        onClose={() => setShowPanel(false)}
-                        onUserAdded={handleUserAdded}
-                        onUserUpdated={handleUserUpdated}
-                    />
-                )}
-
-                {/* Show confirmation when clicking on delete all users */}
-                {showDeleteAllConfirm && (
-                    <ConfirmPopup
-                        header="Are you sure you want to delete all the selected users?"
-                        message="This action cannot be undone."
-                        negativeChoice="Cancel"
-                        positiveChoice={
-                            pendingDelete ? (
-                                <RotatingLines
-                                    visible={true}
-                                    height="22"
-                                    width="22"
-                                    strokeColor="#ffffff"
-                                    strokeWidth="5"
-                                    animationDuration="0.75"
-                                    ariaLabel="rotating-lines-loading"
-                                    wrapperStyle={{}}
-                                    wrapperClass=""
-                                />
-                            ) : (
-                                'Delete'
-                            )
-                        }
-                        isShow={showDeleteAllConfirm}
-                        onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                        onClose={reset}
-                    />
-                )}
-
-                {/* Show confirmation when clicking on delete a user*/}
-                {showDeleteConfirm && (
-                    <ConfirmPopup
-                        header="Are you sure you want to delete the selected user?"
-                        message="This action cannot be undone."
-                        negativeChoice="Cancel"
-                        positiveChoice="Delete"
-                        isShow={showDeleteConfirm}
-                        onYes={() => deleteUser(deleteOne.payload)}
-                        onClose={reset}
-                    />
-                )}
-            </>
+            {/* Show confirmation when clicking on delete a user*/}
+            <ConfirmPopup
+                header="Are you sure you want to delete the selected user?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice="Delete"
+                isShow={showDeleteConfirm}
+                onYes={() => deleteUser(deleteOne.payload)}
+                onClose={reset}
+            />
         </div>
     );
 };

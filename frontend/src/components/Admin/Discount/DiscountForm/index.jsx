@@ -10,19 +10,18 @@ import { isEmpty, isOverOneHundreds, isValidDiscountDate } from '~/utils/formVal
 import { FaRegUser } from 'react-icons/fa6';
 import { IoClose } from 'react-icons/io5';
 
-
 const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated, isShowed }) => {
     const [pendingSubmit, setPendingSubmit] = useState(false);
-    console.log('Data', data)
+    console.log('Data', data);
     const [fields, setFields] = useState({
         name: data?.name || '',
         value: data?.value || '',
         status: data?.status || '',
-        startAt: data?.startAt ? new Date(data?.startAt) : "",
+        startAt: data?.startAt ? new Date(data?.startAt) : '',
         endAt: data?.endAt ? new Date(data?.endAt) : '',
     });
 
-    console.log("Payload", fields)
+    console.log('Payload', fields);
 
     const [errors, setErrors] = useState({});
 
@@ -48,7 +47,8 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
         if (isNaN(fields.status)) validationErrors.status = 'status is required';
         if (isEmpty(fields.startAt)) validationErrors.startAt = 'Start At is required';
         if (isEmpty(fields.endAt)) validationErrors.endAt = 'End At is required';
-        else if (!isValidDiscountDate(fields.startAt, fields.endAt)) validationErrors.endAt = 'End date must be greater than Start date';
+        else if (!isValidDiscountDate(fields.startAt, fields.endAt))
+            validationErrors.endAt = 'End date must be greater than Start date';
 
         setErrors(validationErrors);
 
@@ -62,10 +62,9 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
                 ...fields,
                 startAt: fields.startAt ? new Date(fields.startAt).toISOString().split('.')[0] : null,
                 endAt: fields.endAt ? new Date(fields.endAt).toISOString().split('.')[0] : null,
-
             };
             const url = 'http://localhost:5058/discount';
-           
+
             try {
                 setPendingSubmit(true);
                 if (type === 'add') {
@@ -77,19 +76,18 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
                         const newDiscount = response?.data;
                         onDiscountAdded(newDiscount);
                     }
-                } else if (type === 'edit' ) {
+                } else if (type === 'edit') {
                     const response = await axios.put(`${url}/${data?.id}`, payload);
-                     console.log(response);
-                     console.log(data?.status);
+                    console.log(response);
+                    console.log(data?.status);
                     if (response?.status === 200) {
                         showToast('Discount updated successfully', 'success');
                         setTimeout(handleClose, 2000);
-                        const  currentDiscount  = response?.data;
+                        const currentDiscount = response?.data;
                         onDiscountUpdated(currentDiscount);
                     }
-                
                 }
-            }catch (error) {
+            } catch (error) {
                 if (error?.response?.status === 409) {
                     showToast(error?.response?.data?.message, 'error');
                 } else {
@@ -141,15 +139,12 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
             <Overlay isShow={isShowed} onClose={handleClose} />
             <div
                 style={{
-                    width: '500px',
+                    maxWidth: '600px',
+                    width: '90%',
                     height: '550px',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: 20,
-                    transform: 'translate(-50%, -50%)',
                     padding: '0 1rem',
                 }}
+                className={`confirm-popup ${isShowed ? 'show' : 'hide'}`}
             >
                 <form
                     className="w-full h-full"
@@ -244,7 +239,7 @@ const DiscountForm = ({ data, type, onClose, onDiscountAdded, onDiscountUpdated,
                             }}
                             onInput={handleFieldInput('endAt')}
                         />
-                        {type !== 'see' && (
+                        {(type === 'add' || type === 'edit') && (
                             <div className="d-flex align-items-center gap-2 mt-4">
                                 <Button
                                     type="submit"

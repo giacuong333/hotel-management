@@ -5,7 +5,6 @@ import DataTable from 'react-data-table-component';
 
 import { FiEdit } from 'react-icons/fi';
 import { BsTrash } from 'react-icons/bs';
-import { FaSortAlphaDownAlt } from 'react-icons/fa';
 import { IoSearchOutline } from 'react-icons/io5';
 import { FiPlus } from 'react-icons/fi';
 import DiscountForm from './DiscountForm';
@@ -13,7 +12,6 @@ import ToastContainer, { showToast } from '~/utils/showToast';
 import FormGroup from '~/components/FormGroup';
 import ConfirmPopup from '~/components/ConfirmPopup';
 
-import Button from 'react-bootstrap/Button';
 import { useCheckPermission } from '~/providers/CheckPermissionProvider';
 import { RotatingLines } from 'react-loader-spinner';
 
@@ -290,55 +288,49 @@ const Discount = () => {
             {ToastContainer}
 
             {/* Show Form */}
-            {showPanel && (
-                <DiscountForm
-                    data={selectedDiscount}
-                    type={showPanel}
-                    isShowed={showPanel}
-                    onClose={() => setShowPanel(false)}
-                    onDiscountAdded={handleDiscountAdded}
-                    onDiscountUpdated={handleDiscountUpdated}
-                />
-            )}
-            {showDeleteAllConfirm && (
-                <ConfirmPopup
-                    header="Are you sure you want to delete all the selected Discounts?"
-                    message="This action cannot be undone."
-                    negativeChoice="Cancel"
-                    positiveChoice={
-                        pendingDelete ? (
-                            <RotatingLines
-                                visible={true}
-                                height="22"
-                                width="22"
-                                strokeColor="#ffffff"
-                                strokeWidth="5"
-                                animationDuration="0.75"
-                                ariaLabel="rotating-lines-loading"
-                                wrapperStyle={{}}
-                                wrapperClass=""
-                            />
-                        ) : (
-                            'Delete'
-                        )
-                    }
-                    isShow={showDeleteAllConfirm}
-                    onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                    onClose={() => setShowDeleteAllConfirm(false)}
-                />
-            )}
+            <DiscountForm
+                data={selectedDiscount}
+                type={showPanel}
+                isShowed={showPanel}
+                onClose={() => setShowPanel(false)}
+                onDiscountAdded={handleDiscountAdded}
+                onDiscountUpdated={handleDiscountUpdated}
+            />
+            <ConfirmPopup
+                header="Are you sure you want to delete all the selected Discounts?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice={
+                    pendingDelete ? (
+                        <RotatingLines
+                            visible={true}
+                            height="22"
+                            width="22"
+                            strokeColor="#ffffff"
+                            strokeWidth="5"
+                            animationDuration="0.75"
+                            ariaLabel="rotating-lines-loading"
+                            wrapperStyle={{}}
+                            wrapperClass=""
+                        />
+                    ) : (
+                        'Delete'
+                    )
+                }
+                isShow={showDeleteAllConfirm}
+                onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                onClose={() => setShowDeleteAllConfirm(false)}
+            />
             {/* Show confirmation when clicking on delete a user*/}
-            {showDeleteConfirm && (
-                <ConfirmPopup
-                    header="Are you sure you want to delete the selected Discounts?"
-                    message="This action cannot be undone."
-                    negativeChoice="Cancel"
-                    positiveChoice="Delete"
-                    isShow={showDeleteConfirm}
-                    onYes={handleDeleteConfirm}
-                    onClose={reset}
-                />
-            )}
+            <ConfirmPopup
+                header="Are you sure you want to delete the selected Discounts?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice="Delete"
+                isShow={showDeleteConfirm}
+                onYes={handleDeleteConfirm}
+                onClose={reset}
+            />
         </div>
     );
 };

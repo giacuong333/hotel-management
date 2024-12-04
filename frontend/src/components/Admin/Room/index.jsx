@@ -376,42 +376,36 @@ const Room = () => {
                 />
 
                 {/* Show Form */}
-                {showPanel && (
-                    <RoomForm
-                        data={selectedRoom}
-                        type={showPanel}
-                        isShowed={showPanel}
-                        onClose={() => setShowPanel(false)}
-                        onRoomAdded={handleRoomAdded}
-                        onRoomUpdated={handleRoomUpdated}
-                    />
-                )}
+                <RoomForm
+                    data={selectedRoom}
+                    type={showPanel}
+                    isShowed={showPanel}
+                    onClose={() => setShowPanel(false)}
+                    onRoomAdded={handleRoomAdded}
+                    onRoomUpdated={handleRoomUpdated}
+                />
 
                 {/* Show confirmation when clicking on delete all rooms */}
-                {showDeleteAllConfirm && (
-                    <ConfirmPopup
-                        header="Are you sure you want to delete all the selected rooms?"
-                        message="This action cannot be undone."
-                        negativeChoice="Cancel"
-                        positiveChoice="Delete"
-                        isShow={showDeleteAllConfirm}
-                        onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                        onClose={() => setShowDeleteAllConfirm(false)}
-                    />
-                )}
+                <ConfirmPopup
+                    header="Are you sure you want to delete all the selected rooms?"
+                    message="This action cannot be undone."
+                    negativeChoice="Cancel"
+                    positiveChoice="Delete"
+                    isShow={showDeleteAllConfirm}
+                    onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                    onClose={() => setShowDeleteAllConfirm(false)}
+                />
 
                 {/* Show confirmation when clicking on delete a user*/}
-                {showDeleteConfirm && (
-                    <ConfirmPopup
-                        header="Are you sure you want to delete the selected user?"
-                        message="This action cannot be undone."
-                        negativeChoice="Cancel"
-                        positiveChoice="Delete"
-                        isShow={showDeleteConfirm}
-                        onYes={() => deleteRoom(deleteOne.payload)}
-                        onClose={reset}
-                    />
-                )}
+                <ConfirmPopup
+                    header="Are you sure you want to delete the selected user?"
+                    message="This action cannot be undone."
+                    negativeChoice="Cancel"
+                    positiveChoice="Delete"
+                    isShow={showDeleteConfirm}
+                    onYes={() => deleteRoom(deleteOne.payload)}
+                    onClose={reset}
+                />
             </>
         </div>
     );

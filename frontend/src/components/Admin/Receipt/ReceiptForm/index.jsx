@@ -143,17 +143,12 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
 
             <Overlay isShow={isShowed} onClose={onClose} />
             <main
-                className=""
                 style={{
                     maxWidth: '70rem',
                     width: '100%',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: 20,
-                    transform: 'translate(-50%, -50%)',
                     padding: '1.4rem 2rem 2rem 2rem',
                 }}
+                className={`confirm-popup ${isShowed ? 'show' : 'hide'}`}
             >
                 <div className="d-flex flex-column gap-4">
                     <div>
