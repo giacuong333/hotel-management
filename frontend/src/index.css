@@ -155,7 +155,7 @@ h4 {
 }
 
 .customer-primary-button {
-    background-color: var(--customer-primary-color);
+    background-color: var(--customer-primary-color) !important;
     border-color: var(--customer-primary-color) !important;
     transition: all 0.5s ease-in-out;
 
