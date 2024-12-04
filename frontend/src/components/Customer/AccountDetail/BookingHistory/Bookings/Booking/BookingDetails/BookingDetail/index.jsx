@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
+import { useParams } from 'react-router';
 import axios from 'axios';
 import formatCurrency from '~/utils/currencyPipe';
 import { formatDate } from '~/utils/formatDate';
 
 const BookingDetail = () => {
     const [booking, setBooking] = useState(null);
-    const bookingId = Number(useLocation().pathname.charAt(useLocation().pathname.length - 1));
+    const bookingId = Number(useParams()?.id);
 
+    console.log('Booking detail ID: ' + bookingId);
     console.log('Booking detail', booking);
 
     useEffect(() => {
