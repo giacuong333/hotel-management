@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Nhóm 15: Xây dựng website quản lý khách sạn.
 
 # Mục tiêu
@@ -39,28 +38,28 @@ Cài đặt:
 # Demo
 
 Admin Dashboard
-![alt text](image-2.png)
+![alt text](DemoImages/image-2.png)
 
 Statistic
-![alt text](image-3.png)
+![alt text](DemoImages/image-3.png)
 
 User Management
-![alt text](image-4.png)
+![alt text](DemoImages/image-4.png)
 
 Room Management
-![alt text](image-7.png)
+![alt text](DemoImages/image-7.png)
 
 Booking Management
-![alt text](image-8.png)
+![alt text](DemoImages/image-8.png)
 
 Home Page
-![alt text](image-5.png)
+![alt text](DemoImages/image-5.png)
 
 Room Details Page
-![alt text](image-6.png)
+![alt text](DemoImages/image-6.png)
 
 User Booking History
-![alt text](image-9.png)
+![alt text](DemoImages/image-9.png)
 
 # Thành viên
 
