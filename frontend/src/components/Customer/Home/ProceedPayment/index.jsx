@@ -13,6 +13,8 @@ import { FaRegUser } from 'react-icons/fa';
 import { FiPhone } from 'react-icons/fi';
 import { MdOutlineEmail } from 'react-icons/md';
 import { CgCloseO } from 'react-icons/cg';
+import { calculateDays, isEmail, isEmpty, isPhoneNumber } from '~/utils/formValidation';
+import { convertByteArrayToBase64 } from '~/utils/handleByteArray';
 
 const ProccedPayment = () => {
     const { user } = useUser();
@@ -23,7 +25,6 @@ const ProccedPayment = () => {
     const [email, setEmail] = useState('');
     const [discounts, setDiscounts] = useState([]);
     const [selectedDiscount, setSelectedDiscount] = useState();
-    const [fields, setFields] = useState({ username: '', email: '', phoneNumber: '' });
     const [errors, setErrors] = useState({});
 
     const location = useLocation();
@@ -35,17 +36,19 @@ const ProccedPayment = () => {
     }, []);
 
     useEffect(() => {
-        console.log('Selected discount: ', selectedDiscount);
-    }, [selectedDiscount]);
+        console.log('User: ', user);
+        if (user) {
+            setUsername(user?.name);
+            setPhoneNumber(user?.phoneNumber);
+            setEmail(user?.email);
+        }
+    }, [user]);
 
     const fetchDiscount = async () => {
         try {
             const response = await axios.get(`http://localhost:5058/discount/active`);
             if (response?.status === 200) {
                 const discountsData = response?.data?.$values || null;
-                discountsData.map((discount) => {
-                    console.log(discount);
-                });
                 setDiscounts(discountsData);
             }
         } catch (error) {
@@ -53,12 +56,23 @@ const ProccedPayment = () => {
         }
     };
 
+    const handleValidation = () => {
+        const errorsObj = {};
+        if (isEmpty(username)) errorsObj.username = 'Username is required';
+        if (isEmpty(phoneNumber)) errorsObj.phoneNumber = 'Phone number is required';
+        else if (!Number(phoneNumber)) errorsObj.phoneNumber = 'Phone number is invalid';
+        else if (!isPhoneNumber(phoneNumber)) errorsObj.phoneNumber = 'Phone number is invalid';
+        if (isEmpty(email)) errorsObj.email = 'Email is required';
+        else if (!isEmail(email)) errorsObj.email = 'Email is invalid';
+
+        setErrors(errorsObj);
+
+        return Object.keys(errorsObj).length === 0;
+    };
+
     const handlePaymentClick = async () => {
         // Kiểm tra xem người dùng có điền đầy đủ thông tin nếu chưa đăng nhập
-        if (!isAuthenticated && (!username || !phoneNumber || !email)) {
-            alert('Please fill out all required fields.');
-            return;
-        }
+        if (!handleValidation()) return;
 
         try {
             // Tạo một đối tượng chứa dữ liệu
@@ -80,7 +94,7 @@ const ProccedPayment = () => {
             }));
 
             const receiptData = {
-                total: selectedDiscount ? applyDiscount(selectedDiscount.value) : totalPrice,
+                total: selectedDiscount ? applyDiscount(selectedDiscount?.value) : totalPrice,
                 discountId: selectedDiscount?.id ?? null,
             };
 
@@ -114,17 +128,9 @@ const ProccedPayment = () => {
         }
     };
 
-    const handleChooseDiscount = (discount) => {
-        setSelectedDiscount(discount);
-    };
-
     const applyDiscount = (value) => {
         return totalPrice * ((100 - value) / 100);
     };
-
-    const handleFieldChange = (key, value) => {};
-
-    const handleFieldInput = (key) => {};
 
     return (
         <>
@@ -163,7 +169,7 @@ const ProccedPayment = () => {
 
                 <div className="row gx-5">
                     {/* Room Details */}
-                    <div className="col-md-7">
+                    <div className="col-lg-7 col-md-6">
                         <div className="row">
                             <div className="card mb-3 px-3 py-2 shadow-sm rounded-4">
                                 <div className="card-body">
@@ -207,11 +213,11 @@ const ProccedPayment = () => {
                                             type="text"
                                             error={errors.username}
                                             Icon={FaRegUser}
-                                            value={fields?.username}
+                                            value={username || ''}
                                             customLabelStyle="fw-semibold text-secondary"
                                             customParentInputStyle="p-1 pe-3 rounded-pill shadow-sm"
-                                            onChange={(e) => handleFieldChange('username', e.target.value)}
-                                            onInput={() => handleFieldInput('username')}
+                                            onChange={(e) => setUsername(e.target.value)}
+                                            onInput={() => setErrors((prev) => ({ ...prev, username: '' }))}
                                         />
                                         <FormGroup
                                             label="Phone number"
@@ -220,11 +226,11 @@ const ProccedPayment = () => {
                                             type="text"
                                             error={errors.phoneNumber}
                                             Icon={FiPhone}
-                                            value={fields?.phoneNumber}
+                                            value={phoneNumber || ''}
                                             customLabelStyle="fw-semibold text-secondary"
                                             customParentInputStyle="p-1 pe-3 rounded-pill shadow-sm"
-                                            onChange={(e) => handleFieldChange('phoneNumber', e.target.value)}
-                                            onInput={() => handleFieldInput('phoneNumber')}
+                                            onChange={(e) => setPhoneNumber(e.target.value)}
+                                            onInput={() => setErrors((prev) => ({ ...prev, phoneNumber: '' }))}
                                         />
                                         <FormGroup
                                             label="Email"
@@ -233,11 +239,11 @@ const ProccedPayment = () => {
                                             type="email"
                                             error={errors.email}
                                             Icon={MdOutlineEmail}
-                                            value={fields?.email}
+                                            value={email || ''}
                                             customLabelStyle="fw-semibold text-secondary"
                                             customParentInputStyle="p-1 pe-3 rounded-pill shadow-sm"
-                                            onChange={(e) => handleFieldChange('email', e.target.value)}
-                                            onInput={() => handleFieldInput('email')}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            onInput={() => setErrors((prev) => ({ ...prev, email: '' }))}
                                         />
                                     </div>
                                 </div>
@@ -299,90 +305,16 @@ const ProccedPayment = () => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Total Price
-                        <div className="row">
-                            <div className="col-md-6 col-12">
-                                <div className="card">
-                                    <div className="card-body text-start">
-                                        <h4>Total Price: {formatCurrency(totalPrice)}</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> */}
-
-                        {/* User Info */}
-                        {/* <h2 className="mt-5 mb-4">User Info</h2> */}
-                        <div className="row g-3">
-                            {isAuthenticated ? (
-                                <>
-                                    <div className="col-12">
-                                        <p>
-                                            <strong>User:</strong> {user?.name} (ID: {user?.id})
-                                        </p>
-                                    </div>
-                                </>
-                            ) : (
-                                <div className="col">
-                                    {/* <div className="col-md-6 col-12">
-                                        <label htmlFor="username" className="form-label">
-                                            Username
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="username"
-                                            value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-md-6 col-12">
-                                        <label htmlFor="phonenumber" className="form-label">
-                                            Phone number
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="phonenumber"
-                                            value={phoneNumber}
-                                            onChange={(e) => setPhoneNumber(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="col-md-6 col-12">
-                                        <label htmlFor="email" className="form-label">
-                                            Email
-                                        </label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            id="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                        />
-                                    </div> */}
-
-                                    {/* Payment Button */}
-                                    {/* <div className="text-start mt-4">
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary fs-5"
-                                            onClick={handlePaymentClick}
-                                        >
-                                            Pay
-                                        </button>
-                                    </div> */}
-                                </div>
-                            )}
-                        </div>
                     </div>
 
                     {/* Selected Services and Discount */}
-                    <div className="col-md-5">
+                    <div className="col-lg-5 col-md-6">
                         <div className="shadow-sm rounded-4 border overflow-hidden">
                             <img
                                 src={
-                                    room?.thumbnail ||
-                                    'https://luxestay.wpthemeverse.com/wp-content/uploads/2024/08/superior-room.png'
+                                    room.thumbnail
+                                        ? convertByteArrayToBase64(room?.thumbnail)
+                                        : 'https://luxestay.wpthemeverse.com/wp-content/uploads/2024/08/superior-room.png'
                                 }
                                 alt="Room"
                                 style={{
@@ -400,53 +332,69 @@ const ProccedPayment = () => {
                                     <h6 className="text-capitalize">Price details</h6>
                                     <div className="d-flex align-items-center justify-content-between border-bottom pb-3">
                                         <p className="text-secondary">
-                                            {formatCurrency(room?.price)} x {'1 nights'}
+                                            {formatCurrency(room?.price)} x {calculateDays(checkInDate, checkOutDate)}{' '}
+                                            nights
                                         </p>
-                                        <p className="text-secondary">{formatCurrency(totalPrice)}</p>
+                                        <p className="text-secondary">
+                                            {formatCurrency(room?.price * calculateDays(checkInDate, checkOutDate))}
+                                        </p>
                                     </div>
-                                    <div className="d-flex align-items-center justify-content-between pt-3">
+                                    <div className="d-flex align-items-center justify-content-between py-3 border-bottom">
+                                        {services?.length > 0 ? (
+                                            <ul className="d-flex flex-column w-full gap-2">
+                                                {services.map((service) => {
+                                                    const total = service?.price * service?.quantity;
+                                                    return (
+                                                        <li key={service?.id} className="text-secondary w-full">
+                                                            <span className="d-flex align-items-center justify-content-between">
+                                                                <p>
+                                                                    {service.name} x {service.quantity}
+                                                                </p>
+                                                                <p>{formatCurrency(total)}</p>
+                                                            </span>
+                                                        </li>
+                                                    );
+                                                })}
+                                            </ul>
+                                        ) : (
+                                            <p className="text-muted mb-3">No services selected</p>
+                                        )}
+                                    </div>
+                                    <div className="d-flex align-items-center justify-content-between py-3">
+                                        <FormGroup
+                                            label="Discount"
+                                            id="discount"
+                                            name="discount"
+                                            type="select"
+                                            // error={errors.discount}
+                                            // Icon={icon}
+                                            value={selectedDiscount !== null ? JSON.stringify(selectedDiscount) : ''}
+                                            options={discounts.map((discount) => {
+                                                return {
+                                                    label: `${discount.name} - ${discount.value}%`,
+                                                    value: JSON.stringify(discount),
+                                                };
+                                            })}
+                                            customLabelStyle="fw-semibold"
+                                            customInputStyle="cursor-pointer"
+                                            customParentInputStyle="rounded-pill"
+                                            onChange={(e) => {
+                                                const selected = e.target.value;
+                                                setSelectedDiscount(selected !== '' ? JSON.parse(selected) : null);
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="d-flex align-items-center justify-content-between pt-3 border-top">
                                         <h5 className="fw-semibold">Total</h5>
-                                        <h5 className="fw-semibold">{formatCurrency(totalPrice)}</h5>
+                                        <h5 className="fw-semibold">
+                                            {selectedDiscount
+                                                ? formatCurrency(applyDiscount(selectedDiscount?.value))
+                                                : formatCurrency(totalPrice)}
+                                        </h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        {/* <div className="card mb-4">
-                            <div className="card-body">
-                                <h5 className="card-title">Selected Services</h5>
-                                {services?.length > 0 ? (
-                                    <ul className="list-group mb-3">
-                                        {services.map((service, index) => (
-                                            <li key={index} className="list-group-item">
-                                                {service.name} x {service.quantity}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p className="text-muted mb-3">No services selected</p>
-                                )}
-
-                                <h5 className="card-title">Discounts</h5>
-                                {discounts.length > 0 ? (
-                                    discounts.map((discount, index) => (
-                                        <div className="form-check" key={index}>
-                                            <input
-                                                className="form-check-input"
-                                                type="radio"
-                                                name="flexRadioDefault"
-                                                id={discount.id}
-                                                onChange={() => handleChooseDiscount(discount)}
-                                            />
-                                            <label className="form-check-label" htmlFor={discount.id}>
-                                                {discount.name}: {discount.value}%
-                                            </label>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-muted mb-3">No discount available.</p>
-                                )}
-                            </div>
-                        </div> */}
                     </div>
                 </div>
             </div>
