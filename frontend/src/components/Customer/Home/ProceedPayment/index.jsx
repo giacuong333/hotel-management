@@ -312,7 +312,7 @@ const ProccedPayment = () => {
                         <div className="shadow-sm rounded-4 border overflow-hidden">
                             <img
                                 src={
-                                    room.thumbnail
+                                    room.thumbnail !== null
                                         ? convertByteArrayToBase64(room?.thumbnail)
                                         : 'https://luxestay.wpthemeverse.com/wp-content/uploads/2024/08/superior-room.png'
                                 }

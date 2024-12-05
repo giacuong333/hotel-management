@@ -76,6 +76,7 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
             }
 
             receipt.BookingId = booking.Id;
+            receipt.CreatedAt = DateTime.UtcNow;
             await _unitOfWork.Receipts.CreateReceiptAsync(receipt);
             await _unitOfWork.CompleteAsync();
 

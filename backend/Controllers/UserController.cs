@@ -305,7 +305,9 @@ namespace backend.Controllers
 
                         await _userService.CreateUserAsync(newUser);
 
-                        return StatusCode(201, new { message = "Sign up successfully", newUser });
+                        var user = await _userService.GetUserByIdAsync(newUser.Id);
+
+                        return StatusCode(201, new { message = "Sign up successfully", newUser = user });
                   }
                   catch (NotFoundException ex)
                   {

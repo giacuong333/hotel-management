@@ -143,21 +143,29 @@ const RoomDetail = () => {
                 if (bookingsData) {
                     const allBookedDates = bookingsData.map((booking) => {
                         const datesRange = getDatesInRange(booking.checkIn, booking.checkOut);
+                        // console.log('Data ranges', datesRange);
                         const today = new Date();
-                        console.log(today);
-                        console.log('Compare: ', datesRange.includes(today));
+                        // console.log(today);
+                        // console.log('Compare: ', datesRange.includes(today));
 
-                        if (
-                            roomDetail.status === 3 ||
-                            !datesRange.some((date) => {
-                                console.log('Date: ', date);
-                                return date && compareDates(date, today);
-                            })
-                        ) {
-                            return datesRange;
-                        }
+                        // if (
+                        //     roomDetail.status === 3 ||
+                        //     datesRange.some((date) => {
+                        //         console.log('Date: ', date);
+                        //         return date && compareDates(date, today);
+                        //     })
+                        // ) {
+                        //     return datesRange;
+                        // }
 
-                        return null;
+                        const isIncludedToday = datesRange.some((date) => {
+                            console.log('Date: ', date);
+                            return date && compareDates(date, today);
+                        });
+
+                        if (booking.status === 0 || (booking.status !== 3 && isIncludedToday)) return null;
+
+                        return getDatesInRange(booking.checkIn, booking.checkOut);
                     });
 
                     // Dùng flatMap để chuyển đổi mảng 2 chiều thành mảng 1 chiều
@@ -273,7 +281,7 @@ const RoomDetail = () => {
                                     {gallery.map((item) => {
                                         return (
                                             <img
-                                                src={convertByteArrayToBase64(item.image)}
+                                                src={convertByteArrayToBase64(item?.image)}
                                                 alt="Room Thumbnail Is Not Available"
                                                 className="w-full h-full"
                                             />

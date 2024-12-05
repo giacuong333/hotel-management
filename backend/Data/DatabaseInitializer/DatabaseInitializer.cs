@@ -436,33 +436,6 @@ public static class Seed
                     CheckIn = new DateTime(2024, 12, 29),
                     CheckOut = new DateTime(2024, 1, 3),
                     Status = 1
-                },
-                new()
-                {
-                    Id = 5,
-                    CustomerId = 2,  // Use actual ID
-                    RoomId = 11,
-                    CheckIn = new DateTime(2025, 01, 25),
-                    CheckOut = new DateTime(2025, 01, 30),
-                    Status = 1
-                },
-                new()
-                {
-                    Id = 6,
-                    CustomerId = 2,  // Use actual ID
-                    RoomId = 9,
-                    CheckIn = new DateTime(2025, 04, 25),
-                    CheckOut = new DateTime(2025, 04, 28),
-                    Status = 1
-                },
-                new()
-                {
-                    Id = 7,
-                    CustomerId = 2,  // Use actual ID
-                    RoomId = 10,
-                    CheckIn = new DateTime(2024, 12, 03),
-                    CheckOut = new DateTime(2024, 12, 05),
-                    Status = 1
                 }
             );
             await context.SaveChangesAsync();

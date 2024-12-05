@@ -34,6 +34,7 @@ namespace backend.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime?>("DeletedAt")
