@@ -145,6 +145,7 @@ const Receipt = () => {
                     'Content-Type': 'application/json',
                 },
             });
+            console.log('Selected receipt: ', response);
             if (response.status === 200) {
                 setSelectedReceipt(response.data);
                 setShowPanel('see');

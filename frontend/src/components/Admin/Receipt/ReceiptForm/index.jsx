@@ -96,8 +96,6 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
     const [subTotal, setSubTotal] = useState(null);
     const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(null);
 
-    console.log('Receipt detail: ', data);
-
     // Services used
     useEffect(() => {
         let totalOfServices = 0;
@@ -122,10 +120,11 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
     useEffect(() => {
         if (differenceDate && data?.booking?.checkIn && data?.booking?.checkOut) {
             setSubTotal(differenceDate * data?.booking?.room?.price + totalServicesUsed);
-            setSubTotalWithDiscount(
-                (differenceDate * data?.booking?.room?.price + totalServicesUsed) *
-                    ((100 - data?.discount?.value) / 100),
-            );
+            setSubTotalWithDiscount(() => {
+                const discount = (100 - data?.discount?.value) / 100;
+                if (discount) return (differenceDate * data?.booking?.room?.price + totalServicesUsed) * discount;
+                return differenceDate * data?.booking?.room?.price + totalServicesUsed;
+            });
         }
     }, [
         differenceDate,
@@ -248,10 +247,12 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
                                         <p>Subtotal</p>
                                         <p>{formatCurrency(subTotal)}</p>
                                     </span>
-                                    <span className="d-flex align-items-center justify-content-between gap-5">
-                                        <p>Discount {data?.discount?.value}%</p>
-                                        <p>{formatCurrency(subTotalWithDiscount)}</p>
-                                    </span>
+                                    {data?.discount && (
+                                        <span className="d-flex align-items-center justify-content-between gap-5">
+                                            <p>Discount {data?.discount?.value}%</p>
+                                            <p>{formatCurrency(subTotalWithDiscount)}</p>
+                                        </span>
+                                    )}
                                     <span className="d-flex align-items-center justify-content-between gap-5">
                                         <h6 className="fw-bold">Total</h6>
                                         <h6 className="fw-bold">{formatCurrency(subTotalWithDiscount)}</h6>

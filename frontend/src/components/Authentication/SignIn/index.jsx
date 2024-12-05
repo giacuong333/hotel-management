@@ -50,8 +50,6 @@ const SignIn = () => {
             return;
         }
 
-        console.log('Google response: ', response);
-
         try {
             const loginResponse = await signInByGoogle(response);
             if (loginResponse && loginResponse.status === 200) {

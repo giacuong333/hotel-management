@@ -22,7 +22,12 @@ const Rooms = () => {
 
     useEffect(() => {
         const filtered = searchInput
-            ? rooms.filter((room) => room?.type.toLowerCase().includes(searchInput.toLowerCase()))
+            ? rooms.filter(
+                  (room) =>
+                      room?.name.toLowerCase().startsWith(searchInput.toLowerCase()) ||
+                      room?.type.toLowerCase().includes(searchInput.toLowerCase()) ||
+                      room?.bedNum == searchInput,
+              )
             : rooms;
         setFilteredRooms(filtered);
         setCurrentPage(1);

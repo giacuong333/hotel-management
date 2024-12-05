@@ -25,20 +25,22 @@ const Nav = () => {
     const handleSearchInputChange = (e) => {
         if (e.key === 'Enter') {
             navigate('rooms', { state: searchInput });
-            setSearchInput('');
         }
     };
 
     return (
         <nav className="px-lg-5 py-lg-3 d-lg-flex align-items-center justify-content-between">
             <div className="d-lg-flex d-none align-items-center justify-content-start gap-3">
-                <CiSearch className="text-white " size={26} />
+                <label htmlFor="search-input" className="cursor-pointer">
+                    <CiSearch className="text-white " size={26} />
+                </label>
                 <input
                     type="text"
                     value={searchInput}
                     onKeyDown={handleSearchInputChange}
                     onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Search..."
+                    id="search-input"
                     className="bg-transparent text-white cursor-pointer"
                     style={{ outline: 'none', border: 'none', caretColor: 'white' }}
                 />
