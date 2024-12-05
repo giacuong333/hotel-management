@@ -8,31 +8,50 @@ import { MdOutlineManageAccounts } from 'react-icons/md';
 import Logo from '../images/luxestay_logo.png';
 import { useUser } from '../../../../providers/UserProvider';
 import { CgLogOut } from 'react-icons/cg';
+import { CiSearch } from 'react-icons/ci';
 
 const Nav = () => {
     const [openSubNav, setOpenSubNav] = useState(false);
     const [showNav, setShowNav] = useState(false);
-    const navigate = useNavigate();
     const { user, signOut } = useUser();
+    const [searchInput, setSearchInput] = useState('');
+    const navigate = useNavigate();
 
     const handleSignOut = async () => {
         await signOut();
         navigate('/signin');
     };
 
+    const handleSearchInputChange = (e) => {
+        if (e.key === 'Enter') {
+            navigate('rooms', { state: searchInput });
+            setSearchInput('');
+        }
+    };
+
     return (
         <nav className="px-lg-5 py-lg-3 d-lg-flex align-items-center justify-content-between">
+            <div className="d-lg-flex d-none align-items-center justify-content-start gap-3">
+                <CiSearch className="text-white " size={26} />
+                <input
+                    type="text"
+                    value={searchInput}
+                    onKeyDown={handleSearchInputChange}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    placeholder="Search..."
+                    className="bg-transparent text-white cursor-pointer"
+                    style={{ outline: 'none', border: 'none', caretColor: 'white' }}
+                />
+            </div>
+
             <div className="d-flex align-items-center justify-content-lg-start justify-content-between gap-lg-5 navbar-bg px-lg-0 px-3 py-lg-0 py-2">
-                <Link to="/">
-                    <img src={Logo} alt="Logo" className="logo-size" />
-                </Link>
                 <FaBars
                     size={38}
                     className="customer-primary-color d-lg-none d-inline-block pointer"
                     style={{ cursor: 'pointer' }}
                     onClick={() => setShowNav((prev) => !prev)}
                 />
-                <ul className="d-lg-flex d-none align-items-center justify-content-start gap-5">
+                <ul className="d-lg-flex d-none align-items-center justify-content-center gap-5">
                     <li className="text-uppercase">
                         <Link to="/" className="text-white customer-primary-color-hover animation-effect">
                             Home
@@ -43,6 +62,12 @@ const Nav = () => {
                             Rooms
                         </Link>
                     </li>
+                    <li>
+                        <Link to="/">
+                            <img src={Logo} alt="Logo" className="logo-size" />
+                        </Link>
+                    </li>
+
                     <li className="text-uppercase">
                         <Link to="/about" className="text-white customer-primary-color-hover animation-effect">
                             About
@@ -90,6 +115,7 @@ const Nav = () => {
                     </li>
                 </ul>
             </div>
+
             {/* For small screen */}
             <ul
                 className={`d-lg-none d-block bg-black px-3 animation-effect ${
@@ -190,6 +216,8 @@ const Nav = () => {
                     )}
                 </li>
             </ul>
+
+            {/* Login/Logout/User Information */}
             {user !== null ? (
                 <Tippy
                     interactive={true}

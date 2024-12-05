@@ -60,9 +60,6 @@ const RoomDetail = () => {
     const [checkOutDate, setCheckOutDate] = useState();
     const [selectedServices, setSelectedServices] = useState([]);
 
-    const { user } = useUser();
-    const isAuthenticated = user !== null;
-
     const navigate = useNavigate();
     const slideRef = useRef(null);
 

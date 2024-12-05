@@ -9,6 +9,7 @@ import LeftArrow from './images/leftArrow.svg';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Slider from 'react-slick';
+import { useLocation } from 'react-router';
 
 const carouselSettings = {
     infinite: true,
@@ -36,8 +37,6 @@ const carouselSettings = {
 const Room = ({ room }) => {
     const slideRef = useRef(null);
     const [gallery, setGallery] = useState([]);
-
-    console.log('Room', room);
 
     useEffect(() => {
         fetchGallery();
@@ -67,9 +66,13 @@ const Room = ({ room }) => {
                             return (
                                 <img
                                     key={item?.id}
-                                    src={convertByteArrayToBase64(item.image)}
+                                    src={item?.image ? convertByteArrayToBase64(item?.image) : ''}
                                     alt="Room Thumbnail Is Not Available"
                                     className="w-full h-full shadow border"
+                                    style={{
+                                        objectFit: 'cover',
+                                        objectPosition: 'center',
+                                    }}
                                 />
                             );
                         })}

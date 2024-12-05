@@ -1,39 +1,48 @@
 import React, { useState, useEffect } from 'react';
 import Room from '../../Room';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md';
-
-const roomsPerPage = 9;
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([]);
+    const [filteredRooms, setFilteredRooms] = useState([]);
     const [paginationRooms, setPaginationRooms] = useState([]);
-    const [totalOfPages, setTotalOfPages] = useState(null);
+
+    const [roomsPerPage] = useState(9);
+    const [totalOfPages, setTotalOfPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+
     const navigate = useNavigate();
+    const searchInput = useLocation().state;
 
     useEffect(() => {
         fetchRooms();
     }, []);
 
     useEffect(() => {
-        if (rooms) setTotalOfPages(() => Math.ceil(rooms.length / roomsPerPage));
-    }, [rooms]);
+        const filtered = searchInput
+            ? rooms.filter((room) => room?.type.toLowerCase().includes(searchInput.toLowerCase()))
+            : rooms;
+        setFilteredRooms(filtered);
+        setCurrentPage(1);
+    }, [searchInput, rooms]);
+
+    useEffect(() => {
+        setTotalOfPages(() => Math.ceil(filteredRooms.length / roomsPerPage));
+    }, [filteredRooms, roomsPerPage]);
 
     useEffect(() => {
         const indexOfLastRoom = currentPage * roomsPerPage;
         const indexOfFirstRoom = indexOfLastRoom - roomsPerPage;
-        setPaginationRooms(() => rooms.slice(indexOfFirstRoom, indexOfLastRoom));
-    }, [currentPage, rooms]);
+        setPaginationRooms(() => filteredRooms.slice(indexOfFirstRoom, indexOfLastRoom));
+    }, [currentPage, filteredRooms, roomsPerPage]);
 
     const fetchRooms = async () => {
         try {
             const response = await axios.get('http://localhost:5058/room');
             if (response?.status === 200) {
-                const roomsData = response?.data?.$values || response?.data?.obj;
-                roomsData.filter((room) => !room.deletedAt);
-                roomsData.sort((a, b) => (b.status === 1 ? 1 : 0) - (a.status === 1 ? 1 : 0));
+                const roomsData = (response?.data?.$values || response?.data?.obj)?.filter((room) => !room.deletedAt);
                 setRooms(roomsData);
             }
         } catch (error) {
