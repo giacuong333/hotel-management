@@ -255,7 +255,7 @@ const Discount = () => {
                     ) : (
                         ''
                     )
-                ) : (
+                ) : hasPermissionDelete (
                     <BsTrash
                         size={30}
                         className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"

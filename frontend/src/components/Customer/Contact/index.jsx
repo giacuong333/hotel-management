@@ -6,6 +6,7 @@ import { Colors } from 'chart.js';
 import ContactAbout from './contactAbout';
 import CardTimeContact from './cardTimeContact';
 import AddressContact from './addressContact';
+import FeedBackContact from './FeedBackContact';
 import ExclusiveOffers from '../Home/ExclusiveOffers';
 const Contacts = () => {
     return (
@@ -13,6 +14,7 @@ const Contacts = () => {
             <ContactAbout />
             <CardTimeContact />
             <AddressContact />
+            <FeedBackContact />
             <ExclusiveOffers />
         </section>
     );

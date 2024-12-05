@@ -580,3 +580,35 @@ input.form-check-input:checked {
         background-color: #f7f7f7 !important;
     }
 }
+
+@keyframes upDown {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  .contact-medias-hover {
+    color: black !important;
+    background-color: #F7F5F2 !important;
+    transform: scale(0.8);
+    &:hover {
+        color: var(--fourth-color) !important;
+        transform: scale(1);
+    }
+}
+
+.contact-text {
+    color: #666666;
+    font-weight: 300;
+}
+
+.submit-button:hover {
+    background-color: #E8BF96 !important;
+    color: var(--white-color) !important;
+}

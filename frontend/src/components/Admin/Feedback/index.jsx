@@ -29,7 +29,9 @@ const Feedback = () => {
     const [pendingDelete, setPendingDelete] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [searchedFeedbacks, setSearchedFeedbacks] = useState([]);
-    const { deleteFeedback: hasPermissionDelete } = useCheckPermission();
+    const {
+        deleteFeedBack: hasPermissionDelete,
+    } = useCheckPermission();
 
     // Search Feedback
     useEffect(() => {
@@ -108,12 +110,14 @@ const Feedback = () => {
             name: 'Create At',
             selector: (row) => row.createAt,
         },
-        {
+       
+    ];
+    if (hasPermissionDelete) {
+        columns.push({
             name: 'Actions',
             selector: (row) => row.actions,
-        },
-    ];
-
+        });
+    }
     const data = searchedFeedbacks?.map((feedback, index) => ({
         id: feedback?.id,
         no: index + 1,
@@ -123,11 +127,16 @@ const Feedback = () => {
         createAt: feedback?.createdAt,
         actions: (
             <>
-                <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(feedback.id)} />
+                 {hasPermissionDelete ? (
+                 <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(feedback.id)} />
+
+                 ) : (" ")}
+              
             </>
         ),
     }));
 
+    
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
         try {
@@ -171,6 +180,7 @@ const Feedback = () => {
         }
         deleteFeedback(deleteOne.payload);
     };
+    
 
     const deleteFeedback = async (payload) => {
         try {
@@ -204,11 +214,15 @@ const Feedback = () => {
     return (
         <div>
             <div className="d-flex align-items-center justify-content-between w-full py-4">
-                <BsTrash
-                    size={30}
-                    className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
-                    onClick={handleDeleteRowsSelected}
-                />
+           {hasPermissionDelete ? (
+             <BsTrash
+             size={30}
+             className="p-1 rounded-2 text-white secondary-bg-color cursor-pointer"
+             onClick={handleDeleteRowsSelected}
+         />
+           ) : (" ")}
+           
+               
 
                 <FormGroup
                     id="search"
