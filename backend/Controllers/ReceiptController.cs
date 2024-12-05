@@ -40,7 +40,7 @@ namespace backend.Controllers
             }
         }
 
-        // [GET] /receipt
+        // [GET] /receipt/{receiptId}
         [HttpGet("{receiptId}")]
         [Produces("application/json")]
         public async Task<ActionResult<IEnumerable<ReceiptModel>>> GetReceiptsById(int receiptId)

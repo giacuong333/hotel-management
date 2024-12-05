@@ -12,7 +12,7 @@ using backend.Database;
 namespace backend.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20241125181937_InitialCreate")]
+    [Migration("20241203062516_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -24,30 +24,6 @@ namespace backend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("AdditionalFeeModel", b =>
-                {
-                    b.Property<int?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int?>("Id"));
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
-
-                    b.Property<float?>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<int?>("ReceiptId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReceiptId");
-
-                    b.ToTable("AdditionalFee");
-                });
 
             modelBuilder.Entity("ReceiptModel", b =>
                 {
@@ -496,16 +472,6 @@ namespace backend.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("AdditionalFeeModel", b =>
-                {
-                    b.HasOne("ReceiptModel", "Receipt")
-                        .WithMany("AdditionalFees")
-                        .HasForeignKey("ReceiptId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Receipt");
-                });
-
             modelBuilder.Entity("ReceiptModel", b =>
                 {
                     b.HasOne("backend.Models.BookingModel", "Booking")
@@ -632,11 +598,6 @@ namespace backend.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Roles");
-                });
-
-            modelBuilder.Entity("ReceiptModel", b =>
-                {
-                    b.Navigation("AdditionalFees");
                 });
 
             modelBuilder.Entity("backend.Models.BookingModel", b =>

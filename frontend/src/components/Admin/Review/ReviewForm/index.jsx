@@ -33,15 +33,12 @@ const PopupPanel = ({ data, type, onClose, isShowed }) => {
             <Overlay isShow={isShowed} onClose={onClose} />
             <div
                 style={{
-                    width: '500px',
+                    maxWidth: '600px',
+                    width: '90%',
                     height: '550px',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: 20,
-                    transform: 'translate(-50%, -50%)',
                     padding: '0 1rem',
                 }}
+                className={`confirm-popup ${isShowed ? 'show' : 'hide'}`}
             >
                 <form
                     className="w-full h-full"

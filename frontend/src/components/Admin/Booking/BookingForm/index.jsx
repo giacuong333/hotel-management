@@ -117,7 +117,7 @@ const BookingForm = ({ data, onClose, isShowed }) => {
     }, [data?.room, stayedDate]);
 
     useEffect(() => {
-        data.serviceUsage.$values &&
+        data?.serviceUsage.$values &&
             setServices(() => {
                 return data?.serviceUsage?.$values.map((su) => {
                     return {
@@ -140,19 +140,17 @@ const BookingForm = ({ data, onClose, isShowed }) => {
             {/* Toast */}
             {ToastContainer}
 
+            {/* Overlay */}
             <Overlay isShow={isShowed} onClose={onClose} />
+
+            {/* Form */}
             <main
-                className=""
                 style={{
                     maxWidth: '70rem',
                     width: '100%',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: 20,
-                    transform: 'translate(-50%, -50%)',
                     padding: '1.4rem 2rem 2rem 2rem',
                 }}
+                className={`confirm-popup ${isShowed ? 'show' : 'hide'}`}
             >
                 <div className="d-flex flex-column gap-4">
                     <div>
@@ -177,18 +175,20 @@ const BookingForm = ({ data, onClose, isShowed }) => {
                                     <h5>BILL TO</h5>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Name:</p>
-                                        <small className="text-capitalize text-secondary">{data?.customer?.name}</small>
+                                        <small className="text-capitalize text-secondary">
+                                            {data?.customer?.name || data?.customerName}
+                                        </small>
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Email:</p>
-                                        <small className="text-capitalize text-secondary">
-                                            {data?.customer?.email}
+                                        <small className="text-secondary">
+                                            {data?.customer?.email || data?.customerEmail}
                                         </small>
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Phone:</p>
                                         <small className="text-capitalize text-secondary">
-                                            {data?.customer?.phoneNumber}
+                                            {data?.customer?.phoneNumber || data?.customerPhoneNumber}
                                         </small>
                                     </span>
                                 </div>

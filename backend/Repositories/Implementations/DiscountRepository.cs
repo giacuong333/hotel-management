@@ -24,7 +24,7 @@ public class DiscountRepository(DatabaseContext context) : GenericRepository<Dis
     }
     public async Task<DiscountModel> UpdateDiscount(int id, DiscountModel discount)
     {
-         var existingDiscount = await _context.Discount.FindAsync(id);
+        var existingDiscount = await _context.Discount.FindAsync(id);
         if (existingDiscount == null)
         {
             return null;
@@ -41,7 +41,7 @@ public class DiscountRepository(DatabaseContext context) : GenericRepository<Dis
     }
     public async Task<DiscountModel> DeleteDiscount(int id)
     {
-         var discount = await _context.Discount.FindAsync(id);
+        var discount = await _context.Discount.FindAsync(id);
         if (discount == null)
         {
             return null;
@@ -56,6 +56,11 @@ public class DiscountRepository(DatabaseContext context) : GenericRepository<Dis
         var discounts = await _context.Discount.Where(d => discountIds.Contains(d.Id)).ToListAsync();
         _context.Discount.RemoveRange(discounts);
         await _context.SaveChangesAsync();
-        
+    }
+
+    public async Task<IEnumerable<DiscountModel>> GetListActiveDiscounts()
+    { 
+        var now = DateTime.Today;
+        return await _context.Discount.Where(d => d.Status == true && d.EndAt >= now && d.StartAt < now).ToListAsync();
     }
 }

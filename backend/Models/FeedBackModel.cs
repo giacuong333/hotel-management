@@ -15,13 +15,12 @@ namespace backend.Models
             CreatedAt = createdAt;
         }
 
-
         [Key]
         public int Id { get; set; } // Non-nullable Id
         public int UserId { get; set; }
         public int RoomId { get; set; }
         public string Description { get; set; } // Made Description non-nullable
-        public DateTime CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         public UserModel User { get; set; }
         public RoomModel Room { get; set; }

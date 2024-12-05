@@ -441,6 +441,7 @@ public static class Seed
                 {
                     Id = 5,
                     CustomerId = 2,  // Use actual ID
+                    RoomId = 11,
                     CheckIn = new DateTime(2025, 01, 25),
                     CheckOut = new DateTime(2025, 01, 30),
                     Status = 1
@@ -459,8 +460,8 @@ public static class Seed
                     Id = 7,
                     CustomerId = 2,  // Use actual ID
                     RoomId = 10,
-                    CheckIn = new DateTime(2025, 04, 29),
-                    CheckOut = new DateTime(2025, 05, 01),
+                    CheckIn = new DateTime(2024, 12, 03),
+                    CheckOut = new DateTime(2024, 12, 05),
                     Status = 1
                 }
             );
@@ -477,7 +478,6 @@ public static class Seed
             );
             await context.SaveChangesAsync();
         }
-
         // Seed Discounts
         if (!context.Discount.Any())
         {
@@ -496,8 +496,8 @@ public static class Seed
                 new() { Id = 2, UserId = 3, RoomId = 2, Description = "Good service", CreatedAt = new DateTime(2024, 11, 20) },
                 new() { Id = 3, UserId = 4, RoomId = 3, Description = "Good service", CreatedAt = new DateTime(2024, 11, 21) },
                 new() { Id = 4, UserId = 2, RoomId = 4, Description = "Good service", CreatedAt = new DateTime(2024, 12, 29) }
-
             );
+            await context.SaveChangesAsync();
         }
         //Seed Review
         if (!context.Review.Any())
@@ -507,9 +507,10 @@ public static class Seed
                 new() { Id = 2, UserId = 4, RoomId = 2, Comment = "The service was excellent, and the staff were very friendly and helpful.", CreatedAt = new DateTime(2024, 7, 23), Status = 0, DeletedAt = null },
                 new() { Id = 3, UserId = 5, RoomId = 3, Comment = "Great experience! The room was spacious and had all the necessary amenities.", CreatedAt = new DateTime(2024, 1, 19), Status = 0, DeletedAt = null },
                 new() { Id = 4, UserId = 6, RoomId = 4, Comment = "The hotel was clean, and the staff made me feel very welcome. Would definitely return.", CreatedAt = new DateTime(2024, 2, 23), Status = 0, DeletedAt = null }
-
             );
+            await context.SaveChangesAsync();
         }
+
         // Seed Receipts
         if (!context.Receipt.Any())
         {
@@ -518,17 +519,6 @@ public static class Seed
                 new() { Id = 2, BookingId = 2, DiscountId = 2, Total = 10800000 },
                 new() { Id = 3, BookingId = 3, DiscountId = 3, Total = 240000 },
                 new() { Id = 4, BookingId = 4, DiscountId = 1, Total = 200000 }
-            );
-            await context.SaveChangesAsync();
-        }
-
-        // Seed AdditionalFees
-        if (!context.AdditionalFee.Any())
-        {
-            context.AdditionalFee.AddRange(
-                new AdditionalFeeModel { Id = 1, ReceiptId = 1, Name = "Renting Cars", Price = 300000 },
-                new AdditionalFeeModel { Id = 2, ReceiptId = 1, Name = "Renting Shoes", Price = 100000 },
-                new AdditionalFeeModel { Id = 3, ReceiptId = 1, Name = "5 bottles water", Price = 50000 }
             );
             await context.SaveChangesAsync();
         }

@@ -89,30 +89,14 @@ const servicesUsedColumns = [
     },
 ];
 
-const additionalFeesColumns = [
-    {
-        name: 'ID',
-        selector: (row) => row.id,
-        center: true,
-    },
-    {
-        name: 'Name',
-        selector: (row) => row.name,
-    },
-    {
-        name: 'Price',
-        selector: (row) => row.formattedPrice,
-    },
-];
-
 const ReceiptForm = ({ data, onClose, isShowed }) => {
     const [servicesData, setServicesData] = useState([]);
     const [totalServicesUsed, setTotalServicesUsed] = useState(null);
-    const [additionalFees, setAdditionalFees] = useState([]);
-    const [totalAdditionalFees, setTotalAdditionalFees] = useState(null);
     const [differenceDate, setDifferenceData] = useState(null);
     const [subTotal, setSubTotal] = useState(null);
     const [subTotalWithDiscount, setSubTotalWithDiscount] = useState(null);
+
+    console.log('Receipt detail: ', data);
 
     // Services used
     useEffect(() => {
@@ -123,17 +107,6 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
         });
         setTotalServicesUsed(totalOfServices);
         setServicesData(servicesData);
-    }, [data]);
-
-    // Additional Fees
-    useEffect(() => {
-        let totalOfFees = 0;
-        const additionalFees = data?.additionalFees?.$values.map((s) => {
-            totalOfFees += s?.price;
-            return { ...s, formattedPrice: formatCurrency(s?.price) };
-        });
-        setTotalAdditionalFees(totalOfFees);
-        setAdditionalFees(additionalFees);
     }, [data]);
 
     // Calculate stayed dates
@@ -170,17 +143,12 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
 
             <Overlay isShow={isShowed} onClose={onClose} />
             <main
-                className=""
                 style={{
                     maxWidth: '70rem',
                     width: '100%',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: 20,
-                    transform: 'translate(-50%, -50%)',
                     padding: '1.4rem 2rem 2rem 2rem',
                 }}
+                className={`confirm-popup ${isShowed ? 'show' : 'hide'}`}
             >
                 <div className="d-flex flex-column gap-4">
                     <div>
@@ -206,19 +174,19 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Name:</p>
                                         <small className="text-capitalize text-secondary">
-                                            {data?.booking?.customer?.name}
+                                            {data?.booking?.customer?.name || data?.booking?.customerName}
                                         </small>
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Email:</p>
-                                        <small className="text-capitalize text-secondary">
-                                            {data?.booking?.customer?.email}
+                                        <small className="text-secondary">
+                                            {data?.booking?.customer?.email || data?.booking?.customerEmail}
                                         </small>
                                     </span>
                                     <span className="d-flex align-items-center gap-2">
                                         <p className="fw-semibold">Phone:</p>
                                         <small className="text-capitalize text-secondary">
-                                            {data?.booking?.customer?.phoneNumber}
+                                            {data?.booking?.customer?.phoneNumber || data?.booking?.customerPhoneNumber}
                                         </small>
                                     </span>
                                 </div>
@@ -273,15 +241,6 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
                                     customStyles={customStyles}
                                 />
                             </div>
-                            <div className="pt-2 d-flex flex-column gap-2">
-                                <h5 className="m-0">Additional Fees</h5>
-                                <DataTable
-                                    pagination
-                                    columns={additionalFeesColumns}
-                                    data={additionalFees}
-                                    customStyles={customStyles}
-                                />
-                            </div>
 
                             <div className="d-flex align-items-start justify-content-end pt-4">
                                 <div className="d-flex flex-column align-items-end gap-2">
@@ -294,14 +253,8 @@ const ReceiptForm = ({ data, onClose, isShowed }) => {
                                         <p>{formatCurrency(subTotalWithDiscount)}</p>
                                     </span>
                                     <span className="d-flex align-items-center justify-content-between gap-5">
-                                        <p>Additional Fees</p>
-                                        <p>{formatCurrency(totalAdditionalFees)}</p>
-                                    </span>
-                                    <span className="d-flex align-items-center justify-content-between gap-5">
                                         <h6 className="fw-bold">Total</h6>
-                                        <h6 className="fw-bold">
-                                            {formatCurrency(totalAdditionalFees + subTotalWithDiscount)}
-                                        </h6>
+                                        <h6 className="fw-bold">{formatCurrency(subTotalWithDiscount)}</h6>
                                     </span>
                                 </div>
                             </div>

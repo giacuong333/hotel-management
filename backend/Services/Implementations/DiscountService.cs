@@ -1,6 +1,7 @@
 using backend.Models;
 
-public class DiscountService(IUnitOfWork unitOfWork) : IDiscountService{
+public class DiscountService(IUnitOfWork unitOfWork) : IDiscountService
+{
     private readonly IUnitOfWork _unitOfWork = unitOfWork;
 
     public async Task<IEnumerable<DiscountModel>> GetListDiscounts()
@@ -45,8 +46,8 @@ public class DiscountService(IUnitOfWork unitOfWork) : IDiscountService{
         await _unitOfWork.CompleteAsync();
     }
 
-    // public async Task<IEnumerable<DiscountModel>> GetListActiveDiscounts()
-    // {
-    //     return await _unitOfWork.Discounts.GetListActiveDiscounts();
-    // }
+    public async Task<IEnumerable<DiscountModel>> GetListActiveDiscounts()
+    {
+        return await _unitOfWork.Discounts.GetListActiveDiscounts();
+    }
 }

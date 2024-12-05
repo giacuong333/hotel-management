@@ -47,9 +47,9 @@ namespace Repositories.Implementations
                   if (property != null)
                   {
                         query = query.Where(entity => EF.Property<DateTime?>(entity, "DeletedAt") == null);
-
                   }
                   return await query
+                        .AsNoTracking()
                         .Where(entity => EF.Property<int>(entity, "Id") == (int)id)
                         .FirstOrDefaultAsync();
             }

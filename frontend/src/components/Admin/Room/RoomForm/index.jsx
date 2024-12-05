@@ -61,12 +61,12 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
         return Object.keys(validationErrors).length === 0;
     };
 
-    console.log('Payload', fields);
-
     const handleSubmitClicked = async (e) => {
         e.preventDefault();
 
         const apiUrl = 'http://localhost:5058/room';
+
+        console.log('Payload', fields);
 
         if (handleValidation()) {
             const formData = new FormData();
@@ -139,20 +139,21 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
 
     return (
         <>
+            {/* Toast */}
             {ToastContainer}
+
+            {/* Overlay */}
             <Overlay isShow={isShowed} onClose={handleClose} />
+
+            {/* Form */}
             <div
                 style={{
-                    width: '500px',
+                    maxWidth: '600px',
+                    width: '90%',
                     height: '550px',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    zIndex: 20,
-                    transform: 'translate(-50%, -50%)',
                     padding: '0 1rem',
                 }}
-                className="container mx-auto px-5"
+                className={`confirm-popup ${isShowed ? 'show' : 'hide'}`}
             >
                 <>
                     <input
@@ -163,11 +164,11 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                     />
                     <button
                         size={30}
-                        className="p-2 rounded-pill cursor-pointer text-white customer-primary-button bg-hover-white text-hover-black"
+                        className="p-2 rounded-3 cursor-pointer text-white customer-primary-button bg-hover-white text-hover-black"
                         style={{
                             position: 'absolute',
                             top: 0,
-                            right: 14,
+                            left: 'calc(100% - 0.5rem)',
                             zIndex: 20,
                         }}
                         onClick={handleAddClick}
@@ -325,7 +326,7 @@ const RoomForm = ({ data, type, onClose, onRoomAdded, onRoomUpdated, isShowed })
                                 customParentParentInputStyle="mt-2"
                             />
                         )}
-                        {type !== 'see' && (
+                        {(type === 'add' || type === 'edit') && (
                             <div className="d-flex align-items-center gap-2 mt-4">
                                 <Button
                                     type="submit"

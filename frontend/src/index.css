@@ -155,7 +155,7 @@ h4 {
 }
 
 .customer-primary-button {
-    background-color: var(--customer-primary-color);
+    background-color: var(--customer-primary-color) !important;
     border-color: var(--customer-primary-color) !important;
     transition: all 0.5s ease-in-out;
 
@@ -612,3 +612,52 @@ input.form-check-input:checked {
     background-color: #E8BF96 !important;
     color: var(--white-color) !important;
 }
+/* Start Confirm Popup */
+.confirm-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 30;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    border-radius: 0.5rem;
+
+    &.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    &.hide {
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+}
+/* End Confirm Popup */
+
+/* Start Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 20;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+
+    &.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    &.hide {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+/* End Overlay */

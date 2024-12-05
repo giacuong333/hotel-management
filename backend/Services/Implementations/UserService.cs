@@ -23,11 +23,6 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
             return await _unitOfWork.Users.GetUserByEmailAsync(email);
       }
 
-      public async Task CreateUserAsync(UserModel user)
-      {
-            await _unitOfWork.Users.CreateAsync(user);
-            await _unitOfWork.CompleteAsync();
-      }
 
       public async Task<UserModel> GetUserByPhoneAsync(string phoneNumber)
       {
@@ -37,6 +32,12 @@ public class UserService(IUnitOfWork unitOfWork) : IUserService
       public async Task DeleteUserAsync(object id)
       {
             await _unitOfWork.Users.DeleteAsync(id);
+            await _unitOfWork.CompleteAsync();
+      }
+
+      public async Task CreateUserAsync(UserModel user)
+      {
+            await _unitOfWork.Users.CreateAsync(user);
             await _unitOfWork.CompleteAsync();
       }
 

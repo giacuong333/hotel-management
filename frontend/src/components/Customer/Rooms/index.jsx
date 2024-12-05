@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { MdOutlineKeyboardArrowLeft, MdOutlineKeyboardArrowRight } from 'react-icons/md';
 
-const roomsPerPage = 6;
+const roomsPerPage = 9;
 
 const Rooms = () => {
     const [rooms, setRooms] = useState([]);

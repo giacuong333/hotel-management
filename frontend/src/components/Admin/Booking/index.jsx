@@ -214,16 +214,16 @@ const Booking = () => {
 
     const handleStatusChange = async (bookingId, statusCode) => {
         try {
-            const url = 'http://localhost:5058/booking/status';
+            const url = `http://localhost:5058/booking/status/${bookingId}`;
             const headers = { headers: { 'Content-Type': 'application/json' } };
-            const response = await axios.put(`${url}/${bookingId}`, statusCode, headers);
+            const response = await axios.put(url, statusCode, headers);
             if (response?.status === 200) {
                 await fetchBookings();
                 hideContext();
             }
         } catch (error) {
             showToast(
-                error?.repsonse?.data || error?.repsonse?.message || 'Something went wrong while changing status',
+                error?.response?.data || error?.response?.message || 'Something went wrong while changing status',
                 'error',
             );
             console.log(error);
@@ -278,8 +278,8 @@ const Booking = () => {
     const data = searchedBookings?.map((booking, index) => ({
         id: booking?.id,
         no: index + 1,
-        customer: booking?.customer?.name,
-        phoneNumber: booking?.customer?.phoneNumber,
+        customer: booking?.customer?.name || booking?.customerName,
+        phoneNumber: booking?.customer?.phoneNumber || booking?.customerPhoneNumber,
         checkIn: booking?.staffCheckIn?.name,
         checkOut: booking?.staffCheckOut?.name,
         statusName: (
@@ -364,6 +364,7 @@ const Booking = () => {
             {/* Show a toast */}
             {ToastContainer}
 
+            {/* Search and delete */}
             <div className="d-flex align-items-center justify-content-between w-full py-4">
                 {deleteAll.count !== 0 && hasPermissionDelete ? (
                     <BsTrash
@@ -386,66 +387,64 @@ const Booking = () => {
                     onChange={(e) => setSearchInput(e.target.value)}
                 />
             </div>
-            <>
-                <DataTable
-                    columns={columns}
-                    data={data}
-                    selectableRows
-                    striped
-                    highlightOnHover
-                    pointerOnHover
-                    pagination
-                    sortIcon={<FaSortAlphaDownAlt />}
-                    onRowClicked={handleRowClicked}
-                    onSelectedRowsChange={handleSelectedRowsChanged}
-                    progressPending={pending}
-                    clearSelectedRows={clearSelectedRows}
-                    progressComponent={
-                        <RotatingLines
-                            visible={true}
-                            height="50"
-                            width="50"
-                            strokeColor="#e8bf96"
-                            strokeWidth="5"
-                            animationDuration="0.75"
-                            ariaLabel="rotating-lines-loading"
-                            wrapperStyle={{}}
-                            wrapperClass=""
-                        />
-                    }
-                />
 
-                {/* Show Form */}
-                {showPanel && selectedBookings.status !== 0 && selectedBookings.status !== 3 && (
-                    <BookingForm data={selectedBookings} isShowed={showPanel} onClose={() => setShowPanel(false)} />
-                )}
-
-                {/* Show confirmation when clicking on delete all bookings */}
-                {showDeleteAllConfirm && (
-                    <ConfirmPopup
-                        header="Are you sure you want to delete all the selected bookings?"
-                        message="This action cannot be undone."
-                        negativeChoice="Cancel"
-                        positiveChoice="Delete"
-                        isShow={showDeleteAllConfirm}
-                        onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                        onClose={reset}
+            {/* Table */}
+            <DataTable
+                columns={columns}
+                data={data}
+                selectableRows
+                striped
+                highlightOnHover
+                pointerOnHover
+                pagination
+                sortIcon={<FaSortAlphaDownAlt />}
+                onRowClicked={handleRowClicked}
+                onSelectedRowsChange={handleSelectedRowsChanged}
+                progressPending={pending}
+                clearSelectedRows={clearSelectedRows}
+                progressComponent={
+                    <RotatingLines
+                        visible={true}
+                        height="50"
+                        width="50"
+                        strokeColor="#e8bf96"
+                        strokeWidth="5"
+                        animationDuration="0.75"
+                        ariaLabel="rotating-lines-loading"
+                        wrapperStyle={{}}
+                        wrapperClass=""
                     />
-                )}
+                }
+            />
 
-                {/* Show confirmation when clicking on delete a booking*/}
-                {showDeleteConfirm && (
-                    <ConfirmPopup
-                        header="Are you sure you want to delete the selected booking?"
-                        message="This action cannot be undone."
-                        negativeChoice="Cancel"
-                        positiveChoice="Delete"
-                        isShow={showDeleteConfirm}
-                        onYes={() => deleteBooking(deleteOne.payload)}
-                        onClose={reset}
-                    />
-                )}
-            </>
+            {/* Show Form */}
+            <BookingForm
+                data={selectedBookings}
+                isShowed={showPanel && selectedBookings.status !== 0 && selectedBookings.status !== 3}
+                onClose={() => setShowPanel(false)}
+            />
+
+            {/* Show confirmation when clicking on delete all bookings */}
+            <ConfirmPopup
+                header="Are you sure you want to delete all the selected bookings?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice="Delete"
+                isShow={showDeleteAllConfirm}
+                onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                onClose={reset}
+            />
+
+            {/* Show confirmation when clicking on delete a booking*/}
+            <ConfirmPopup
+                header="Are you sure you want to delete the selected booking?"
+                message="This action cannot be undone."
+                negativeChoice="Cancel"
+                positiveChoice="Delete"
+                isShow={showDeleteConfirm}
+                onYes={() => deleteBooking(deleteOne.payload)}
+                onClose={reset}
+            />
         </div>
     );
 };

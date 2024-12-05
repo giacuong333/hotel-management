@@ -12,7 +12,6 @@ public class UnitOfWork(
     IGalleryRepository gallery,
     IReviewRepository reviews,
     IReceiptRepository receipts,
-    IAdditionalFeeRepository additionalFees,
     IRoleRepository roles,
     IRolePermissionRepository rolePermissions,
     IServiceRepository services,
@@ -26,14 +25,12 @@ public class UnitOfWork(
     private readonly DatabaseContext _dbContext = dbContext;
 
     private IDbContextTransaction _transaction;
-
     public IUserRepository? Users { get; } = users;
     public IBookingRepository? Bookings { get; } = bookings;
     public IRoomRepository? Rooms { get; } = rooms;
     public IGalleryRepository? Gallery { get; } = gallery;
     public IReviewRepository? Reviews { get; } = reviews;
     public IReceiptRepository Receipts { get; } = receipts;
-    public IAdditionalFeeRepository AdditionalFees { get; } = additionalFees;
     public IRoleRepository? Roles { get; } = roles;
     public IRolePermissionRepository? RolePermissions { get; } = rolePermissions;
     public IServiceRepository? Services { get; } = services;

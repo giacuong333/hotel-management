@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace backend.Database
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
     {
-        public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
-
         // DbSets for your models
         public DbSet<UserModel> User { get; set; }
         public DbSet<RoleModel> Role { get; set; }
@@ -21,7 +19,6 @@ namespace backend.Database
         public DbSet<RolepermissionModel> Rolepermission { get; set; }
         public DbSet<ServiceModel> Service { get; set; }
         public DbSet<ServiceUsageModel> ServiceUsage { get; set; }
-        public DbSet<AdditionalFeeModel> AdditionalFee { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,13 +59,6 @@ namespace backend.Database
                 .HasForeignKey(b => b.RoomId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Gallery - Room
-            // modelBuilder.Entity<GalleryModel>()
-            //     .HasOne(g => g.Image)
-            //     .WithMany()
-            //     .HasForeignKey(g => g.RoomId)
-            //     .OnDelete(DeleteBehavior.Cascade);
-
             // Feedback - User
             modelBuilder.Entity<FeedBackModel>()
                 .HasOne(f => f.User)  // Assuming FeedBackModel has a navigation property 'User'
@@ -103,13 +93,6 @@ namespace backend.Database
                 .WithMany() // One discount can be applied to many receipts
                 .HasForeignKey(r => r.DiscountId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // AdditionalFee - Receipt
-            modelBuilder.Entity<AdditionalFeeModel>()
-                .HasOne(af => af.Receipt)  // Each additional fee is tied to a receipt
-                .WithMany(r => r.AdditionalFees) // Receipt has many additional fees
-                .HasForeignKey(af => af.ReceiptId)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // ServiceUsage - Booking
             modelBuilder.Entity<ServiceUsageModel>()

@@ -10,6 +10,7 @@ namespace Repositories.Implementations
         {
 
             var receipts = await _context.Receipt
+                .Where(r => r.DeletedAt == null)
                 .Select(r => new
                 {
                     r.Id,
@@ -19,47 +20,44 @@ namespace Repositories.Implementations
                     r.CreatedAt,
                     r.UpdatedAt,
                     r.DeletedAt,
-                    Booking = new
+                    Booking = r.Booking != null ? new
                     {
                         r.Booking!.Id,
-                        Customer = new
+                        r.Booking!.CustomerName,
+                        r.Booking!.CustomerEmail,
+                        r.Booking!.CustomerPhoneNumber,
+                        Customer = r.Booking.Customer != null ? new
                         {
                             r.Booking.Customer!.Id,
                             r.Booking.Customer.Name,
                             r.Booking.Customer.Email,
                             r.Booking.Customer.PhoneNumber,
-                            Room = new
+                            Room = r.Booking.Room != null ? new
                             {
                                 r.Booking!.Room!.Id,
                                 r.Booking!.Room!.Name,
                                 r.Booking!.Room!.Price,
                                 r.Booking!.Room!.Type,
-                            }
-                        },
+                            } : null
+                        } : null,
                         ServiceUsage = r.Booking!.ServiceUsage!.Select(s => new
                         {
                             s.Id,
-                            Service = new
+                            Service = s.Service != null ? new
                             {
                                 s.Service!.Id,
                                 s.Service.Name,
                                 s.Service.Price,
-                            }
+                            } : null
                         }).ToList(),
-                    },
-                    Discount = new
+                    } : null,
+                    Discount = r.Discount != null ? new
                     {
                         r.Discount!.Id,
                         r.Discount.Name,
                         r.Discount.Value
-                    },
-                    AdditionalFees = r.AdditionalFees!.Select(af => new
-                    {
-                        af.Id,
-                        af.Name,
-                        af.Price,
-                    }).ToList()
-                }).Where(r => r.DeletedAt == null).ToListAsync();
+                    } : null,
+                }).ToListAsync();
 
             return receipts;
         }
@@ -68,6 +66,7 @@ namespace Repositories.Implementations
         {
 
             var receipts = await _context.Receipt
+                .Where(r => r.DeletedAt == null && r.Id == receiptId)
                 .Select(r => new
                 {
                     r.Id,
@@ -77,30 +76,33 @@ namespace Repositories.Implementations
                     r.CreatedAt,
                     r.UpdatedAt,
                     r.DeletedAt,
-                    Booking = new
+                    Booking = r.Booking != null ? new
                     {
                         r.Booking!.Id,
                         r.Booking.CheckIn,
                         r.Booking.CheckOut,
-                        Customer = new
+                        r.Booking!.CustomerName,
+                        r.Booking!.CustomerEmail,
+                        r.Booking!.CustomerPhoneNumber,
+                        Customer = r.Booking.Customer != null ? new
                         {
                             r.Booking.Customer!.Id,
                             r.Booking.Customer.Name,
                             r.Booking.Customer.Email,
                             r.Booking.Customer.PhoneNumber,
-                        },
-                        ServiceUsage = r.Booking.ServiceUsage.Select(s => new
+                        } : null,
+                        ServiceUsage = r.Booking.ServiceUsage!.Select(s => new
                         {
                             s.Id,
                             s.Quantity,
-                            Service = new
+                            Service = s.Service != null ? new
                             {
                                 s.Service!.Id,
                                 s.Service.Name,
                                 s.Service.Price,
-                            }
+                            } : null
                         }).ToList(),
-                        Room = new
+                        Room = r.Booking.Room != null ? new
                         {
                             r.Booking.Room!.Id,
                             r.Booking.Room!.Name,
@@ -108,21 +110,15 @@ namespace Repositories.Implementations
                             r.Booking.Room!.Type,
                             r.Booking.Room!.BedNum,
                             r.Booking.Room!.Area,
-                        }
-                    },
-                    Discount = new
+                        } : null
+                    } : null,
+                    Discount = r.Discount != null ? new
                     {
                         r.Discount!.Id,
                         r.Discount.Name,
                         r.Discount.Value
-                    },
-                    AdditionalFees = r.AdditionalFees!.Select(af => new
-                    {
-                        af.Id,
-                        af.Name,
-                        af.Price,
-                    }).ToList()
-                }).Where(r => r.DeletedAt == null && r.Id == receiptId).FirstOrDefaultAsync();
+                    } : null,
+                }).FirstOrDefaultAsync();
 
             return receipts;
         }
@@ -202,12 +198,6 @@ namespace Repositories.Implementations
                         r.Discount.Name,
                         r.Discount.Value
                     },
-                    AdditionalFees = r.AdditionalFees!.Select(af => new
-                    {
-                        af.Id,
-                        af.Name,
-                        af.Price,
-                    }).ToList()
                 }).FirstOrDefaultAsync();
 
             return receipts;

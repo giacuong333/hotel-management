@@ -1346,38 +1346,32 @@ const Role = () => {
                             </Button>
                         </Modal.Footer>
                     </Modal>
-                    {showPanel && (
-                        <PopupPanel
-                            data={selectedRole}
-                            type={showPanel}
-                            onClose={() => setShowPanel(false)}
-                            isShowed={showPanel}
-                            onRoleAdded={handleRoleAdded}
-                            onRoleUpdated={handleRoleUpdated}
-                        />
-                    )}
-                    {showDeleteAllConfirm && (
-                        <ConfirmPopup
-                            header="Are you sure you want to delete all the selected reviews?"
-                            message="This action cannot be undone."
-                            negativeChoice="Cancel"
-                            positiveChoice="Delete"
-                            isShow={showDeleteAllConfirm}
-                            onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                            onClose={() => setShowDeleteAllConfirm(false)}
-                        />
-                    )}
-                    {showDeleteConfirm && (
-                        <ConfirmPopup
-                            header="Are you sure you want to delete the selected Role?"
-                            message="This action cannot be undone."
-                            negativeChoice="Cancel"
-                            positiveChoice="Delete"
-                            isShow={showDeleteConfirm}
-                            onYes={() => deleteRole_del(deleteOne)}
-                            onClose={reset}
-                        />
-                    )}
+                    <PopupPanel
+                        data={selectedRole}
+                        type={showPanel}
+                        onClose={() => setShowPanel(false)}
+                        isShowed={showPanel}
+                        onRoleAdded={handleRoleAdded}
+                        onRoleUpdated={handleRoleUpdated}
+                    />
+                    <ConfirmPopup
+                        header="Are you sure you want to delete all the selected reviews?"
+                        message="This action cannot be undone."
+                        negativeChoice="Cancel"
+                        positiveChoice="Delete"
+                        isShow={showDeleteAllConfirm}
+                        onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                        onClose={() => setShowDeleteAllConfirm(false)}
+                    />
+                    <ConfirmPopup
+                        header="Are you sure you want to delete the selected Role?"
+                        message="This action cannot be undone."
+                        negativeChoice="Cancel"
+                        positiveChoice="Delete"
+                        isShow={showDeleteConfirm}
+                        onYes={() => deleteRole_del(deleteOne)}
+                        onClose={reset}
+                    />
                 </>
             </>
         </div>

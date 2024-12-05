@@ -13,11 +13,6 @@ const RoomProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // For fetching
-    useEffect(() => {
-        fetchData('http://localhost:5058/room/empty');
-    }, []);
-
     const fetchData = async (url) => {
         const token = localStorage.getItem('jwtToken');
         if (!token) return;

@@ -6,6 +6,8 @@ import { formatDate } from '~/utils/formatDate';
 const Booking = ({ booking }) => {
     const navigate = useNavigate();
 
+    console.log('Room of booking: ', booking);
+
     return (
         <li className="d-flex flex-column gap-3 p-4 rounded-3 border shadow-sm" style={{ backgroundColor: '#f3f3f1' }}>
             <div className="d-flex flex-wrap align-items-center justify-content-between gap-4 ">
@@ -21,6 +23,10 @@ const Booking = ({ booking }) => {
                     <span className="d-flex flex-column gap-1">
                         <small className="text-secondary">Check-in</small>
                         <p className="fw-semibold">{formatDate(booking.checkIn)}</p>
+                    </span>
+                    <span className="d-flex flex-column gap-1">
+                        <small className="text-secondary">Check-out</small>
+                        <p className="fw-semibold">{formatDate(booking.checkOut)}</p>
                     </span>
                 </div>
                 <div className="d-flex flex-column align-items-lg-end align-items-start gap-1">
@@ -44,11 +50,13 @@ const Booking = ({ booking }) => {
                     </span>
                 </div>
             </div>
-            {(booking.status === 3 || booking.status === 0) && (
+            {/* If the booking is success */}
+            {booking.status === 3 && (
                 <div>
                     <button
                         className="text-white p-2 px-3 rounded-3 border d-flex align-items-center gap-2 svg-rotate-half-circle"
                         style={{ backgroundColor: '#35776d' }}
+                        onClick={() => navigate(`/room/${booking?.roomId}`)}
                     >
                         <TfiReload size={14} className="icon" />
                         <span>Book it again</span>

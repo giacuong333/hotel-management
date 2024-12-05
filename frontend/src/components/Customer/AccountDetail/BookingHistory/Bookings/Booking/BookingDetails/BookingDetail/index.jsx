@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import axios from 'axios';
 import formatCurrency from '~/utils/currencyPipe';
 import { formatDate } from '~/utils/formatDate';
 
 const BookingDetail = () => {
     const [booking, setBooking] = useState(null);
-    const bookingId = Number(useLocation().pathname.charAt(useLocation().pathname.length - 1));
+    const bookingId = Number(useParams()?.id);
 
-    console.log('Booking detail', booking);
-
-    useEffect(() => {
-        fetchBooking();
-    }, []);
-
-    const fetchBooking = async () => {
+    const fetchBooking = useCallback(async () => {
         try {
             const url = 'http://localhost:5058/booking';
             const response = await axios.get(`${url}/${bookingId}`);
@@ -28,7 +22,11 @@ const BookingDetail = () => {
         } catch (error) {
             console.log(error.message);
         }
-    };
+    }, [bookingId]);
+
+    useEffect(() => {
+        fetchBooking();
+    }, [fetchBooking]);
 
     return (
         <ul className="d-flex flex-column gap-2">
@@ -38,7 +36,7 @@ const BookingDetail = () => {
                     <p className="fs-1 lh-1">{booking?.formattedDate.split(' ')[1]}</p>
                 </div>
                 <div className="d-flex flex-wrap align-items-center justify-content-between gap-4 w-full">
-                    <div className="d-flex flex-wrap align-items-center gap-4">
+                    <div className="d-flex flex-wrap align-items-start gap-4">
                         <div className="d-flex flex-column gap-1">
                             <span className="d-flex align-items-center gap-2">
                                 <p className="fw-semibold">Room:</p>
@@ -57,6 +55,12 @@ const BookingDetail = () => {
                             <span className="d-flex align-items-center gap-2">
                                 <p className="fw-semibold">Area:</p>
                                 <small>{booking?.room?.area}m2</small>
+                            </span>
+                        </div>
+                        <div className="d-flex flex-column gap-1">
+                            <span className="d-flex align-items-center gap-2">
+                                <p className="fw-semibold">Beds:</p>
+                                <small>{booking?.room?.bedNum}</small>
                             </span>
                         </div>
                     </div>

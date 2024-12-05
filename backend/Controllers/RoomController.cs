@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using backend.Models;
 
 namespace backend.Controllers
 {
@@ -72,17 +71,20 @@ namespace backend.Controllers
             // [POST] /room
             [HttpPost]
             [Produces("application/json")]
-            public async Task<ActionResult<IEnumerable<RoomModel>>> CreateRoom([FromForm] RoomModel request, IFormFile thumbnail)
+            public async Task<ActionResult<IEnumerable<RoomModel>>> CreateRoom([FromForm] RoomModel request, IFormFile? thumbnail)
             {
                   try
                   {
                         if (!ModelState.IsValid)
                               return BadRequest("Missing Data");
 
-                        using (var memoryStream = new MemoryStream())
+                        if (thumbnail != null)
                         {
-                              await thumbnail.CopyToAsync(memoryStream);
-                              request.Thumbnail = memoryStream.ToArray();
+                              using (var memoryStream = new MemoryStream())
+                              {
+                                    await thumbnail.CopyToAsync(memoryStream);
+                                    request.Thumbnail = memoryStream.ToArray();
+                              }
                         }
 
                         var room = new RoomModel
@@ -121,7 +123,7 @@ namespace backend.Controllers
             // [PUT] /room/{id}
             [HttpPut("{id}")]
             [Produces("application/json")]
-            public async Task<ActionResult> EditRoom([FromForm] RoomModel payload, IFormFile thumbnail, int id)
+            public async Task<ActionResult> EditRoom([FromForm] RoomModel payload, IFormFile? thumbnail, int id)
             {
                   try
                   {
@@ -132,10 +134,13 @@ namespace backend.Controllers
                         if (room == null)
                               return NotFound("Room not found");
 
-                        using (var memoryStream = new MemoryStream())
+                        if (thumbnail != null)
                         {
-                              await thumbnail.CopyToAsync(memoryStream);
-                              room.Thumbnail = memoryStream.ToArray();
+                              using (var memoryStream = new MemoryStream())
+                              {
+                                    await thumbnail.CopyToAsync(memoryStream);
+                                    room.Thumbnail = memoryStream.ToArray();
+                              }
                         }
 
                         room.Name = payload.Name;

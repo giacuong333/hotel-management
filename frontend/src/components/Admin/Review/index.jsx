@@ -147,15 +147,6 @@ const Review = () => {
         }
     };
 
-    const handleEditClicked = (review) => {
-        setSelectedReview(review);
-        setShowPanel('edit');
-    };
-
-    const handleAddClicked = async () => {
-        setShowPanel('add');
-    };
-
     const handleRowClicked = useCallback(async (e) => {
         const { id } = e;
         try {
@@ -201,7 +192,6 @@ const Review = () => {
 
         actions: (
             <>
-                {/* <FiEdit size={18} className="cursor-pointer me-3" onClick={() => handleEditClicked(user)} /> */}
                 {deleteReview === 1 ? (
                     <BsTrash size={18} className="cursor-pointer" onClick={() => handleTrashClicked(review.id)} />
                 ) : (
@@ -251,36 +241,30 @@ const Review = () => {
                 />
                 <>
                     {ToastContainer}
-                    {showPanel && (
-                        <PopupPanel
-                            data={selectedReview}
-                            type={showPanel}
-                            onClose={() => setShowPanel(false)}
-                            isShowed={showPanel}
-                        />
-                    )}
-                    {showDeleteAllConfirm && (
-                        <ConfirmPopup
-                            header="Are you sure you want to delete all the selected reviews?"
-                            message="This action cannot be undone."
-                            negativeChoice="Cancel"
-                            positiveChoice="Delete"
-                            isShow={showDeleteAllConfirm}
-                            onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
-                            onClose={() => setShowDeleteAllConfirm(false)}
-                        />
-                    )}
-                    {showDeleteConfirm && (
-                        <ConfirmPopup
-                            header="Are you sure you want to delete the selected Review?"
-                            message="This action cannot be undone."
-                            negativeChoice="Cancel"
-                            positiveChoice="Delete"
-                            isShow={showDeleteConfirm}
-                            onYes={() => deleteReview_del(deleteOne)}
-                            onClose={reset}
-                        />
-                    )}
+                    <PopupPanel
+                        data={selectedReview}
+                        type={showPanel}
+                        onClose={() => setShowPanel(false)}
+                        isShowed={showPanel}
+                    />
+                    <ConfirmPopup
+                        header="Are you sure you want to delete all the selected reviews?"
+                        message="This action cannot be undone."
+                        negativeChoice="Cancel"
+                        positiveChoice="Delete"
+                        isShow={showDeleteAllConfirm}
+                        onYes={() => setDeleteAll((prev) => ({ ...prev, yes: true }))}
+                        onClose={() => setShowDeleteAllConfirm(false)}
+                    />
+                    <ConfirmPopup
+                        header="Are you sure you want to delete the selected Review?"
+                        message="This action cannot be undone."
+                        negativeChoice="Cancel"
+                        positiveChoice="Delete"
+                        isShow={showDeleteConfirm}
+                        onYes={() => deleteReview_del(deleteOne)}
+                        onClose={reset}
+                    />
                 </>
             </>
         </div>
