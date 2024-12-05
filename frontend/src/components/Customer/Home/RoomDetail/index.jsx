@@ -120,6 +120,17 @@ const RoomDetail = () => {
         }
     };
 
+    const compareDates = (date1, date2) => {
+        const d1 = new Date(date1);
+        const d2 = new Date(date2);
+
+        // Set the time of both dates to midnight to compare only the date part
+        d1.setHours(0, 0, 0, 0);
+        d2.setHours(0, 0, 0, 0);
+
+        return d1.getTime() === d2.getTime(); // Compare date part only
+    };
+
     const fetchBookedDates = async () => {
         try {
             const response = await axios.get(`http://localhost:5058/booking/room/${id}`);
@@ -131,11 +142,26 @@ const RoomDetail = () => {
 
                 if (bookingsData) {
                     const allBookedDates = bookingsData.map((booking) => {
-                        return getDatesInRange(booking.checkIn, booking.checkOut);
+                        const datesRange = getDatesInRange(booking.checkIn, booking.checkOut);
+                        const today = new Date();
+                        console.log(today);
+                        console.log('Compare: ', datesRange.includes(today));
+
+                        if (
+                            roomDetail.status === 3 ||
+                            !datesRange.some((date) => {
+                                console.log('Date: ', date);
+                                return date && compareDates(date, today);
+                            })
+                        ) {
+                            return datesRange;
+                        }
+
+                        return null;
                     });
 
                     // Dùng flatMap để chuyển đổi mảng 2 chiều thành mảng 1 chiều
-                    setBookedDates(allBookedDates.flat());
+                    setBookedDates(allBookedDates.flat().filter(Boolean));
                 } else {
                     console.error('Undefined value:', response.data);
                 }
@@ -147,12 +173,12 @@ const RoomDetail = () => {
 
     const handleBookNow = () => {
         if (!checkInDate || !checkOutDate) {
-            alert('Please choose your check-in and check-out dates.');
+            showToast('Please choose your check-in and check-out dates.', 'warning');
             return;
         }
 
         if (invalidDates) {
-            alert('The dates have been booked, please choose another date.');
+            showToast('The dates have been booked, please choose another date.', 'warning');
             return;
         }
 
@@ -368,7 +394,7 @@ const RoomDetail = () => {
                     </div>
 
                     <div className="col-lg-4 pt-4">
-                        <div className="customer-third-bg-color p-4">
+                        <div className="customer-third-bg-color p-4 border shadow-sm">
                             <p className="text-center fs-3 p-2 pt-0">Your Reservation</p>
                             <div className="py-3 d-flex flex-column gap-4">
                                 <span className="d-flex flex-column gap-2">
