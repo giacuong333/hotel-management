@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Nhóm 15: Xây dựng website quản lý khách sạn.
 
 # Mục tiêu
