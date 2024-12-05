@@ -6,18 +6,18 @@ Xây dựng nền tảng trực tuyến đơn giản, thuận tiện để khác
 
 # Công nghệ sử dụng
 
-Frontend: ReactJS
-Backend: ASP.NET core MVC
-Database: MySQL
-Security: JWT
+**Frontend: ReactJS**
+**Backend: ASP.NET core MVC**
+**Database: MySQL**
+**Security: JWT**
 
 # Các chức năng chính
 
-Tìm kím và đặt phòng trực tuyến
-Quản lý thông tin phòng
-Hệ thống thanh toán tích hợp VNPAY
-Quản lý đơn đặt và quản lý người dùng
-Thống kê doanh thu
+**Tìm kím và đặt phòng trực tuyến**
+**Quản lý thông tin phòng**
+**Hệ thống thanh toán tích hợp VNPAY**
+**Quản lý đơn đặt và quản lý người dùng**
+**Thống kê doanh thu**
 
 # Chạy dự án
 
@@ -63,7 +63,7 @@ User Booking History
 
 # Thành viên
 
-Lê Gia Cường
-Hoàng Nhật Hào
-Lê Minh Trung
-Võ Đình Văn
+**Lê Gia Cường**
+**Hoàng Nhật Hào**
+**Lê Minh Trung**
+**Võ Đình Văn**
