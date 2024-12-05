@@ -65,5 +65,5 @@ User Booking History
 
 - Lê Gia Cường
 - Hoàng Nhật Hào
-- Lê Minh Trung
+- Phạm Minh Trung
 - Võ Đình Văn
