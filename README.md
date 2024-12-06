@@ -24,8 +24,10 @@ Xây dựng nền tảng trực tuyến đơn giản, thuận tiện để khác
 Yêu cầu:
 
 - ASP.NET core MVC version 8.0.2 or later
-- npm installed
-
+- dotnet version 8.0.101 or later
+- node version 20.10.0 or later
+- npm version 10.7.0 or later
+ 
 Cài đặt:
 
 1. Clone project
