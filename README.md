@@ -29,11 +29,46 @@ Yêu cầu:
 Cài đặt:
 
 1. Clone project
+```bash
+# Include Backend, Frontend
+git clone https://github.com/giacuong333/hotel-management.git
 
-2. Cài đặt thư viện
 
-- Vào thư mục frontend -> npm install
-- vào thư mục backend -> dotnet build
+```
+2.Thay đổi connectionString trong appsettings.json
+```json
+
+"ConnectionStrings": {
+    "Connection": "Data Source=[YOUR_SERVER_NAME];Initial Catalog=MutiFashion;Integrated Security=True;Encrypt=True;Trust Server Certificate=True"
+  }
+```
+3.Cập nhật cơ sở dữ liệu
+```bash
+dotnet ef database update
+
+```
+4.Cài đặt các package 
+-Open Terminal trong frontend
+```bash
+npm i
+
+```
+-Open Terminal trong backend
+```bash
+dotnet build
+
+```
+5. Chạy Dự Án:
+-Open Terminal trong frontend
+```bash
+npm start
+
+```
+-Open Terminal trong backend
+```bash
+dotnet run
+
+```
 
 # Demo
 
