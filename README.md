@@ -45,6 +45,7 @@ git clone https://github.com/giacuong333/hotel-management.git
   }
 ```
 3.Cập nhật cơ sở dữ liệu
+- Open Terminal trong backend
 ```bash
 dotnet ef database update
 
@@ -56,23 +57,19 @@ dotnet ef database update
 npm i
 
 ```
-- Open Terminal trong backend
-```bash
-dotnet build
 
-```
 5. Chạy Dự Án:
-
-- Open Terminal trong frontend
-```bash
-npm start
-
-```
 - Open Terminal trong backend
 ```bash
 dotnet run
 
 ```
+- Open Terminal trong frontend
+```bash
+npm start
+
+```
+
 
 # Demo
 
