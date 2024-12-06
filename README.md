@@ -13,7 +13,7 @@ Xây dựng nền tảng trực tuyến đơn giản, thuận tiện để khác
 
 # Các chức năng chính
 
-- Tìm kím và đặt phòng trực tuyến
+- Tìm kiếm và đặt phòng trực tuyến
 - Quản lý thông tin phòng
 - Hệ thống thanh toán tích hợp VNPAY
 - Quản lý đơn đặt và quản lý người dùng
@@ -50,23 +50,25 @@ dotnet ef database update
 
 ```
 4.Cài đặt các package 
--Open Terminal trong frontend
+
+- Open Terminal trong frontend
 ```bash
 npm i
 
 ```
--Open Terminal trong backend
+- Open Terminal trong backend
 ```bash
 dotnet build
 
 ```
 5. Chạy Dự Án:
--Open Terminal trong frontend
+
+- Open Terminal trong frontend
 ```bash
 npm start
 
 ```
--Open Terminal trong backend
+- Open Terminal trong backend
 ```bash
 dotnet run
 
