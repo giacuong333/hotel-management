@@ -11,8 +11,5 @@ namespace backend.Repositories.Interfaces
         Task<ReviewModel> GetByIdAsync(object id);
         Task DeleteAsync(object id);
         Task CreateAsync(ReviewModel review);
-
-
-
     }
 }

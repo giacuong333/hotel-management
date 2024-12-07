@@ -1,5 +1,8 @@
 using backend.Models;
+using backend.Repositories.Implementations;
 using backend.Repositories.Interfaces;
+using backend.Services.Implementations;
+using backend.Services.Interfaces;
 using Interfaces;
 using Repositories.Implementations;
 using Repositories.Interfaces;
@@ -30,6 +33,8 @@ class RegisterServices
         builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
         builder.Services.AddScoped<IFeedBackRepository, FeedBackRepository>();
         builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
+        builder.Services.AddScoped<IGenericRepository<LockRoomModel>, GenericRepository<LockRoomModel>>();
+        builder.Services.AddScoped<ILockRoomRepository, LockRoomRepository>();
 
         // Register Services
         builder.Services.AddScoped<IAuthService, AuthService>();
@@ -48,6 +53,7 @@ class RegisterServices
         builder.Services.AddScoped<IDiscountService, DiscountService>();
         builder.Services.AddScoped<IFeedBackService, FeedBackService>();
         builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+        builder.Services.AddScoped<ILockRoomService, LockRoomService>();
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
     }

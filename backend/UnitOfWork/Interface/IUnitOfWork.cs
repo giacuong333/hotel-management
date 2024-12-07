@@ -4,6 +4,7 @@ using Repositories.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
+    ILockRoomRepository LockRooms { get; }
     IUserRepository Users { get; }
     IBookingRepository Bookings { get; }
     IRoomRepository Rooms { get; }

@@ -6,6 +6,7 @@ namespace backend.Database
     public class DatabaseContext(DbContextOptions<DatabaseContext> options) : DbContext(options)
     {
         // DbSets for your models
+        public DbSet<LockRoomModel> LockRoom { get; set; }
         public DbSet<UserModel> User { get; set; }
         public DbSet<RoleModel> Role { get; set; }
         public DbSet<RoomModel> Room { get; set; }
@@ -23,6 +24,13 @@ namespace backend.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            //LockRoom - Room
+            modelBuilder.Entity<LockRoomModel>()
+                .HasOne(lr => lr.Room)
+                .WithMany() 
+                .HasForeignKey(r => r.RoomId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // User - Role
             modelBuilder.Entity<UserModel>()

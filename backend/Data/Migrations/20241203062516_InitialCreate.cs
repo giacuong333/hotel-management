@@ -374,6 +374,28 @@ namespace backend.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "LockRoom",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CheckIn = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    CheckOut = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    RoomId = table.Column<int>(type: "int", nullable: false),
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LockRoom", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LockRoom_Room_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Room",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Booking_CustomerId",
                 table: "Booking",
@@ -449,6 +471,11 @@ namespace backend.Migrations
                 name: "IX_User_RoleId",
                 table: "User",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LockRoom_RoomId",
+                table: "LockRoom",
+                column: "RoomId");
         }
 
         /// <inheritdoc />
@@ -492,6 +519,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Role");
+
+            migrationBuilder.DropTable(
+                name: "LockRoom");
         }
     }
 }

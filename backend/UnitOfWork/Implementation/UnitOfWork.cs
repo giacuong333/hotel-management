@@ -6,6 +6,7 @@ using Repositories.Interfaces;
 
 public class UnitOfWork(
     DatabaseContext dbContext,
+    ILockRoomRepository lockRooms,
     IUserRepository users,
     IBookingRepository bookings,
     IRoomRepository rooms,
@@ -25,6 +26,7 @@ public class UnitOfWork(
     private readonly DatabaseContext _dbContext = dbContext;
 
     private IDbContextTransaction _transaction;
+    public ILockRoomRepository? LockRooms { get; } = lockRooms;
     public IUserRepository? Users { get; } = users;
     public IBookingRepository? Bookings { get; } = bookings;
     public IRoomRepository? Rooms { get; } = rooms;

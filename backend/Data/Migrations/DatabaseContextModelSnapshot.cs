@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using backend.Database;
+using backend.Models;
 
 #nullable disable
 
@@ -469,6 +470,37 @@ namespace backend.Migrations
 
                     b.ToTable("User");
                 });
+
+            modelBuilder.Entity("backend.Models.LockRoomModel", b =>
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
+                MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                b.Property<int>("RoomId")
+                    .HasColumnType("int");
+
+                b.Property<DateTime>("CheckIn")
+                    .HasColumnType("datetime");
+
+                b.Property<DateTime>("CheckOut")
+                    .HasColumnType("datetime");
+
+                b.HasKey("Id");
+
+                b.HasIndex("RoomId");
+
+                b.HasOne("backend.Models.RoomModel", "Room")
+                .WithMany()  
+                .HasForeignKey("RoomId")
+                .OnDelete(DeleteBehavior.Restrict);
+
+                b.Navigation("Room");
+
+                b.ToTable("LockRoom");
+            });
 
             modelBuilder.Entity("ReceiptModel", b =>
                 {
