@@ -98,9 +98,16 @@ const ProccedPayment = () => {
                 discountId: selectedDiscount?.id ?? null,
             };
 
+            const otherDatas = {
+                room: room,
+                discount: selectedDiscount ? selectedDiscount : null,
+                services: services,
+            }
+
             sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
             sessionStorage.setItem('servicesData', JSON.stringify(servicesData));
             sessionStorage.setItem('receiptData', JSON.stringify(receiptData));
+            sessionStorage.setItem('otherDatas', JSON.stringify(otherDatas));
 
             // Gửi request đến API bằng Axios
             const response = await axios.post(

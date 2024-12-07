@@ -50,7 +50,7 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
         await _unitOfWork.CompleteAsync();
     }
 
-    public async Task CreateBookingAsync(BookingModel booking, ServiceUsageModel[] services, ReceiptModel receipt)
+    public async Task<BookingModel> CreateBookingAsync(BookingModel booking, ServiceUsageModel[] services, ReceiptModel receipt)
     {
         // Bắt đầu một giao dịch để đảm bảo tính toàn vẹn dữ liệu
         using var transaction = await _unitOfWork.BeginTransactionAsync();
@@ -91,6 +91,8 @@ public class BookingService(IUnitOfWork unitOfWork) : IBookingService
 
             // Xác nhận giao dịch thành công
             await transaction.CommitAsync();
+
+            return booking;
         }
         catch (Exception ex)
         {
