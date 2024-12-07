@@ -69,13 +69,13 @@ const RoomDetail = () => {
             return;
         }
         fetchRoom();
-        fetchGallery();
-        fetchBookedDates();
     }, [id]);
 
     useEffect(() => {
-        console.log(bookedDates);
-    }, [bookedDates]);
+        console.log('Room:', roomDetail);
+        fetchBookedDates();
+        fetchGallery();
+    }, [roomDetail]);
 
     useEffect(() => {
         console.log('Check-in: ', checkInDate);
@@ -160,7 +160,10 @@ const RoomDetail = () => {
                             return date && compareDates(date, today);
                         });
 
-                        if (booking.status === 0 || (booking.status !== 3 && isIncludedToday)) return null;
+                        if (booking.status === 0 || (roomDetail?.status !== 3 && isIncludedToday &&
+                            !compareDates(booking.checkIn, today) && !compareDates(booking.checkOut, today)
+                        )) 
+                            return null;
 
                         return getDatesInRange(booking.checkIn, booking.checkOut);
                     });
