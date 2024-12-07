@@ -19,17 +19,37 @@ namespace backend.Repositories.Implementations
 
         public async Task DeleteLockRoomAsync(int lockRoomId)
         {
-            throw new NotImplementedException();
+            var lockRoom = await _context.LockRoom.FindAsync(lockRoomId);
+            if (lockRoom != null)
+            {
+                _context.LockRoom.Remove(lockRoom);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new KeyNotFoundException($"LockRoom with ID {lockRoomId} not found.");
+            }
         }
 
-        public Task<LockRoomModel> GetLockRoomAsync()
+        public async Task<LockRoomModel> GetLockRoomAsync(int lockRoomId)
         {
-            throw new NotImplementedException();
+            var lockRoom = await _context.LockRoom
+                .Include(lr => lr.Room) 
+                .FirstOrDefaultAsync(lr => lr.Id == lockRoomId);
+
+            if (lockRoom == null)
+            {
+                throw new KeyNotFoundException($"LockRoom with ID {lockRoomId} not found.");
+            }
+
+            return lockRoom;
         }
 
-        public Task<IEnumerable<LockRoomModel>> GetLockRoomsAsync()
+        public async Task<IEnumerable<LockRoomModel>> GetLockRoomsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.LockRoom
+                .Include(lr => lr.Room) 
+                .ToListAsync();
         }
     }
 }

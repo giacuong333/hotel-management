@@ -3,26 +3,35 @@ using backend.Services.Interfaces;
 
 namespace backend.Services.Implementations
 {
-    public class LockRoomService(IUnitOfWork unitOfWork) : ILockRoomService
+    public class LockRoomService : ILockRoomService
     {
-        public Task CreateLockRoomAsync(LockRoomModel lockRoom)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public LockRoomService(IUnitOfWork unitOfWork)
         {
-            throw new NotImplementedException();
+            _unitOfWork = unitOfWork;
         }
 
-        public Task DeleteLockRoomAsync(int lockRoomId)
+        public async Task CreateLockRoomAsync(LockRoomModel lockRoom)
         {
-            throw new NotImplementedException();
+            await _unitOfWork.LockRooms.CreateLockRoomAsync(lockRoom);
+            await _unitOfWork.CompleteAsync();
         }
 
-        public Task<LockRoomModel> GetLockRoomAsync()
+        public async Task DeleteLockRoomAsync(int lockRoomId)
         {
-            throw new NotImplementedException();
+            await _unitOfWork.LockRooms.DeleteLockRoomAsync(lockRoomId);
+            await _unitOfWork.CompleteAsync();
         }
 
-        public Task<IEnumerable<LockRoomModel>> GetLockRoomsAsync()
+        public async Task<LockRoomModel> GetLockRoomAsync(int lockRoomId)
         {
-            throw new NotImplementedException();
+            return await _unitOfWork.LockRooms.GetLockRoomAsync(lockRoomId);
+        }
+
+        public async Task<IEnumerable<LockRoomModel>> GetLockRoomsAsync()
+        {
+            return await _unitOfWork.LockRooms.GetLockRoomsAsync();
         }
     }
 }
