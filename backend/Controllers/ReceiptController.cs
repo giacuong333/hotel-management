@@ -78,6 +78,7 @@ namespace backend.Controllers
         {
             try
             {
+                Console.WriteLine("Booking ID: " + bookingId);
                 var receipt = await _receiptService.GetReceiptByBookingIdAsync(bookingId);
                 if (receipt == null)
                     return NotFound("Receipts not found");

@@ -97,8 +97,6 @@ const Invoice = () => {
     const bookingId = useParams()?.id;
     const [receipt, setReceipt] = useState({});
     const [subtotal, setSubtotal] = useState(null);
-    const [subtotalWithDiscount, setSubtotalWithDiscount] = useState(null);
-    const [total, setTotal] = useState(null);
     const [pending, setPending] = useState(false);
 
     useEffect(() => {
@@ -106,35 +104,32 @@ const Invoice = () => {
     }, [bookingId, stayedDate]);
 
     useEffect(() => {
-        roomsUsed && setSubtotal(roomsUsed[0].roomTotal);
-    }, [bookingId, roomsUsed, subtotal]);
+        setSubtotal(() => {
+            const discountValue = receipt?.discount?.value || 0;
+            return receipt?.total / ((100 - discountValue) / 100);
+        });
+    }, [receipt]);
 
-    useEffect(() => {
-        subtotal &&
-            setSubtotalWithDiscount(() => {
-                const totalServices = servicesUsed.reduce((total, su) => total + su.price * su.quantity, 0);
-                return (totalServices + subtotal) * (receipt?.discount?.value / 100);
-            });
-    }, [bookingId, receipt?.discount?.value, servicesUsed, subtotal]);
-
-    useEffect(() => {
-        subtotal && subtotalWithDiscount && setTotal(subtotal - subtotalWithDiscount);
-    }, [subtotal, subtotalWithDiscount]);
+    // useEffect(() => {
+    //     subtotal && setSubtotalWithDiscount(() => {});
+    // }, [subtotal]);
 
     useEffect(() => {
         if (receipt.booking) {
             const checkIn = new Date(receipt?.booking?.checkIn);
             const checkOut = new Date(receipt?.booking?.checkOut);
             const timeDifference = Math.abs(checkOut - checkIn);
-            const datesStayed = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+            const datesStayed = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)) + 1;
             setStayedDate(datesStayed);
         }
     }, [receipt?.booking]);
 
     const fetchReceipt = async () => {
         try {
+            console.log('Booking ID: ', bookingId);
             setPending(true);
             const response = await axios.get(`http://localhost:5058/receipt/booking/${bookingId}`);
+            console.log('Receipt booking response', response);
             if (response.status === 200) {
                 const room = response.data?.booking?.room;
                 room.roomTotal = room?.price && stayedDate ? room?.price * stayedDate : 'Calculating...';
@@ -241,17 +236,17 @@ const Invoice = () => {
                                             <p>{subtotal ? formatCurrency(subtotal) : 'Calculating...'}</p>
                                         </span>
                                         <span className="d-flex align-items-center justify-content-between gap-5">
-                                            <p>Discount {receipt?.discount?.value}%</p>
-                                            <p>
+                                            <p>Discount {receipt?.discount?.value || 0}%</p>
+                                            {/* <p>
                                                 {subtotalWithDiscount
                                                     ? formatCurrency(subtotalWithDiscount)
                                                     : 'Calculating...'}
-                                            </p>
+                                            </p> */}
                                         </span>
                                         <span className="d-flex align-items-center justify-content-between gap-5">
                                             <h6 className="fw-bold">Total</h6>
                                             <h6 className="fw-bold">
-                                                {total ? formatCurrency(total) : 'Calculating...'}
+                                                {receipt?.total ? formatCurrency(receipt?.total) : 'Calculating...'}
                                             </h6>
                                         </span>
                                     </div>

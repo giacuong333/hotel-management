@@ -303,7 +303,7 @@ namespace backend.Controllers
                 {
                     Amount = request.Receipt.Total,
                     CreatedDate = DateTime.Now,
-                    Description = $"Khách hàng {request.Booking.CustomerId?.ToString() ?? request.Booking.CustomerName } thanh toán đơn hàng.",
+                    Description = $"Khách hàng {request.Booking.CustomerId?.ToString() ?? request.Booking.CustomerName} thanh toán đơn hàng.",
                     OrderId = new Random().Next(1000, 10000)
                 };
 
@@ -360,13 +360,14 @@ namespace backend.Controllers
             }
 
             // Gọi phương thức xử lý logic để tạo booking
-            await _bookingService.CreateBookingAsync(booking, services, receipt);
+            var createdBooking = await _bookingService.CreateBookingAsync(booking, services, receipt);
 
             return Ok(new
             {
                 status = "success",
                 message = messageSuccess,
-                data = response // Gửi thêm thông tin chi tiết nếu cần
+                data = response, // Gửi thêm thông tin chi tiết nếu cần
+                booking = createdBooking,
             });
         }
     }

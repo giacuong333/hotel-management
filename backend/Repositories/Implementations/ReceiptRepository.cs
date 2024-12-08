@@ -159,7 +159,7 @@ namespace Repositories.Implementations
                     r.CreatedAt,
                     r.UpdatedAt,
                     r.DeletedAt,
-                    Booking = new
+                    Booking = r.Booking == null ? null : new
                     {
                         r.Booking!.Id,
                         r.Booking.CheckIn,
@@ -171,18 +171,18 @@ namespace Repositories.Implementations
                             r.Booking.Customer.Email,
                             r.Booking.Customer.PhoneNumber,
                         },
-                        ServiceUsage = r.Booking.ServiceUsage!.Select(s => new
+                        ServiceUsage = r.Booking.ServiceUsage == null ? null : r.Booking.ServiceUsage!.Select(s => new
                         {
                             s.Id,
                             s.Quantity,
-                            Service = new
+                            Service = s.Service == null ? null : new
                             {
                                 s.Service!.Id,
                                 s.Service.Name,
                                 s.Service.Price,
                             }
                         }).ToList(),
-                        Room = new
+                        Room = r.Booking.Room == null ? null : new
                         {
                             r.Booking.Room!.Id,
                             r.Booking.Room!.Name,
@@ -192,7 +192,7 @@ namespace Repositories.Implementations
                             r.Booking.Room!.Area,
                         }
                     },
-                    Discount = new
+                    Discount = r.Discount == null ? null : new
                     {
                         r.Discount!.Id,
                         r.Discount.Name,
